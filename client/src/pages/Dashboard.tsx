@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BitcoinMarketData, ProcessedChartData } from "@/lib/types";
 import AIAnalysis from "@/components/AIAnalysis";
+import MarketSentiment from "@/components/MarketSentiment";
 import { 
   Area, 
   AreaChart, 
@@ -258,7 +259,13 @@ const Dashboard = () => {
         </CardContent>
       </Card>
       
-      {/* AI-powered Analysis Component */}
+      {/* Market Sentiment Analysis */}
+      <MarketSentiment 
+        marketData={marketData}
+        isLoading={isLoadingBitcoinData}
+      />
+      
+      {/* AI-powered Technical Analysis */}
       <AIAnalysis 
         marketData={marketData} 
         isLoading={isLoadingBitcoinData}
