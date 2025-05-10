@@ -378,4 +378,239 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+  
+  async getForumPosts(): Promise<ForumPostType[]> {
+    const posts = await db.select().from(forumPosts);
+    return Promise.all(posts.map(post => this.formatForumPost(post)));
+  }
+  
+  async getLatestForumPosts(limit: number = 2): Promise<ForumPostType[]> {
+    const posts = await db.select()
+      .from(forumPosts)
+      .orderBy(desc(forumPosts.createdAt))
+      .limit(limit);
+      
+    return Promise.all(posts.map(post => this.formatForumPost(post)));
+  }
+  
+  async getForumPost(id: number): Promise<ForumPostType | undefined> {
+    const [post] = await db.select().from(forumPosts).where(eq(forumPosts.id, id));
+    if (!post) return undefined;
+    return this.formatForumPost(post);
+  }
+  
+  async createForumPost(insertPost: InsertForumPost): Promise<ForumPostType> {
+    const [post] = await db
+      .insert(forumPosts)
+      .values(insertPost)
+      .returning();
+      
+    return this.formatForumPost(post);
+  }
+  
+  private async formatForumPost(post: ForumPost): Promise<ForumPostType> {
+    const [user] = post.userId 
+      ? await db.select().from(users).where(eq(users.id, post.userId))
+      : [undefined];
+      
+    const comments = await db.select().from(forumComments)
+      .where(eq(forumComments.postId, post.id));
+      
+    return {
+      id: post.id.toString(),
+      title: post.title,
+      content: post.content,
+      author: {
+        id: post.userId ? post.userId.toString() : "0",
+        username: user?.username || "Unknown",
+      },
+      createdAt: post.createdAt.toISOString(),
+      commentCount: comments.length,
+      upvotes: post.upvotes,
+      categories: post.categories
+    };
+  }
+  
+  async getPortfolio(userId: number): Promise<Portfolio> {
+    const entries = await db.select()
+      .from(portfolioEntries)
+      .where(eq(portfolioEntries.userId, userId));
+      
+    const bitcoinEntry = entries.find(entry => entry.asset === "bitcoin");
+    const bitcoinAmount = bitcoinEntry?.amount || 0;
+    
+    // Get current Bitcoin price for portfolio valuation
+    const bitcoinPrice = await getBitcoinPrice();
+    const bitcoinValue = bitcoinAmount * bitcoinPrice.usd;
+    
+    // Calculate 24h change
+    const dailyChange = bitcoinValue * (bitcoinPrice.usd_24h_change / 100);
+    const dailyChangePercentage = bitcoinPrice.usd_24h_change;
+    
+    return {
+      totalValue: bitcoinValue,
+      dailyChange,
+      dailyChangePercentage,
+      holdings: {
+        bitcoin: {
+          amount: bitcoinAmount,
+          value: bitcoinValue
+        }
+      }
+    };
+  }
+  
+  async updatePortfolio(userId: number, asset: string, amount: number): Promise<Portfolio> {
+    const [existingEntry] = await db.select()
+      .from(portfolioEntries)
+      .where(and(
+        eq(portfolioEntries.userId, userId),
+        eq(portfolioEntries.asset, asset)
+      ));
+      
+    if (existingEntry) {
+      // Update existing entry
+      await db.update(portfolioEntries)
+        .set({ amount, updatedAt: new Date() })
+        .where(eq(portfolioEntries.id, existingEntry.id));
+    } else {
+      // Create new entry
+      await db.insert(portfolioEntries)
+        .values({
+          userId,
+          asset,
+          amount,
+        });
+    }
+    
+    // Return updated portfolio
+    return this.getPortfolio(userId);
+  }
+  
+  async getPriceAlerts(userId: number): Promise<PriceAlertType[]> {
+    const alerts = await db.select()
+      .from(priceAlerts)
+      .where(eq(priceAlerts.userId, userId));
+      
+    return alerts.map(alert => ({
+      id: alert.id.toString(),
+      type: alert.type as 'above' | 'below',
+      price: alert.price,
+      created: alert.createdAt.toISOString()
+    }));
+  }
+  
+  async createPriceAlert(insertAlert: InsertPriceAlert): Promise<PriceAlertType> {
+    const [alert] = await db
+      .insert(priceAlerts)
+      .values(insertAlert)
+      .returning();
+    
+    return {
+      id: alert.id.toString(),
+      type: alert.type as 'above' | 'below',
+      price: alert.price,
+      created: alert.createdAt.toISOString()
+    };
+  }
+  
+  async deletePriceAlert(id: number): Promise<void> {
+    await db.delete(priceAlerts).where(eq(priceAlerts.id, id));
+  }
+  
+  async getDailyTip(): Promise<DailyTipType> {
+    // Get count of tips
+    const countResult = await db.select({ count: sql`count(*)` }).from(dailyTips);
+    const count = Number(countResult[0].count);
+    
+    if (count === 0) {
+      // No tips in database, return a default tip
+      return {
+        id: "0",
+        title: "Welcome to Bitcoin Hub",
+        content: "Stay tuned for daily Bitcoin tips and best practices."
+      };
+    }
+    
+    // Get a random tip
+    const randomOffset = Math.floor(Math.random() * count);
+    const [tip] = await db.select().from(dailyTips).limit(1).offset(randomOffset);
+    
+    return {
+      id: tip.id.toString(),
+      title: tip.title,
+      content: tip.content
+    };
+  }
+  
+  async getLearningProgress(userId: number): Promise<LearningProgressType> {
+    const [progress] = await db.select()
+      .from(learningProgress)
+      .where(eq(learningProgress.userId, userId));
+      
+    if (!progress) {
+      // Return default progress if none exists
+      return {
+        courseName: "Bitcoin Basics",
+        completed: 0,
+        total: 5,
+        lessons: [
+          {
+            title: "How to Choose a Wallet",
+            icon: "wallet",
+            duration: "10 min"
+          },
+          {
+            title: "Private Keys Explained",
+            icon: "key",
+            duration: "8 min"
+          }
+        ]
+      };
+    }
+    
+    return {
+      courseName: "Bitcoin Basics",
+      completed: progress.completedLessons,
+      total: 5,
+      lessons: [
+        {
+          title: "How to Choose a Wallet",
+          icon: "wallet",
+          duration: "10 min"
+        },
+        {
+          title: "Private Keys Explained",
+          icon: "key",
+          duration: "8 min"
+        }
+      ]
+    };
+  }
+}
+
+// Import necessary functions from drizzle-orm
+import { eq, desc, and, sql } from "drizzle-orm";
+import { db } from "./db";
+
+// Use the database storage implementation
+export const storage = new DatabaseStorage();
