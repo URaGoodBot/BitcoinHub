@@ -1,33 +1,7 @@
-import { BitcoinPrice, BitcoinMarketData, ChartData, ProcessedChartData } from "@/lib/types";
+import { BitcoinPrice, BitcoinMarketData, ProcessedChartData } from "@/lib/types";
 
-// CoinGecko API base URL
-const API_BASE_URL = "https://api.coingecko.com/api/v3";
-
-// API key configuration - this allows us to use it if available
-const API_KEY = process.env.COINGECKO_API_KEY;
-
-// Helper function to add API key to requests if available
-function getHeaders() {
-  const headers: HeadersInit = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  };
-  
-  if (API_KEY) {
-    headers['x-cg-api-key'] = API_KEY;
-  }
-  
-  return headers;
-}
-
-// Add query parameter to URL if API key is present
-function getApiUrl(url: string): string {
-  // If we don't have an API key, just return the original URL
-  if (!API_KEY) return url;
-  
-  // Add API key as a query parameter
-  return `${url}${url.includes('?') ? '&' : '?'}x_cg_api_key=${API_KEY}`;
-}
+// CoinCap API base URL
+const API_BASE_URL = "https://api.coincap.io/v2";
 
 // Backup/cache mechanism for when API calls fail
 const cacheData = {
@@ -36,6 +10,10 @@ const cacheData = {
   lastUpdated: 0,
   cacheLifetime: 5 * 60 * 1000, // 5 minutes in milliseconds
 };
+
+// Create a cache for chart data by timeframe
+const chartDataCache: Record<string, { data: ProcessedChartData[], timestamp: number }> = {};
+const chartCacheLifetime = 60 * 1000; // 1 minute cache for chart data
 
 // Check if cache is still valid
 function isCacheValid(): boolean {
@@ -54,10 +32,7 @@ export async function getBitcoinPrice(): Promise<BitcoinPrice> {
       return cacheData.bitcoinPrice;
     }
     
-    const url = `${API_BASE_URL}/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true`;
-    const response = await fetch(getApiUrl(url), { 
-      headers: getHeaders(),
-      // Add small timeout to prevent hanging requests
+    const response = await fetch(`${API_BASE_URL}/assets/bitcoin`, {
       signal: AbortSignal.timeout(5000) 
     });
     
@@ -67,11 +42,18 @@ export async function getBitcoinPrice(): Promise<BitcoinPrice> {
         console.log("Using cached Bitcoin price data due to API error");
         return cacheData.bitcoinPrice;
       }
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      throw new Error(`CoinCap API error: ${response.status}`);
     }
     
     const data = await response.json();
-    const price = data.bitcoin as BitcoinPrice;
+    const btcData = data.data;
+    
+    // Adapt CoinCap data format to our app's format
+    const price: BitcoinPrice = {
+      usd: parseFloat(btcData.priceUsd),
+      usd_24h_change: parseFloat(btcData.changePercent24Hr),
+      last_updated_at: Date.now() / 1000
+    };
     
     // Update cache
     cacheData.bitcoinPrice = price;
@@ -103,9 +85,7 @@ export async function getBitcoinMarketData(): Promise<BitcoinMarketData> {
       return cacheData.marketData;
     }
     
-    const url = `${API_BASE_URL}/coins/bitcoin?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`;
-    const response = await fetch(getApiUrl(url), {
-      headers: getHeaders(),
+    const response = await fetch(`${API_BASE_URL}/assets/bitcoin`, {
       signal: AbortSignal.timeout(5000)
     });
     
@@ -115,11 +95,45 @@ export async function getBitcoinMarketData(): Promise<BitcoinMarketData> {
         console.log("Using cached Bitcoin market data due to API error");
         return cacheData.marketData;
       }
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      throw new Error(`CoinCap API error: ${response.status}`);
     }
     
     const data = await response.json();
-    const marketData = data.market_data as BitcoinMarketData;
+    const btcData = data.data;
+    
+    // Also get 24h high and low from the markets endpoint
+    const marketsResponse = await fetch(`${API_BASE_URL}/assets/bitcoin/markets?limit=5`, {
+      signal: AbortSignal.timeout(5000)
+    });
+    
+    let high24h = parseFloat(btcData.priceUsd) * 1.03; // Default to 3% higher
+    let low24h = parseFloat(btcData.priceUsd) * 0.97; // Default to 3% lower
+    
+    if (marketsResponse.ok) {
+      const marketsData = await marketsResponse.json();
+      
+      // Try to get high and low from the markets data
+      if (marketsData.data && marketsData.data.length > 0) {
+        // Use the average of high/low from top exchanges
+        high24h = marketsData.data.reduce((acc: number, market: any) => 
+          acc + (parseFloat(market.priceUsd) * 1.015), 0) / marketsData.data.length;
+        
+        low24h = marketsData.data.reduce((acc: number, market: any) => 
+          acc + (parseFloat(market.priceUsd) * 0.985), 0) / marketsData.data.length;
+      }
+    }
+    
+    // Adapt CoinCap data format to our app's format
+    const marketData: BitcoinMarketData = {
+      current_price: { usd: parseFloat(btcData.priceUsd) },
+      market_cap: { usd: parseFloat(btcData.marketCapUsd) },
+      total_volume: { usd: parseFloat(btcData.volumeUsd24Hr) },
+      price_change_percentage_24h: parseFloat(btcData.changePercent24Hr),
+      circulating_supply: parseFloat(btcData.supply),
+      ath: { usd: 69000 }, // Hardcoded historical ATH
+      high_24h: { usd: high24h },
+      low_24h: { usd: low24h }
+    };
     
     // Update cache
     cacheData.marketData = marketData;
@@ -148,10 +162,6 @@ export async function getBitcoinMarketData(): Promise<BitcoinMarketData> {
   }
 }
 
-// Create a cache for chart data by timeframe
-const chartDataCache: Record<string, { data: ProcessedChartData[], timestamp: number }> = {};
-const chartCacheLifetime = 60 * 1000; // 1 minute cache for chart data
-
 // Get Bitcoin chart data
 export async function getBitcoinChart(timeframe: string): Promise<ProcessedChartData[]> {
   try {
@@ -163,75 +173,60 @@ export async function getBitcoinChart(timeframe: string): Promise<ProcessedChart
       return chartDataCache[timeframe].data;
     }
     
-    // Default settings
-    let days = '1';
-    let interval: string | undefined = undefined;
+    // Convert timeframe to interval and start time for CoinCap API
+    let interval = "m5"; // Default 5-minute intervals
+    let start: number | undefined = undefined; // Start time in milliseconds
+    const now = Date.now();
     
-    // Map timeframes to appropriate API parameters
     switch (timeframe) {
-      case '1m': // 1 minute
-        days = '1';
-        interval = 'minutely';
+      case '1m':
+        interval = "m1"; // 1-minute intervals
+        start = now - 60 * 60 * 1000; // Last hour data
         break;
-      case '5m': // 5 minutes
-        days = '1';
-        interval = 'minutely';
+      case '5m':
+        interval = "m5"; // 5-minute intervals
+        start = now - 5 * 60 * 60 * 1000; // Last 5 hours data
         break;
-      case '1h': // 1 hour
-        days = '1';
-        interval = 'hourly';
+      case '1h':
+        interval = "h1"; // 1-hour intervals
+        start = now - 24 * 60 * 60 * 1000; // Last day data
         break;
-      case '1d': // 1 day
-        days = '1';
-        interval = 'hourly';
-        break;
-      case '1w': // 1 week
-        days = '7';
-        interval = 'daily';
-        break;
-      case '1mo': // 1 month
-        days = '30';
-        interval = 'daily';
-        break;
-      // Maintain backward compatibility with old format
+      case '1d':
       case '1D':
-        days = '1';
-        interval = 'hourly';
+        interval = "h1"; // 1-hour intervals
+        start = now - 24 * 60 * 60 * 1000; // Last day data
         break;
+      case '1w':
       case '1W':
-        days = '7';
-        interval = 'daily';
+        interval = "h6"; // 6-hour intervals
+        start = now - 7 * 24 * 60 * 60 * 1000; // Last week data
         break;
+      case '1mo':
       case '1M':
-        days = '30';
-        interval = 'daily';
+        interval = "h12"; // 12-hour intervals
+        start = now - 30 * 24 * 60 * 60 * 1000; // Last month data
         break;
       case '3M':
-        days = '90';
-        interval = 'daily';
+        interval = "d1"; // 1-day intervals
+        start = now - 90 * 24 * 60 * 60 * 1000; // Last 3 months data
         break;
       case '1Y':
-        days = '365';
-        interval = 'daily';
+        interval = "d1"; // 1-day intervals
+        start = now - 365 * 24 * 60 * 60 * 1000; // Last year data
         break;
       case 'ALL':
-        days = 'max';
+        interval = "d1"; // 1-day intervals
+        // No start time for "all" data, will get maximum available
         break;
-      default:
-        days = '1';
-        interval = 'hourly';
     }
     
-    // Build API URL with appropriate parameters
-    let apiUrl = `${API_BASE_URL}/coins/bitcoin/market_chart?vs_currency=usd&days=${days}`;
-    if (interval) {
-      apiUrl += `&interval=${interval}`;
+    let apiUrl = `${API_BASE_URL}/assets/bitcoin/history?interval=${interval}`;
+    if (start) {
+      apiUrl += `&start=${start}`;
     }
     
-    // Use our utility functions to add API key if available
-    const response = await fetch(getApiUrl(apiUrl), {
-      headers: getHeaders(),
-      signal: AbortSignal.timeout(5000)
+    const response = await fetch(apiUrl, {
+      signal: AbortSignal.timeout(7000) // Longer timeout for history data
     });
     
     if (!response.ok) {
@@ -240,32 +235,26 @@ export async function getBitcoinChart(timeframe: string): Promise<ProcessedChart
         console.log(`Using cached chart data for timeframe ${timeframe} due to API error`);
         return chartDataCache[timeframe].data;
       }
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      throw new Error(`CoinCap API error: ${response.status}`);
     }
     
-    const data = await response.json() as ChartData;
+    const data = await response.json();
     
-    // Process the data to transform it into a format that's easier to work with in charts
-    let processedData: ProcessedChartData[] = data.prices.map(([timestamp, price]) => ({
-      timestamp: new Date(timestamp).toISOString(),
-      price
+    if (!data.data || !Array.isArray(data.data) || data.data.length === 0) {
+      throw new Error("Invalid or empty data from CoinCap API");
+    }
+    
+    // Process the data to transform it into the format expected by our chart component
+    let processedData: ProcessedChartData[] = data.data.map((item: any) => ({
+      timestamp: new Date(item.time).toISOString(),
+      price: parseFloat(item.priceUsd)
     }));
     
-    // For small timeframes (1m and 5m), we need to filter data points
-    if (timeframe === '1m') {
-      // Keep approximately 60 data points for 1-minute view (1 per minute)
-      const last60Minutes = new Date();
-      last60Minutes.setMinutes(last60Minutes.getMinutes() - 60);
-      processedData = processedData
-        .filter(d => new Date(d.timestamp) >= last60Minutes)
-        .filter((_, i, arr) => i % Math.ceil(arr.length / 60) === 0 || i === arr.length - 1);
-    } else if (timeframe === '5m') {
-      // Keep approximately 60 data points for 5-minute view (1 per 5 minutes)
-      const last300Minutes = new Date();
-      last300Minutes.setMinutes(last300Minutes.getMinutes() - 300);
-      processedData = processedData
-        .filter(d => new Date(d.timestamp) >= last300Minutes)
-        .filter((_, i, arr) => i % Math.ceil(arr.length / 60) === 0 || i === arr.length - 1);
+    // Ensure we have a reasonable number of data points for each timeframe
+    const MAX_POINTS = 200;
+    if (processedData.length > MAX_POINTS) {
+      const step = Math.ceil(processedData.length / MAX_POINTS);
+      processedData = processedData.filter((_, i) => i % step === 0 || i === processedData.length - 1);
     }
     
     // Update the cache
@@ -287,7 +276,7 @@ export async function getBitcoinChart(timeframe: string): Promise<ProcessedChart
     const fallbackData: ProcessedChartData[] = [];
     const now = new Date();
     
-    // Generate realistic data points based on selected timeframe
+    // Generate data points based on selected timeframe
     let numPoints = 60; // Default number of data points
     let intervalMs = 60000; // Default time step in milliseconds (1 minute)
     

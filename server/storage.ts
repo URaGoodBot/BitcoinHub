@@ -7,7 +7,7 @@ import {
   dailyTips, type DailyTip, type InsertDailyTip,
   learningProgress, type LearningProgress, type InsertLearningProgress
 } from "@shared/schema";
-import { getBitcoinPrice } from "./api/coingecko";
+import { getBitcoinPrice } from "./api/coincap";
 import { ForumPost as ForumPostType, DailyTip as DailyTipType, LearningProgress as LearningProgressType, PriceAlert as PriceAlertType, Portfolio } from "@/lib/types";
 
 // Interface for storage operations

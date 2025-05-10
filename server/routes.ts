@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { getBitcoinMarketData, getBitcoinChart } from "./api/coingecko";
+import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/coincap";
 import { getLatestNews } from "./api/newsapi";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema } from "@shared/schema";
