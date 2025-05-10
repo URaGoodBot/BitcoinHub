@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
-import { ArrowUp, ArrowDown, RefreshCw, Eye } from "lucide-react";
+import { ArrowUp, ArrowDown, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BitcoinMarketData, ProcessedChartData } from "@/lib/types";
+import AIAnalysis from "@/components/AIAnalysis";
 import { 
   Area, 
   AreaChart, 
@@ -145,7 +146,7 @@ const Dashboard = () => {
         </div>
       </header>
       
-      <Card className="bg-card shadow-lg overflow-hidden mb-6 flex-1">
+      <Card className="bg-card shadow-lg overflow-hidden mb-6">
         <CardContent className="p-0">
           <div className="p-4 border-b border-muted/20">
             <Tabs defaultValue={selectedTimeFrame} onValueChange={(value) => setSelectedTimeFrame(value as TimeFrame)}>
@@ -257,56 +258,12 @@ const Dashboard = () => {
         </CardContent>
       </Card>
       
-      <Card className="mb-6">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold">AI Technical Analysis</h3>
-            <Button variant="outline" size="sm" className="h-8">
-              <Eye size={14} className="mr-2" /> View Full Analysis
-            </Button>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-start space-x-3">
-              <div className={`w-2 h-2 rounded-full mt-1.5 ${isPositiveChange ? 'bg-[hsl(var(--positive))]' : 'bg-[hsl(var(--negative))]'}`}></div>
-              <div>
-                <p className="text-sm text-foreground">
-                  <strong>RSI:</strong> {isPositiveChange ? '58.2 (Neutral)' : '42.8 (Neutral)'}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Relative Strength Index is in the neutral zone, neither overbought nor oversold.
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <div className={`w-2 h-2 rounded-full mt-1.5 ${isPositiveChange ? 'bg-[hsl(var(--positive))]' : 'bg-yellow-500'}`}></div>
-              <div>
-                <p className="text-sm text-foreground">
-                  <strong>MACD:</strong> {isPositiveChange ? 'Bullish Crossover' : 'Neutral'}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {isPositiveChange 
-                    ? 'Moving Average Convergence Divergence shows bullish momentum with recent crossover.' 
-                    : 'MACD is approaching potential signal line, watch for possible trend change.'}
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-start space-x-3">
-              <div className={`w-2 h-2 rounded-full mt-1.5 ${isPositiveChange ? 'bg-[hsl(var(--positive))]' : 'bg-[hsl(var(--negative))]'}`}></div>
-              <div>
-                <p className="text-sm text-foreground">
-                  <strong>Support/Resistance:</strong> S: {formatCurrency(currentPrice * 0.95)} / R: {formatCurrency(currentPrice * 1.05)}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  AI identifies key support and resistance levels based on recent price action.
-                </p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* AI-powered Analysis Component */}
+      <AIAnalysis 
+        marketData={marketData} 
+        isLoading={isLoadingBitcoinData}
+        timeframe={selectedTimeFrame} 
+      />
     </div>
   );
 };
