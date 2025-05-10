@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 30 100% 50%; /* Bitcoin Orange */
+  --primary-foreground: 0 0% 2%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+  --chart-1: 30 100% 50%;
+  --chart-2: 210 70% 60%;
+  --chart-3: 120 70% 60%;
+  --chart-4: 280 70% 60%;
+  --chart-5: 340 70% 60%;
+  
+  /* Bitcoin Hub Theme Colors */
+  --btc-orange: 30 100% 50%;
+  --dark-bg-900: 240 10% 3.9%;
+  --dark-bg-800: 240 5% 10%;
+  --dark-bg-700: 240 5% 15%; 
+  --dark-bg-600: 240 5% 20%;
+  --positive: 180 70% 40%;
+  --negative: 0 100% 70%;
+}
+
+.dark {
+  --background: 240 10% 3.9%; /* dark-bg-900 */
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 5% 10%; /* dark-bg-800 */
+  --card-foreground: 0 0% 98%;
+  --border: 240 5% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 30 100% 50%; /* Bitcoin Orange */
+  --primary-foreground: 0 0% 2%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--dark-bg-800));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--btc-orange));
+  border-radius: 4px;
+}
+
+.font-mono {
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Animation for notification ping */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
