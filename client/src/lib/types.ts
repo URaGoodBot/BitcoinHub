@@ -20,6 +20,12 @@ export interface BitcoinMarketData {
   ath: {
     usd: number;
   };
+  high_24h: {
+    usd: number;
+  };
+  low_24h: {
+    usd: number;
+  };
 }
 
 export interface ChartData {

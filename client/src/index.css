@@ -40,26 +40,35 @@
 }
 
 .dark {
-  --background: 240 10% 3.9%; /* dark-bg-900 */
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 5% 10%; /* dark-bg-800 */
-  --card-foreground: 0 0% 98%;
-  --border: 240 5% 15.9%;
-  --input: 240 3.7% 15.9%;
+  --background: 222 18% 11%;
+  --foreground: 210 40% 98%;
+  --muted: 223 14% 20%;
+  --muted-foreground: 215 20% 70%;
+  --popover: 222 16% 14%;
+  --popover-foreground: 210 40% 98%;
+  --card: 222 16% 14%;
+  --card-foreground: 210 40% 98%;
+  --border: 240 4% 22%;
+  --input: 240 4% 22%;
   --primary: 30 100% 50%; /* Bitcoin Orange */
   --primary-foreground: 0 0% 2%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
+  --secondary: 217 19% 27%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 217 19% 27%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 224 76% 48%;
   --radius: 0.5rem;
+  
+  /* Bitcoin Hub Theme Enhanced Colors */
+  --btc-orange: 30 100% 50%;
+  --dark-bg-900: 222 18% 11%;
+  --dark-bg-800: 222 16% 14%;
+  --dark-bg-700: 223 14% 17%; 
+  --dark-bg-600: 223 12% 20%;
+  --positive: 142 76% 45%;
+  --negative: 0 84% 60%;
 }
 
 @layer base {
@@ -100,4 +109,34 @@
 }
 .animate-ping {
   animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Financial data styling */
+.font-mono {
+  font-family: 'JetBrains Mono', 'Roboto Mono', 'SF Mono', monospace;
+  letter-spacing: -0.01em;
+}
+
+.data-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.data-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Chart tooltip custom styling */
+.chart-tooltip {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Improved focus states for accessibility */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
