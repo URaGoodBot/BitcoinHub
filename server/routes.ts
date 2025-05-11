@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cryptocompare";
 import { getLatestNews } from "./api/newsapi";
-import { getLatestTweets, getTrendingHashtags, getPopularAccounts } from "./api/twitter";
+import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeerFollowing } from "./api/twitter";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema } from "@shared/schema";
 
