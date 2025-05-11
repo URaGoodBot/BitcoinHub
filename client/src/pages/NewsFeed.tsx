@@ -104,7 +104,7 @@ const NewsFeed = () => {
     post.hashtags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   ) || [];
   
-  // Combined feed for "All" tab - alternating between news and tweets
+  // Combined feed for "All" tab - alternating between news and Reddit posts
   const combinedFeed = [];
   const maxItems = Math.max(filteredNews?.length || 0, filteredTwitter?.length || 0);
   
@@ -113,7 +113,7 @@ const NewsFeed = () => {
       combinedFeed.push({ type: 'news', item: filteredNews[i] });
     }
     if (i < filteredTwitter?.length) {
-      combinedFeed.push({ type: 'twitter', item: filteredTwitter[i] });
+      combinedFeed.push({ type: 'reddit', item: filteredTwitter[i] });
     }
   }
   
@@ -299,7 +299,7 @@ const NewsFeed = () => {
                       ) : (
                         filteredTwitter.map((post, index) => (
                           <div key={post.id}>
-                            <TwitterCard post={post} />
+                            <RedditPostCard post={post} />
                             {index < filteredTwitter.length - 1 && <Separator className="my-4" />}
                           </div>
                         ))
@@ -349,8 +349,8 @@ const NewsFeed = () => {
                         <Card>
                           <CardHeader>
                             <CardTitle className="text-base">
-                              <Twitter className="h-4 w-4 inline mr-2" />
-                              Popular Bitcoin Accounts
+                              <MessageCircle className="h-4 w-4 inline mr-2" />
+                              Popular Bitcoin Redditors
                             </CardTitle>
                           </CardHeader>
                           <CardContent>
@@ -700,37 +700,37 @@ interface RedditPostCardProps {
 
 const RedditPostCard: React.FC<RedditPostCardProps> = ({ post }) => {
   return (
-    <div className="bg-card hover:bg-muted/20 transition-colors p-4 rounded-lg">
+    <div className="bg-card hover:bg-muted/20 transition-colors p-4 rounded-lg border border-muted">
       <div className="flex gap-3">
         <div className="flex-shrink-0">
-          <Avatar>
+          <Avatar className="h-10 w-10 bg-orange-500/90">
             <AvatarImage src={post.author.profileImageUrl} alt={post.author.displayName} />
-            <AvatarFallback>{post.author.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarFallback>r/</AvatarFallback>
           </Avatar>
         </div>
         
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <span className="font-medium">{post.author.displayName}</span>
+              <span className="font-medium text-orange-500">r/{post.author.displayName}</span>
               {post.author.verified && (
                 <svg className="ml-1 h-4 w-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                 </svg>
               )}
-              <span className="text-muted-foreground text-sm ml-1">@{post.author.username}</span>
+              <span className="text-muted-foreground text-sm ml-1">u/{post.author.username}</span>
             </div>
             <span className="text-xs text-muted-foreground">{formatRelativeTime(post.createdAt)}</span>
           </div>
           
-          <p className="text-sm mt-2">{post.text}</p>
+          <p className="text-base mt-2 font-medium">{post.text}</p>
           
           {post.hashtags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {post.hashtags.map((tag) => (
-                <span key={tag} className="text-primary text-sm hover:underline cursor-pointer">
+                <Badge key={tag} variant="outline" className="text-xs">
                   {tag}
-                </span>
+                </Badge>
               ))}
             </div>
           )}
@@ -738,19 +738,19 @@ const RedditPostCard: React.FC<RedditPostCardProps> = ({ post }) => {
           <div className="flex items-center mt-3 text-xs text-muted-foreground">
             <button className="flex items-center mr-4 hover:text-primary">
               <MessageCircle className="h-4 w-4 mr-1" />
-              {formatNumber(post.metrics.replies)}
+              {formatNumber(post.metrics.replies)} comments
             </button>
             <button className="flex items-center mr-4 hover:text-green-500">
-              <RotateCw className="h-4 w-4 mr-1" />
-              {formatNumber(post.metrics.retweets)}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide h-4 w-4 mr-1"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+              {formatNumber(post.metrics.retweets)} votes
             </button>
-            <button className="flex items-center hover:text-red-500">
-              <Heart className="h-4 w-4 mr-1" />
-              {formatNumber(post.metrics.likes)}
+            <button className="flex items-center hover:text-orange-500">
+              <Bookmark className="h-4 w-4 mr-1" />
+              Save
             </button>
             <div className="ml-auto">
               <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                <Twitter className="h-4 w-4" />
+                <Share className="h-4 w-4" />
               </Button>
             </div>
           </div>
