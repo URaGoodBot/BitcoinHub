@@ -8,12 +8,14 @@ import Dashboard from "@/pages/Dashboard";
 import Learn from "@/pages/Learn";
 import Community from "@/pages/Community";
 import Portfolio from "@/pages/Portfolio";
+import NewsFeed from "@/pages/NewsFeed";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/news" component={NewsFeed} />
       <Route path="/learn" component={Learn} />
       <Route path="/community" component={Community} />
       <Route path="/portfolio" component={Portfolio} />
