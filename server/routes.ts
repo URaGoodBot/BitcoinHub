@@ -59,7 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.get(`${apiPrefix}/twitter/hashtags`, async (req, res) => {
     try {
-      const hashtags = getTrendingHashtags();
+      const hashtags = await getTrendingHashtags();
       res.json(hashtags);
     } catch (error) {
       console.error("Error fetching hashtags:", error);
@@ -69,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.get(`${apiPrefix}/twitter/accounts`, async (req, res) => {
     try {
-      const accounts = getPopularAccounts();
+      const accounts = await getPopularAccounts();
       res.json(accounts);
     } catch (error) {
       console.error("Error fetching accounts:", error);
