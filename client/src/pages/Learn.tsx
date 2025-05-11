@@ -12,6 +12,46 @@ import { BookOpen, FileText, Code, PlayCircle, Search, BookmarkPlus, TrendingUp 
 // Expanded course data with lesson information
 const coursesData = [
   {
+    id: "hodling-like-a-pro",
+    title: "HODLing Like a Pro",
+    description: "Your millennial-friendly guide to Bitcoin - from crypto-curious to Bitcoin-savvy with zero corporate jargon.",
+    lessons: [
+      // Section 1: Introduction to Bitcoin
+      { id: "hodl-1", title: "What Is Bitcoin, and Why Should I Care?", type: 'video', duration: "30 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=41JCpzvnn_0", 
+        content: "Bitcoin's like digital gold, created by some mysterious dude (or crew) named Satoshi Nakamoto. It's money without banks, middlemen, or your nosy government tracking your late-night Taco Bell runs. We'll cover why Bitcoin's a big deal (spoiler: it's anti-establishment AF), how it's decentralized (no CEO to cancel you), and the vibe of 'number go up' and why people HODL." },
+      
+      { id: "hodl-2", title: "Blockchain 101: The Tech That Makes Bitcoin Go Brrr", type: 'video', duration: "40 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=SSo_EIwHSd4",
+        content: "Blockchain's the backbone of Bitcoin, and it's not as nerdy as it sounds. Think of it like a Google Doc that nobody can edit unless everyone agrees—except it's for money. We'll dive into how blocks and chains keep Bitcoin secure, why 'trustless' is a flex (no need to trust sketchy institutions), and mining, but not the pickaxe kind—how computers get paid to keep the network honest." },
+      
+      { id: "hodl-3", title: "Bitcoin's Origin Story: From Cypherpunks to Moon Lambos", type: 'video', duration: "30 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=W15A7Lf0_fI",
+        content: "Bitcoin didn't just pop off in 2009—it's got roots in the '90s cypherpunk movement, where OGs dreamed of private, free money. We'll talk about Satoshi's glow-up from forum posts to legend status, the 2010 pizza that cost $500 million (F in the chat), and how Bitcoin went from nerd money to Elon tweeting about it." },
+        
+      // Section 2: Bitcoin Transactions
+      { id: "hodl-4", title: "Sending and Receiving Bitcoin: Yeet Those Sats", type: 'reading', duration: "45 min", completed: false,
+        content: "Time to get hands-on. Sending Bitcoin's easier than Venmo, but you gotta know the rules so you don't yeet your BTC into the void. We'll cover setting up a wallet (hot vs. cold, like your ex's mood swings), public and private keys (don't share your private key, ever), and how to send BTC without screwing it up (double-check that address, fam)." },
+        
+      { id: "hodl-5", title: "Transaction Fees and Confirmation Times", type: 'reading', duration: "35 min", completed: false,
+        content: "Bitcoin's not instant like your Starbucks app, and fees can feel like a sneaky tax. Let's break down why miners pick transactions (hint: they like money), how to set fees so you're not waiting longer than a pizza delivery, and mempool vibes—where transactions chill before getting confirmed." },
+        
+      { id: "hodl-6", title: "Staying Safe: Don't Get Rekt by Scams", type: 'video', duration: "40 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=bBC-nXj3Ng4",
+        content: "Crypto's the Wild West, and scammers are out here DMing you like fake Tinder matches. We'll teach you how to spot phishing sites and fake wallets, why 'send me BTC, I'll double it' is a lie (sorry, Elon imposters), and best practices for securing your stack (seed phrases, 2FA, don't flex on X)." },
+        
+      // Section 3: Advanced Bitcoin Concepts
+      { id: "hodl-7", title: "Mining Deep Dive: How to Stack Sats the Hard Way", type: 'video', duration: "50 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=XfcvX0P1b5g",
+        content: "Mining's not just for nerds with GPU rigs anymore, but it's still a flex to understand it. We'll dig into Proof-of-Work and why it's Bitcoin's security sauce, how miners compete (it's like a math Hunger Games), and why mining at home is probably a losing bet unless you've got free electricity." },
+        
+      { id: "hodl-8", title: "Lightning Network: Bitcoin's Fast Pass", type: 'reading', duration: "40 min", completed: false,
+        content: "Bitcoin's great, but it's not built for buying lattes—unless you're on the Lightning Network. This layer-2 tech is like Bitcoin's cheat code for speed and low fees. We'll cover how Lightning works (off-chain magic, don't sweat the details), setting up a Lightning wallet (it's like Venmo but crypto), and why this is the future for microtransactions and tipping on X." },
+        
+      { id: "hodl-9", title: "Bitcoin's Big Picture: HODL or Nah?", type: 'quiz', duration: "45 min", completed: false,
+        content: "Let's zoom out. Is Bitcoin gonna moon, or is it just hype? We'll talk Bitcoin as a store of value vs. digital cash, risks (volatility, regulations, your mom saying it's a scam), and how to HODL like a pro and not panic-sell when X is full of FUD." }
+    ],
+    completed: 0,
+    level: "Beginner",
+    duration: "4-6 hours",
+    coverImage: "https://images.unsplash.com/photo-1516245834210-c4c142787335?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80"
+  },
+  {
     id: "bitcoin-basics",
     title: "Bitcoin Basics",
     description: "Learn the fundamentals of Bitcoin, blockchain technology, and how the network functions.",

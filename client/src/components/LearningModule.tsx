@@ -239,7 +239,149 @@ const LearningModule = ({
                 </div>
                 
                 <div className="space-y-2">
-                  {lessons.map((lesson, index) => (
+                  {id === 'hodling-like-a-pro' ? (
+                  <>
+                    {/* Section 1: Introduction to Bitcoin */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Section 1: Introduction to Bitcoin</h4>
+                      {lessons.slice(0, 3).map((lesson, lessonIndex) => {
+                        const index = lessonIndex;
+                        return (
+                          <div 
+                            key={lesson.id}
+                            className={`p-3 border rounded-md flex items-center justify-between cursor-pointer hover:bg-muted/20 transition-colors ${
+                              lesson.completed ? 'border-green-500/50' : ''
+                            } ${lessonIndex > 0 ? 'mt-2' : ''}`}
+                            onClick={() => {
+                              setCurrentLessonIndex(index);
+                              setShowingLesson(true);
+                            }}
+                          >
+                            <div className="flex items-center">
+                              <div className={`w-8 h-8 rounded-full border flex items-center justify-center mr-3 ${getLessonStatusClass(lesson, index)}`}>
+                                {lesson.completed ? (
+                                  <CheckCircle className="h-4 w-4" />
+                                ) : (
+                                  getLessonIcon(lesson.type)
+                                )}
+                              </div>
+                              <div>
+                                <div className="font-medium">{lesson.title}</div>
+                                <div className="text-xs text-muted-foreground flex items-center">
+                                  {getLessonIcon(lesson.type)}
+                                  <span className="ml-1 capitalize">{lesson.type}</span>
+                                  <span className="mx-1">•</span>
+                                  <Clock className="h-3 w-3" />
+                                  <span className="ml-1">{lesson.duration}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {lesson.completed && (
+                              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                                Completed
+                              </Badge>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Section 2: Bitcoin Transactions */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Section 2: Bitcoin Transactions</h4>
+                      {lessons.slice(3, 6).map((lesson, lessonIndex) => {
+                        const index = lessonIndex + 3;
+                        return (
+                          <div 
+                            key={lesson.id}
+                            className={`p-3 border rounded-md flex items-center justify-between cursor-pointer hover:bg-muted/20 transition-colors ${
+                              lesson.completed ? 'border-green-500/50' : ''
+                            } ${lessonIndex > 0 ? 'mt-2' : ''}`}
+                            onClick={() => {
+                              setCurrentLessonIndex(index);
+                              setShowingLesson(true);
+                            }}
+                          >
+                            <div className="flex items-center">
+                              <div className={`w-8 h-8 rounded-full border flex items-center justify-center mr-3 ${getLessonStatusClass(lesson, index)}`}>
+                                {lesson.completed ? (
+                                  <CheckCircle className="h-4 w-4" />
+                                ) : (
+                                  getLessonIcon(lesson.type)
+                                )}
+                              </div>
+                              <div>
+                                <div className="font-medium">{lesson.title}</div>
+                                <div className="text-xs text-muted-foreground flex items-center">
+                                  {getLessonIcon(lesson.type)}
+                                  <span className="ml-1 capitalize">{lesson.type}</span>
+                                  <span className="mx-1">•</span>
+                                  <Clock className="h-3 w-3" />
+                                  <span className="ml-1">{lesson.duration}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {lesson.completed && (
+                              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                                Completed
+                              </Badge>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Section 3: Advanced Bitcoin Concepts */}
+                    <div>
+                      <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Section 3: Advanced Bitcoin Concepts</h4>
+                      {lessons.slice(6).map((lesson, lessonIndex) => {
+                        const index = lessonIndex + 6;
+                        return (
+                          <div 
+                            key={lesson.id}
+                            className={`p-3 border rounded-md flex items-center justify-between cursor-pointer hover:bg-muted/20 transition-colors ${
+                              lesson.completed ? 'border-green-500/50' : ''
+                            } ${lessonIndex > 0 ? 'mt-2' : ''}`}
+                            onClick={() => {
+                              setCurrentLessonIndex(index);
+                              setShowingLesson(true);
+                            }}
+                          >
+                            <div className="flex items-center">
+                              <div className={`w-8 h-8 rounded-full border flex items-center justify-center mr-3 ${getLessonStatusClass(lesson, index)}`}>
+                                {lesson.completed ? (
+                                  <CheckCircle className="h-4 w-4" />
+                                ) : (
+                                  getLessonIcon(lesson.type)
+                                )}
+                              </div>
+                              <div>
+                                <div className="font-medium">{lesson.title}</div>
+                                <div className="text-xs text-muted-foreground flex items-center">
+                                  {getLessonIcon(lesson.type)}
+                                  <span className="ml-1 capitalize">{lesson.type}</span>
+                                  <span className="mx-1">•</span>
+                                  <Clock className="h-3 w-3" />
+                                  <span className="ml-1">{lesson.duration}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {lesson.completed && (
+                              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
+                                Completed
+                              </Badge>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  // Regular course display for other courses
+                  lessons.map((lesson, index) => (
                     <div 
                       key={lesson.id}
                       className={`p-3 border rounded-md flex items-center justify-between cursor-pointer hover:bg-muted/20 transition-colors ${
@@ -276,7 +418,8 @@ const LearningModule = ({
                         </Badge>
                       )}
                     </div>
-                  ))}
+                  ))
+                )}
                 </div>
               </div>
             </TabsContent>
@@ -337,42 +480,130 @@ const LearningModule = ({
               <h2 className="text-xl font-bold">{currentLesson.title}</h2>
               
               {currentLesson.type === 'video' && (
-                <div className="mt-4 aspect-video bg-black/90 rounded-lg flex items-center justify-center">
-                  <div className="text-center p-6">
-                    <PlayCircle className="h-16 w-16 text-primary/50 mx-auto" />
-                    <p className="mt-4 text-muted-foreground">
-                      Video player would be implemented here, using the video URL: {currentLesson.videoUrl}
-                    </p>
-                  </div>
+                <div className="mt-4 aspect-video bg-black/90 rounded-lg overflow-hidden">
+                  {currentLesson.videoUrl ? (
+                    currentLesson.videoUrl.includes('youtube.com') || currentLesson.videoUrl.includes('youtu.be') ? (
+                      <div className="relative pt-[56.25%] w-full h-0">
+                        <iframe
+                          className="absolute top-0 left-0 w-full h-full"
+                          src={currentLesson.videoUrl.replace('watch?v=', 'embed/')}
+                          title={currentLesson.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <PlayCircle className="h-16 w-16 text-primary/50 mx-auto" />
+                        <p className="absolute bottom-4 text-muted-foreground">
+                          Video URL: {currentLesson.videoUrl}
+                        </p>
+                      </div>
+                    )
+                  ) : (
+                    <div className="text-center p-6 h-full flex flex-col items-center justify-center">
+                      <PlayCircle className="h-16 w-16 text-primary/50 mx-auto" />
+                      <p className="mt-4 text-muted-foreground">
+                        Video not available
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
               
               {currentLesson.type === 'reading' && (
                 <div className="mt-4 prose prose-sm dark:prose-invert max-w-none">
-                  <p>
-                    {currentLesson.content || `
+                  {currentLesson.content ? (
+                    <div className="space-y-4">
+                      <p className="text-base leading-relaxed">{currentLesson.content}</p>
+                      
+                      {currentLesson.id.includes('hodl') ? (
+                        <>
+                          <h3 className="text-xl font-bold mt-6">Key Takeaways</h3>
+                          <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                            <ul className="space-y-2 list-none pl-0">
+                              {currentLesson.id === 'hodl-4' && (
+                                <>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Wallets store your keys, not your Bitcoin (it lives on the blockchain).</span>
+                                  </li>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Always verify wallet addresses—typos are a one-way ticket to pain.</span>
+                                  </li>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Hardware wallets = the GOAT for keeping your BTC safe.</span>
+                                  </li>
+                                </>
+                              )}
+                              
+                              {currentLesson.id === 'hodl-5' && (
+                                <>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Higher fees = faster confirmations (pay up or wait).</span>
+                                  </li>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Mempool's like a club with a bouncer—miners decide who gets in.</span>
+                                  </li>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Lightning Network's coming in clutch for cheap, fast payments.</span>
+                                  </li>
+                                </>
+                              )}
+                              
+                              {currentLesson.id === 'hodl-8' && (
+                                <>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Lightning = fast, cheap Bitcoin transactions.</span>
+                                  </li>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>It's still Bitcoin, just smarter.</span>
+                                  </li>
+                                  <li className="flex items-start">
+                                    <span className="text-primary mr-2">✓</span>
+                                    <span>Adoption's growing, so get ahead of the curve.</span>
+                                  </li>
+                                </>
+                              )}
+                            </ul>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h3>Key Concepts</h3>
+                          <ul>
+                            <li>Understanding the fundamental principles of Bitcoin</li>
+                            <li>How blockchain maintains a secure, decentralized ledger</li>
+                            <li>The role of miners in transaction validation</li>
+                            <li>Cryptographic techniques ensuring Bitcoin's security</li>
+                          </ul>
+                          
+                          <h3>Important Terminology</h3>
+                          <ul>
+                            <li><strong>Block:</strong> A collection of transactions bundled together</li>
+                            <li><strong>Hash:</strong> A unique digital fingerprint for data</li>
+                            <li><strong>Private Key:</strong> Secret code allowing you to spend your Bitcoin</li>
+                            <li><strong>Public Key:</strong> Derived from private key, forms part of your Bitcoin address</li>
+                          </ul>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <p>
                       This is a placeholder for reading content. In a real implementation, 
                       this would contain detailed educational material about Bitcoin concepts.
                       The content would include text, images, diagrams, and possibly embedded 
                       interactive elements.
-                    `}
-                  </p>
-                  
-                  <h3>Key Concepts</h3>
-                  <ul>
-                    <li>Understanding the fundamental principles of Bitcoin</li>
-                    <li>How blockchain maintains a secure, decentralized ledger</li>
-                    <li>The role of miners in transaction validation</li>
-                    <li>Cryptographic techniques ensuring Bitcoin's security</li>
-                  </ul>
-                  
-                  <h3>Important Terminology</h3>
-                  <ul>
-                    <li><strong>Block:</strong> A collection of transactions bundled together</li>
-                    <li><strong>Hash:</strong> A unique digital fingerprint for data</li>
-                    <li><strong>Private Key:</strong> Secret code allowing you to spend your Bitcoin</li>
-                    <li><strong>Public Key:</strong> Derived from private key, forms part of your Bitcoin address</li>
-                  </ul>
+                    </p>
+                  )}
                 </div>
               )}
               
@@ -381,49 +612,121 @@ const LearningModule = ({
                   <h3 className="font-medium mb-4">Test Your Knowledge</h3>
                   
                   <div className="space-y-6">
-                    <div className="space-y-2">
-                      <p className="font-medium">1. What is the maximum supply of Bitcoin?</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center">
-                          <input type="radio" id="q1-a" name="q1" className="mr-2" />
-                          <label htmlFor="q1-a">10 million</label>
+                    {currentLesson.id === 'hodl-9' ? (
+                      <>
+                        <div className="space-y-2">
+                          <p className="font-medium">1. What's the ultimate HODL strategy when markets are crashing?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q1-a" name="hodl-q1" className="mr-2" />
+                              <label htmlFor="hodl-q1-a">Panic sell everything, then FOMO back in later</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q1-b" name="hodl-q1" className="mr-2" />
+                              <label htmlFor="hodl-q1-b">Delete your exchange apps and touch grass for a few years</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q1-c" name="hodl-q1" className="mr-2" />
+                              <label htmlFor="hodl-q1-c">Leverage trade to recover losses quickly</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q1-d" name="hodl-q1" className="mr-2" />
+                              <label htmlFor="hodl-q1-d">Constantly refresh price charts 24/7</label>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <input type="radio" id="q1-b" name="q1" className="mr-2" />
-                          <label htmlFor="q1-b">21 million</label>
+                        
+                        <div className="space-y-2">
+                          <p className="font-medium">2. Why is Bitcoin considered "digital gold"?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q2-a" name="hodl-q2" className="mr-2" />
+                              <label htmlFor="hodl-q2-a">Because it's yellow on most app icons</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q2-b" name="hodl-q2" className="mr-2" />
+                              <label htmlFor="hodl-q2-b">Because it's scarce, portable, divisible, and not controlled by any government</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q2-c" name="hodl-q2" className="mr-2" />
+                              <label htmlFor="hodl-q2-c">Because it's only used by rich people</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q2-d" name="hodl-q2" className="mr-2" />
+                              <label htmlFor="hodl-q2-d">Because it's always going up in price</label>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <input type="radio" id="q1-c" name="q1" className="mr-2" />
-                          <label htmlFor="q1-c">100 million</label>
+                        
+                        <div className="space-y-2">
+                          <p className="font-medium">3. What's the best way to secure your Bitcoin?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q3-a" name="hodl-q3" className="mr-2" />
+                              <label htmlFor="hodl-q3-a">Write down your seed phrase and store in multiple secure locations</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q3-b" name="hodl-q3" className="mr-2" />
+                              <label htmlFor="hodl-q3-b">Keep it all on exchanges – they have insurance</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q3-c" name="hodl-q3" className="mr-2" />
+                              <label htmlFor="hodl-q3-c">Save your seed phrase as a note on your phone</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="hodl-q3-d" name="hodl-q3" className="mr-2" />
+                              <label htmlFor="hodl-q3-d">Tell your roommate to remember it for you</label>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <input type="radio" id="q1-d" name="q1" className="mr-2" />
-                          <label htmlFor="q1-d">Unlimited</label>
+                      </>
+                    ) : (
+                      <>
+                        <div className="space-y-2">
+                          <p className="font-medium">1. What is the maximum supply of Bitcoin?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center">
+                              <input type="radio" id="q1-a" name="q1" className="mr-2" />
+                              <label htmlFor="q1-a">10 million</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="q1-b" name="q1" className="mr-2" />
+                              <label htmlFor="q1-b">21 million</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="q1-c" name="q1" className="mr-2" />
+                              <label htmlFor="q1-c">100 million</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="q1-d" name="q1" className="mr-2" />
+                              <label htmlFor="q1-d">Unlimited</label>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <p className="font-medium">2. What happens during a Bitcoin halving event?</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center">
-                          <input type="radio" id="q2-a" name="q2" className="mr-2" />
-                          <label htmlFor="q2-a">The price of Bitcoin is cut in half</label>
+                        
+                        <div className="space-y-2">
+                          <p className="font-medium">2. What happens during a Bitcoin halving event?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center">
+                              <input type="radio" id="q2-a" name="q2" className="mr-2" />
+                              <label htmlFor="q2-a">The price of Bitcoin is cut in half</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="q2-b" name="q2" className="mr-2" />
+                              <label htmlFor="q2-b">The block size is reduced by 50%</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="q2-c" name="q2" className="mr-2" />
+                              <label htmlFor="q2-c">The mining reward is reduced by 50%</label>
+                            </div>
+                            <div className="flex items-center">
+                              <input type="radio" id="q2-d" name="q2" className="mr-2" />
+                              <label htmlFor="q2-d">The transaction fees are doubled</label>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <input type="radio" id="q2-b" name="q2" className="mr-2" />
-                          <label htmlFor="q2-b">The block size is reduced by 50%</label>
-                        </div>
-                        <div className="flex items-center">
-                          <input type="radio" id="q2-c" name="q2" className="mr-2" />
-                          <label htmlFor="q2-c">The mining reward is reduced by 50%</label>
-                        </div>
-                        <div className="flex items-center">
-                          <input type="radio" id="q2-d" name="q2" className="mr-2" />
-                          <label htmlFor="q2-d">The transaction fees are doubled</label>
-                        </div>
-                      </div>
-                    </div>
+                      </>
+                    )}
                   </div>
                   
                   <Button className="mt-6">Submit Answers</Button>
