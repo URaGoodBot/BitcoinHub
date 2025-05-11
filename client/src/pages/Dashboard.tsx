@@ -29,7 +29,7 @@ const Dashboard = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setLastUpdate(new Date());
-    }, 10000); // Update every 10 seconds
+    }, 60000); // Update every 60 seconds (1 minute)
     
     return () => clearInterval(timer);
   }, []);
@@ -37,7 +37,7 @@ const Dashboard = () => {
   // Bitcoin price data
   const { data: bitcoinData, isLoading: isLoadingBitcoinData, refetch: refetchBitcoinData } = useQuery({
     queryKey: ["/api/bitcoin/market-data", lastUpdate],
-    refetchInterval: 10000, // Refetch every 10 seconds
+    refetchInterval: 60000, // Refetch every 60 seconds (1 minute)
   });
   
   // Chart data

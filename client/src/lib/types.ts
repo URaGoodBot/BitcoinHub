@@ -110,3 +110,26 @@ export interface User {
 }
 
 export type TimeFrame = '1D' | '1W' | '1M' | '3M' | '1Y' | 'ALL';
+
+export interface TwitterAuthor {
+  id: string;
+  username: string;
+  displayName: string;
+  verified: boolean;
+  profileImageUrl: string;
+}
+
+export interface TwitterMetrics {
+  likes: number;
+  retweets: number;
+  replies: number;
+}
+
+export interface TwitterPost {
+  id: string;
+  author: TwitterAuthor;
+  text: string;
+  createdAt: string;
+  metrics: TwitterMetrics;
+  hashtags: string[];
+}

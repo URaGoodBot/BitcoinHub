@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cryptocompare";
 import { getLatestNews } from "./api/newsapi";
+import { getLatestTweets, getTrendingHashtags, getPopularAccounts } from "./api/twitter";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema } from "@shared/schema";
 
@@ -41,6 +42,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching news:", error);
       res.status(500).json({ message: "Failed to fetch news" });
+    }
+  });
+  
+  // Twitter/X API
+  app.get(`${apiPrefix}/twitter/tweets`, async (req, res) => {
+    try {
+      const filter = req.query.filter as string;
+      const tweets = await getLatestTweets(filter);
+      res.json(tweets);
+    } catch (error) {
+      console.error("Error fetching tweets:", error);
+      res.status(500).json({ message: "Failed to fetch tweets" });
+    }
+  });
+  
+  app.get(`${apiPrefix}/twitter/hashtags`, async (req, res) => {
+    try {
+      const hashtags = getTrendingHashtags();
+      res.json(hashtags);
+    } catch (error) {
+      console.error("Error fetching hashtags:", error);
+      res.status(500).json({ message: "Failed to fetch hashtags" });
+    }
+  });
+  
+  app.get(`${apiPrefix}/twitter/accounts`, async (req, res) => {
+    try {
+      const accounts = getPopularAccounts();
+      res.json(accounts);
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+      res.status(500).json({ message: "Failed to fetch accounts" });
     }
   });
 
