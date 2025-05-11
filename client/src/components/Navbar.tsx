@@ -32,6 +32,11 @@ const Navbar = () => {
                   Dashboard
                 </a>
               </Link>
+              <Link href="/news">
+                <a className={`${isActiveLink('/news') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  News
+                </a>
+              </Link>
               <Link href="/learn">
                 <a className={`${isActiveLink('/learn') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
                   Learn
@@ -89,6 +94,11 @@ const Navbar = () => {
             <Link href="/">
               <a className={`${isActiveLink('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
                 Dashboard
+              </a>
+            </Link>
+            <Link href="/news">
+              <a className={`${isActiveLink('/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+                News
               </a>
             </Link>
             <Link href="/learn">
