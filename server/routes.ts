@@ -79,6 +79,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch Reddit users" });
     }
   });
+  
+  // HodlMyBeer21 following tweets
+  app.get(`${apiPrefix}/twitter/hodlmybeer-following`, async (req, res) => {
+    try {
+      console.log("API request: Get HodlMyBeer21 following tweets");
+      const followingTweets = await getHodlMyBeerFollowing();
+      res.json(followingTweets);
+    } catch (error) {
+      console.error("Error fetching HodlMyBeer21 following tweets:", error);
+      res.status(500).json({ message: "Failed to fetch HodlMyBeer21 following tweets" });
+    }
+  });
 
   // Daily tips
   app.get(`${apiPrefix}/tips/daily`, async (req, res) => {

@@ -88,6 +88,17 @@ const NewsFeed = () => {
     refetchOnWindowFocus: false,
   });
   
+  // HodlMyBeer21 following tweets
+  const { 
+    data: hodlmybeerPosts, 
+    isLoading: isLoadingHodlmybeer,
+    refetch: refetchHodlmybeer
+  } = useQuery({
+    queryKey: ["/api/twitter/hodlmybeer-following", refreshTrigger],
+    refetchOnWindowFocus: false,
+    refetchInterval: 60000, // Refresh every minute
+  });
+  
   // Filter news and twitter based on search query
   const filteredNews = (newsItems as NewsItem[])?.filter(item => 
     searchQuery === "" || 
@@ -97,6 +108,14 @@ const NewsFeed = () => {
   ) || [];
   
   const filteredTwitter = (twitterPosts as TwitterPost[])?.filter(post => 
+    searchQuery === "" || 
+    post.text.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    post.author.username.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    post.author.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.hashtags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  ) || [];
+  
+  const filteredHodlmybeer = (hodlmybeerPosts as TwitterPost[])?.filter(post => 
     searchQuery === "" || 
     post.text.toLowerCase().includes(searchQuery.toLowerCase()) || 
     post.author.username.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -135,6 +154,7 @@ const NewsFeed = () => {
     setRefreshTrigger(prev => prev + 1);
     refetchNews();
     refetchTwitter();
+    refetchHodlmybeer();
   };
   
   // Handle applying Twitter filter
@@ -199,6 +219,10 @@ const NewsFeed = () => {
                     <TabsTrigger value="twitter" className="flex-1">
                       <MessageCircle className="h-4 w-4 mr-2" />
                       Reddit
+                    </TabsTrigger>
+                    <TabsTrigger value="hodlmybeer" className="flex-1">
+                      <Twitter className="h-4 w-4 mr-2" />
+                      X/Twitter
                     </TabsTrigger>
                     <TabsTrigger value="trending" className="flex-1">
                       <BarChart2 className="h-4 w-4 mr-2" />
