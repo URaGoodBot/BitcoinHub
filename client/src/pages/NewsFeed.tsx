@@ -235,20 +235,6 @@ const NewsFeed = () => {
 
                 {/* News Tab */}
                 <TabsContent value="news" className="p-0">
-                  <div className="px-6 pt-3 pb-2">
-                    <div className="flex flex-wrap gap-2">
-                      {newsCategories.map((category) => (
-                        <Badge 
-                          key={category}
-                          variant={newsFilter === category ? "default" : "outline"}
-                          className="cursor-pointer"
-                          onClick={() => applyNewsFilter(category)}
-                        >
-                          {category}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
                   <ScrollArea className="h-[800px]">
                     <div className="p-6 space-y-4">
                       {isLoadingNews ? (

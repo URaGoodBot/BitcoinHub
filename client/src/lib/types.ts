@@ -132,4 +132,5 @@ export interface TwitterPost {
   createdAt: string;
   metrics: TwitterMetrics;
   hashtags: string[];
+  imageUrl?: string; // Optional image URL from Reddit posts
 }
