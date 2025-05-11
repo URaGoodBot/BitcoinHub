@@ -197,8 +197,8 @@ const NewsFeed = () => {
                       News
                     </TabsTrigger>
                     <TabsTrigger value="twitter" className="flex-1">
-                      <Twitter className="h-4 w-4 mr-2" />
-                      X / Twitter
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Reddit
                     </TabsTrigger>
                     <TabsTrigger value="trending" className="flex-1">
                       <BarChart2 className="h-4 w-4 mr-2" />
@@ -223,7 +223,7 @@ const NewsFeed = () => {
                             {item.type === 'news' ? (
                               <NewsCard item={item.item as NewsItem} />
                             ) : (
-                              <TwitterCard post={item.item as TwitterPost} />
+                              <RedditPostCard post={item.item as TwitterPost} />
                             )}
                             {index < combinedFeed.length - 1 && <Separator className="my-4" />}
                           </div>
@@ -269,7 +269,7 @@ const NewsFeed = () => {
                   </ScrollArea>
                 </TabsContent>
 
-                {/* Twitter Tab */}
+                {/* Reddit Tab */}
                 <TabsContent value="twitter" className="p-0">
                   <div className="px-6 pt-3 pb-2">
                     <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -284,6 +284,9 @@ const NewsFeed = () => {
                         </Badge>
                       ))}
                     </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Content from r/Bitcoin
+                    </div>
                   </div>
                   <ScrollArea className="h-[800px]">
                     <div className="p-6 space-y-4">
@@ -291,7 +294,7 @@ const NewsFeed = () => {
                         <FeedSkeleton count={5} />
                       ) : filteredTwitter.length === 0 ? (
                         <div className="text-center py-8">
-                          <p className="text-muted-foreground">No tweets matching your search</p>
+                          <p className="text-muted-foreground">No Reddit posts matching your search</p>
                         </div>
                       ) : (
                         filteredTwitter.map((post, index) => (
@@ -690,12 +693,12 @@ const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
   );
 };
 
-// Twitter Card Component
-interface TwitterCardProps {
-  post: TwitterPost;
+// Reddit Post Card Component
+interface RedditPostCardProps {
+  post: TwitterPost; // Using the same data structure as before
 }
 
-const TwitterCard: React.FC<TwitterCardProps> = ({ post }) => {
+const RedditPostCard: React.FC<RedditPostCardProps> = ({ post }) => {
   return (
     <div className="bg-card hover:bg-muted/20 transition-colors p-4 rounded-lg">
       <div className="flex gap-3">
