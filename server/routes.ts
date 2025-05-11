@@ -45,35 +45,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Twitter/X API
+  // Reddit API (using Twitter API functions internally for compatibility)
   app.get(`${apiPrefix}/twitter/tweets`, async (req, res) => {
     try {
+      console.log("API request: Get Reddit posts");
       const filter = req.query.filter as string;
-      const tweets = await getLatestTweets(filter);
-      res.json(tweets);
+      const redditPosts = await getLatestTweets(filter);
+      res.json(redditPosts);
     } catch (error) {
-      console.error("Error fetching tweets:", error);
-      res.status(500).json({ message: "Failed to fetch tweets" });
+      console.error("Error fetching Reddit posts:", error);
+      res.status(500).json({ message: "Failed to fetch Reddit posts" });
     }
   });
   
   app.get(`${apiPrefix}/twitter/hashtags`, async (req, res) => {
     try {
-      const hashtags = await getTrendingHashtags();
-      res.json(hashtags);
+      console.log("API request: Get Reddit topics/hashtags");
+      const topics = await getTrendingHashtags();
+      res.json(topics);
     } catch (error) {
-      console.error("Error fetching hashtags:", error);
-      res.status(500).json({ message: "Failed to fetch hashtags" });
+      console.error("Error fetching Reddit topics:", error);
+      res.status(500).json({ message: "Failed to fetch Reddit topics" });
     }
   });
   
   app.get(`${apiPrefix}/twitter/accounts`, async (req, res) => {
     try {
-      const accounts = await getPopularAccounts();
-      res.json(accounts);
+      console.log("API request: Get popular Reddit users");
+      const redditUsers = await getPopularAccounts();
+      res.json(redditUsers);
     } catch (error) {
-      console.error("Error fetching accounts:", error);
-      res.status(500).json({ message: "Failed to fetch accounts" });
+      console.error("Error fetching Reddit users:", error);
+      res.status(500).json({ message: "Failed to fetch Reddit users" });
     }
   });
 
