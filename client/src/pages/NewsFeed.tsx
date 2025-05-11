@@ -317,6 +317,111 @@ const NewsFeed = () => {
                     </div>
                   </ScrollArea>
                 </TabsContent>
+                
+                {/* HodlMyBeer21 Twitter Following Tab */}
+                <TabsContent value="hodlmybeer" className="p-0">
+                  <div className="px-6 pt-3 pb-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-semibold">HodlMyBeer21's Following</h3>
+                        <p className="text-xs text-muted-foreground">Tweets from top Bitcoin influencers</p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={handleRefresh}
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" />
+                        Refresh
+                      </Button>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-[800px]">
+                    <div className="p-6 space-y-4">
+                      {isLoadingHodlmybeer ? (
+                        <FeedSkeleton count={5} />
+                      ) : filteredHodlmybeer.length === 0 ? (
+                        <div className="text-center py-8">
+                          <p className="text-muted-foreground">No tweets matching your search</p>
+                        </div>
+                      ) : (
+                        filteredHodlmybeer.map((post, index) => (
+                          <div key={post.id}>
+                            <Card className="bg-card hover:bg-muted/20 transition-colors p-4 rounded-lg border border-muted">
+                              <div className="flex gap-3">
+                                <div className="flex-shrink-0">
+                                  <Avatar className="h-10 w-10 bg-blue-500/90">
+                                    <AvatarImage src={post.author.profileImageUrl} alt={post.author.displayName} />
+                                    <AvatarFallback>X</AvatarFallback>
+                                  </Avatar>
+                                </div>
+                                
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                      <span className="font-medium text-primary">{post.author.displayName}</span>
+                                      {post.author.verified && (
+                                        <svg className="ml-1 h-4 w-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                        </svg>
+                                      )}
+                                      <span className="text-muted-foreground text-sm ml-1">@{post.author.username}</span>
+                                    </div>
+                                    <span className="text-xs text-muted-foreground">{formatRelativeTime(post.createdAt)}</span>
+                                  </div>
+                                  
+                                  <p className="text-base mt-2">{post.text}</p>
+                                  
+                                  {post.imageUrl && (
+                                    <div className="mt-4 rounded-md overflow-hidden">
+                                      <img 
+                                        src={post.imageUrl} 
+                                        alt="Tweet content" 
+                                        className="w-full object-cover max-h-[400px]" 
+                                      />
+                                    </div>
+                                  )}
+                                  
+                                  {post.hashtags.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 mt-2">
+                                      {post.hashtags.map((tag) => (
+                                        <Badge key={tag} variant="outline" className="text-xs text-blue-500 border-blue-500/20">
+                                          {tag}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  )}
+                                  
+                                  <div className="flex items-center mt-3 text-xs text-muted-foreground">
+                                    <button className="flex items-center mr-4 hover:text-primary">
+                                      <MessageSquare className="h-4 w-4 mr-1" />
+                                      {formatNumber(post.metrics.replies)}
+                                    </button>
+                                    <button className="flex items-center mr-4 hover:text-green-500">
+                                      <RotateCw className="h-4 w-4 mr-1" />
+                                      {formatNumber(post.metrics.retweets)}
+                                    </button>
+                                    <button className="flex items-center mr-4 hover:text-red-500">
+                                      <Heart className="h-4 w-4 mr-1" />
+                                      {formatNumber(post.metrics.likes)}
+                                    </button>
+                                    <div className="ml-auto">
+                                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                                        <Share className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </Card>
+                            {index < filteredHodlmybeer.length - 1 && <Separator className="my-4" />}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
 
                 {/* Trending Tab */}
                 <TabsContent value="trending" className="p-0">
