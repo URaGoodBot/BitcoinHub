@@ -711,6 +711,16 @@ const RedditPostCard: React.FC<RedditPostCardProps> = ({ post }) => {
           
           <p className="text-base mt-2 font-medium">{post.text}</p>
           
+          {post.imageUrl && (
+            <div className="mt-4 rounded-md overflow-hidden">
+              <img 
+                src={post.imageUrl} 
+                alt="Reddit post content" 
+                className="w-full object-cover max-h-[400px]" 
+              />
+            </div>
+          )}
+          
           {post.hashtags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {post.hashtags.map((tag) => (

@@ -136,13 +136,33 @@ export async function getLatestTweets(filter?: string): Promise<TwitterPost[]> {
       
       // Get image if available
       let imageUrl = null;
+      
+      // Check for Reddit preview images
       if (data.preview && data.preview.images && data.preview.images.length > 0) {
         try {
           imageUrl = data.preview.images[0].source.url.replace(/&amp;/g, '&');
         } catch (e) {
-          // Skip if there's an issue with the image
+          console.log('Error extracting preview image:', e);
         }
       }
+      
+      // Try to get image from different Reddit sources if preview failed
+      if (!imageUrl) {
+        // Try thumbnail
+        if (data.thumbnail && data.thumbnail.startsWith('http')) {
+          imageUrl = data.thumbnail;
+        }
+        // Try media
+        else if (data.media && data.media.oembed && data.media.oembed.thumbnail_url) {
+          imageUrl = data.media.oembed.thumbnail_url;
+        }
+        // Try URL if it's an image
+        else if (data.url && /\.(jpg|jpeg|png|gif)$/i.test(data.url)) {
+          imageUrl = data.url;
+        }
+      }
+      
+      console.log(`Post ${data.id} has image: ${imageUrl ? 'Yes' : 'No'}`); 
       
       return {
         id: data.id || `r${index + 1}`,
