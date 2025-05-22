@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="mb-4">Bitcoin X Feed</h1>
+        <p class="lead mb-4">Real-time tweets from the top Bitcoin influencers and thought leaders.</p>
+        
+        <div class="account-filter">
+            <h5 class="mb-3">Filter by account:</h5>
+            <div>
+                <button class="btn account-btn active" data-username="all">All</button>
+                {% for account in accounts %}
+                <button class="btn account-btn" data-username="{{ account }}">@{{ account }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner-border text-warning loading-spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading tweets...</p>
+        </div>
+        
+        <div id="tweetContainer"></div>
+        
+        <div id="noTweets" class="text-center py-5" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-emoji-frown mb-3 text-muted" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5"/>
+            </svg>
+            <p class="text-muted">No tweets available. Please try another account or refresh.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elements
+        const tweetContainer = document.getElementById('tweetContainer');
+        const loadingElement = document.getElementById('loading');
+        const noTweetsElement = document.getElementById('noTweets');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const accountButtons = document.querySelectorAll('.account-btn');
+        
+        // Variables
+        let currentUsername = 'all';
+        let allTweets = [];
+        
+        // Fetch tweets function
+        async function fetchTweets() {
+            loadingElement.style.display = 'block';
+            tweetContainer.style.display = 'none';
+            noTweetsElement.style.display = 'none';
+            
+            try {
+                const response = await fetch('/tweets');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tweets');
+                }
+                
+                allTweets = await response.json();
+                displayTweets(currentUsername);
+            } catch (error) {
+                console.error('Error fetching tweets:', error);
+                loadingElement.style.display = 'none';
+                noTweetsElement.style.display = 'block';
+            }
+        }
+        
+        // Display tweets for selected username
+        function displayTweets(username) {
+            loadingElement.style.display = 'none';
+            
+            // Filter tweets if needed
+            let tweetsToDisplay = allTweets;
+            if (username !== 'all') {
+                tweetsToDisplay = allTweets.filter(tweet => tweet.username.toLowerCase() === username.toLowerCase());
+            }
+            
+            // Check if we have tweets to display
+            if (tweetsToDisplay.length === 0) {
+                tweetContainer.style.display = 'none';
+                noTweetsElement.style.display = 'block';
+                return;
+            }
+            
+            // Display tweets
+            tweetContainer.innerHTML = '';
+            tweetsToDisplay.forEach(tweet => {
+                // Format date
+                const tweetDate = new Date(tweet.created_at);
+                const formattedDate = tweetDate.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                
+                // Create tweet card
+                const tweetElement = document.createElement('div');
+                tweetElement.className = 'tweet-card';
+                
+                // Add user info
+                tweetElement.innerHTML = `
+                    <div class="user-info">
+                        <img src="https://unavatar.io/twitter/${tweet.username}" alt="${tweet.username}" class="profile-img" onerror="this.src='https://api.dicebear.com/7.x/micah/svg?seed=${tweet.username}'">
+                        <div>
+                            <h5 class="username">${tweet.username}</h5>
+                            <p class="handle">@${tweet.username}</p>
+                        </div>
+                    </div>
+                    <p class="tweet-text">${formatTweetText(tweet.text)}</p>
+                `;
+                
+                // Add media if available
+                if (tweet.media_urls && tweet.media_urls.length > 0) {
+                    const mediaContainer = document.createElement('div');
+                    tweet.media_urls.forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.alt = "Tweet media";
+                        img.className = "tweet-media";
+                        mediaContainer.appendChild(img);
+                    });
+                    tweetElement.appendChild(mediaContainer);
+                }
+                
+                // Add date and metrics
+                let metricsHtml = '';
+                if (tweet.metrics) {
+                    metricsHtml = `
+                        <div class="metrics">
+                            <span>❤️ ${formatNumber(tweet.metrics.like_count || 0)}</span>
+                            <span>🔁 ${formatNumber(tweet.metrics.retweet_count || 0)}</span>
+                            <span>💬 ${formatNumber(tweet.metrics.reply_count || 0)}</span>
+                        </div>
+                    `;
+                }
+                
+                tweetElement.innerHTML += `
+                    <div class="tweet-date">${formattedDate}</div>
+                    ${metricsHtml}
+                `;
+                
+                tweetContainer.appendChild(tweetElement);
+            });
+            
+            tweetContainer.style.display = 'block';
+        }
+        
+        // Format tweet text (handles URLs, mentions, hashtags)
+        function formatTweetText(text) {
+            // Format URLs
+            text = text.replace(
+                /(https?:\/\/\S+)/g,
+                '<a href="$1" target="_blank" class="text-info">$1</a>'
+            );
+            
+            // Format mentions
+            text = text.replace(
+                /@(\w+)/g,
+                '<a href="https://twitter.com/$1" target="_blank" class="text-info">@$1</a>'
+            );
+            
+            // Format hashtags
+            text = text.replace(
+                /#(\w+)/g,
+                '<a href="https://twitter.com/hashtag/$1" target="_blank" class="text-info">#$1</a>'
+            );
+            
+            return text;
+        }
+        
+        // Format numbers for metrics
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        // Event listeners
+        refreshBtn.addEventListener('click', fetchTweets);
+        
+        accountButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const username = this.getAttribute('data-username');
+                
+                // Update active state
+                accountButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update current username and display tweets
+                currentUsername = username;
+                displayTweets(username);
+            });
+        });
+        
+        // Initial fetch
+        fetchTweets();
+    });
+</script>
+{% endblock %}
