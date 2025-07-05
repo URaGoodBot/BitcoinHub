@@ -13,6 +13,7 @@ import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
 import PriceAlertsWidget from "@/components/PriceAlertsWidget";
 import MarketSummaryWidget from "@/components/MarketSummaryWidget";
+import AITrendPrediction from "@/components/AITrendPrediction";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -121,10 +122,11 @@ const Dashboard = () => {
         <UST10YTreasury />
       </div>
       
-      {/* Market Summary and Price Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      {/* Market Summary, Price Alerts, and AI Prediction */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <MarketSummaryWidget />
         <PriceAlertsWidget />
+        <AITrendPrediction />
       </div>
       
       {/* Market Sentiment Analysis */}
