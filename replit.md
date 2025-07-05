@@ -1,0 +1,133 @@
+# BitcoinHub - The Ultimate Bitcoin Website
+
+## Overview
+
+BitcoinHub is a comprehensive Bitcoin information platform designed to be the daily go-to resource for Bitcoin enthusiasts. The application features real-time price tracking, news aggregation, educational content, community forums, and portfolio management tools. Built with a modern full-stack architecture, it combines a React/TypeScript frontend with a Node.js Express backend, utilizing both traditional web technologies and modern UI frameworks.
+
+## System Architecture
+
+### Frontend Architecture
+- **Framework**: React 18 with TypeScript
+- **Routing**: Wouter for lightweight client-side routing
+- **UI Components**: Custom design system built with Radix UI primitives and Tailwind CSS
+- **State Management**: TanStack Query (React Query) for server state management
+- **Charts**: Recharts for data visualization
+- **Styling**: Tailwind CSS with custom Bitcoin-themed color palette including orange primary colors and dark theme support
+
+### Backend Architecture
+- **Runtime**: Node.js with Express.js framework
+- **Language**: TypeScript with ES modules
+- **API Design**: RESTful API with `/api` prefix
+- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
+- **External APIs**: Integration with multiple cryptocurrency data providers (CryptoCompare, CoinGecko, CoinCap)
+- **Development**: Vite for fast development builds and hot module replacement
+
+### Database Design
+- **ORM**: Drizzle with PostgreSQL dialect
+- **Schema**: Well-structured tables for users, forum posts, price alerts, portfolio entries, daily tips, and learning progress
+- **Provider**: Neon Database (serverless PostgreSQL)
+- **Migrations**: Automated schema management through Drizzle Kit
+
+## Key Components
+
+### Real-Time Price Tracking
+- Multi-source Bitcoin price aggregation with fallback mechanisms
+- Historical chart data with configurable timeframes (1m to 1mo)
+- Market data including 24h changes, volume, market cap
+- Caching strategy to handle API rate limits and improve performance
+
+### News Aggregation System
+- Bitcoin-focused news from multiple sources via NewsAPI
+- Automatic categorization (Mining, ETF, Markets, Security, Wallets)
+- Social media integration for Bitcoin influencer tweets
+- Content filtering and search capabilities
+
+### Educational Platform
+- Structured learning modules with progressive content
+- Mixed content types: videos, readings, quizzes, and interactive code examples
+- Progress tracking and gamification elements
+- Mobile-friendly course navigation
+
+### Community Features
+- Threaded forum discussions with categories
+- Real-time chat functionality
+- Content referencing system linking to educational materials
+- User engagement tracking with upvotes and reactions
+
+### Portfolio Management
+- Bitcoin holdings tracking with real-time valuation
+- Performance metrics and historical tracking
+- Price alert system with customizable thresholds
+- Visual portfolio analytics with charts
+
+### AI-Powered Analysis
+- Market sentiment analysis based on price movements
+- Technical indicator calculations (RSI, moving averages)
+- Pattern recognition for trading signals
+- Support/resistance level identification
+
+## Data Flow
+
+1. **Client Requests**: Frontend makes API calls through TanStack Query
+2. **API Layer**: Express routes handle requests with proper error handling
+3. **Data Sources**: Backend aggregates data from multiple external APIs
+4. **Caching**: Multi-level caching (in-memory and database) to optimize performance
+5. **Database Operations**: Drizzle ORM manages all database interactions
+6. **Response**: Processed data returned to frontend with proper typing
+
+### External API Integration
+- **Primary**: CryptoCompare API for price and chart data
+- **Fallback**: CoinGecko and CoinCap APIs for redundancy
+- **News**: NewsAPI for Bitcoin-related articles
+- **Social**: Twitter API for influencer content (with mock data fallback)
+
+## External Dependencies
+
+### Core Dependencies
+- **@neondatabase/serverless**: Serverless PostgreSQL client
+- **drizzle-orm**: Type-safe ORM with PostgreSQL support
+- **@tanstack/react-query**: Server state management
+- **@radix-ui/***: Accessible UI component primitives
+- **recharts**: Chart library for data visualization
+- **wouter**: Lightweight React router
+- **tailwindcss**: Utility-first CSS framework
+
+### Development Dependencies
+- **vite**: Fast build tool and development server
+- **typescript**: Type checking and compilation
+- **tsx**: TypeScript execution for Node.js
+- **drizzle-kit**: Database migration and introspection tools
+
+### API Integrations
+- **CryptoCompare**: Primary data source for Bitcoin prices and charts
+- **NewsAPI**: Bitcoin news aggregation
+- **CoinGecko/CoinCap**: Backup data sources
+- **Twitter API**: Social media content (optional, with fallback)
+
+## Deployment Strategy
+
+### Development Environment
+- **Local Development**: Vite dev server with hot module replacement
+- **Database**: Neon serverless PostgreSQL for development
+- **Environment Variables**: Secure credential management through Replit Secrets
+- **Error Handling**: Runtime error overlay for debugging
+
+### Production Considerations
+- **Build Process**: Vite build for optimized frontend bundle
+- **Server Bundle**: ESBuild for Node.js backend compilation
+- **Database Migrations**: Automated schema updates via Drizzle Kit
+- **Environment Configuration**: Production-ready environment variable management
+- **Error Monitoring**: Comprehensive error handling and logging
+
+### Scalability Features
+- **Caching Strategy**: Multiple cache layers to reduce API calls
+- **Database Optimization**: Efficient queries with proper indexing
+- **API Rate Limiting**: Built-in protection against rate limit violations
+- **Responsive Design**: Mobile-first approach for broad device support
+
+## Changelog
+- July 05, 2025. Initial setup
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.

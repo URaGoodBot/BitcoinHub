@@ -18,6 +18,7 @@ interface PriceChartProps {
 const PriceChart = ({ timeFrame }: PriceChartProps) => {
   const { data: chartData, isLoading } = useQuery({
     queryKey: ["/api/bitcoin/chart", timeFrame],
+    queryFn: () => fetch(`/api/bitcoin/chart?timeframe=${timeFrame}`).then(res => res.json()),
     refetchInterval: 300000, // Refetch every 5 minutes
   });
   
