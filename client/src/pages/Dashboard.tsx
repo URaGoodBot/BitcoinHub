@@ -9,6 +9,7 @@ import AIAnalysis from "@/components/AIAnalysis";
 import MarketSentiment from "@/components/MarketSentiment";
 import FedWatchTool from "@/components/FedWatchTool";
 import UST10YTreasury from "@/components/UST10YTreasury";
+import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -104,6 +105,9 @@ const Dashboard = () => {
           </div>
         </div>
       </header>
+      
+      {/* Bitcoin Metrics Grid */}
+      <BitcoinMetricsGrid />
       
       {/* Fed Watch Tool and Treasury Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
