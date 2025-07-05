@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import PriceChart from "./PriceChart";
+import BitcoinDashboard from "./BitcoinDashboard";
 import { formatCurrency, formatNumber, formatPercentage } from "@/lib/utils";
-import { BitcoinMarketData, TimeFrame } from "@/lib/types";
-import { useState } from "react";
+import { BitcoinMarketData } from "@/lib/types";
 
 const PriceTracker = () => {
-  const [timeFrame, setTimeFrame] = useState<TimeFrame>("1D");
+
   
   const { data: bitcoinData, isLoading: isLoadingBitcoinData } = useQuery({
     queryKey: ["/api/bitcoin/market-data"],
@@ -22,10 +21,6 @@ const PriceTracker = () => {
   const currentPrice = marketData?.current_price?.usd || 0;
   const priceChangePercentage = marketData?.price_change_percentage_24h || 0;
   const isPositiveChange = priceChangePercentage >= 0;
-  
-  const handleTimeFrameChange = (newTimeFrame: TimeFrame) => {
-    setTimeFrame(newTimeFrame);
-  };
   
   return (
     <Card className="bg-card shadow-lg overflow-hidden">
@@ -48,50 +43,7 @@ const PriceTracker = () => {
           </div>
         </div>
         
-        <div className="flex items-center text-sm space-x-4 mb-3 overflow-x-auto">
-          {(["1D", "1W", "1M", "3M", "1Y", "ALL"] as TimeFrame[]).map((tf) => (
-            <button 
-              key={tf}
-              className={`px-3 py-1 rounded-full ${
-                timeFrame === tf 
-                  ? 'text-foreground bg-muted' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-              onClick={() => handleTimeFrameChange(tf)}
-            >
-              {tf}
-            </button>
-          ))}
-        </div>
-        
-        <PriceChart timeFrame={timeFrame} />
-        
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-xs text-muted-foreground">Market Cap</p>
-            <p className="text-sm font-mono font-medium text-foreground">
-              {formatCurrency(marketData?.market_cap?.usd || 0, 'USD', 1)}
-            </p>
-          </div>
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-xs text-muted-foreground">Volume (24h)</p>
-            <p className="text-sm font-mono font-medium text-foreground">
-              {formatCurrency(marketData?.total_volume?.usd || 0, 'USD', 1)}
-            </p>
-          </div>
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-xs text-muted-foreground">Circulating Supply</p>
-            <p className="text-sm font-mono font-medium text-foreground">
-              {formatNumber(marketData?.circulating_supply || 0, 1)} BTC
-            </p>
-          </div>
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-xs text-muted-foreground">All-Time High</p>
-            <p className="text-sm font-mono font-medium text-foreground">
-              {formatCurrency(marketData?.ath?.usd || 0)}
-            </p>
-          </div>
-        </div>
+        <BitcoinDashboard marketData={marketData} />
       </CardContent>
     </Card>
   );
