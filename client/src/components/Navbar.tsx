@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Bell } from "lucide-react";
+import { Bell, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  // Mock user data - would come from auth context in production
-  const user = {
-    username: "Guest",
-    streakDays: 5
-  };
+  const { user, isAuthenticated, isGuest, logout } = useAuth();
   
   const isActiveLink = (path: string) => location === path;
 
@@ -62,19 +60,55 @@ const Navbar = () => {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
             </Button>
-            <div className="flex items-center bg-muted rounded-full p-1 pr-3">
-              <div className="rounded-full bg-muted/50 p-1">
-                <i className="fas fa-user text-foreground text-sm"></i>
-              </div>
-              <span className="ml-2 text-sm font-medium text-foreground">{user.username}</span>
-              {user.username !== "Guest" && (
-                <div className="ml-2 flex items-center space-x-1">
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-muted/50 text-primary">
-                    <i className="fas fa-fire-flame-curved"></i> {user.streakDays} day streak
-                  </span>
-                </div>
-              )}
-            </div>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
+                  <div className="flex items-center bg-muted rounded-full p-1 pr-3">
+                    <div className="rounded-full bg-muted/50 p-1">
+                      <User className="h-4 w-4" />
+                    </div>
+                    <span className="ml-2 text-sm font-medium">
+                      {isAuthenticated ? user?.username : isGuest ? "Guest" : "User"}
+                    </span>
+                    {isAuthenticated && user?.streakDays > 0 && (
+                      <Badge variant="secondary" className="ml-2 text-xs">
+                        🔥 {user.streakDays} day streak
+                      </Badge>
+                    )}
+                    {isGuest && (
+                      <Badge variant="outline" className="ml-2 text-xs">
+                        Guest Mode
+                      </Badge>
+                    )}
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {isAuthenticated && (
+                  <>
+                    <DropdownMenuItem disabled>
+                      <User className="mr-2 h-4 w-4" />
+                      {user?.username}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                {isGuest && (
+                  <>
+                    <DropdownMenuItem disabled>
+                      <User className="mr-2 h-4 w-4" />
+                      Guest Mode Active
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {isAuthenticated ? "Sign Out" : "Exit Guest Mode"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <button 
               className="ml-4 sm:hidden"

@@ -5,11 +5,129 @@ import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cr
 import { getLatestNews } from "./api/newsapi";
 import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeerFollowing } from "./api/twitter";
 import { z } from "zod";
-import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema } from "@shared/schema";
+import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema } from "@shared/schema";
+import session from "express-session";
+import bcrypt from "bcryptjs";
+
+// Extend session type
+declare module 'express-session' {
+  interface Session {
+    userId?: number;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configure session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'bitcoin-hub-secret-key-development',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
   // API prefix
   const apiPrefix = "/api";
+
+  // Authentication middleware
+  const requireAuth = (req: any, res: any, next: any) => {
+    if (!(req.session as any).userId) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    next();
+  };
+
+  // Authentication routes
+  app.post(`${apiPrefix}/auth/register`, async (req, res) => {
+    try {
+      const { username, password } = insertUserSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      // Create user
+      const user = await storage.createUser({
+        username,
+        password: hashedPassword
+      });
+
+      // Set session
+      (req.session as any).userId = user.id;
+
+      // Return user data (without password)
+      const { password: _, ...userData } = user;
+      res.status(201).json(userData);
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(400).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post(`${apiPrefix}/auth/login`, async (req, res) => {
+    try {
+      const { username, password } = insertUserSchema.parse(req.body);
+      
+      // Find user
+      const user = await storage.getUserByUsername(username);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Check password
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Set session
+      (req.session as any).userId = user.id;
+
+      // Return user data (without password)
+      const { password: _, ...userData } = user;
+      res.json(userData);
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(400).json({ message: "Login failed" });
+    }
+  });
+
+  app.post(`${apiPrefix}/auth/logout`, (req, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  app.get(`${apiPrefix}/auth/me`, async (req, res) => {
+    try {
+      if (!(req.session as any).userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await storage.getUser((req.session as any).userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return user data (without password)
+      const { password: _, ...userData } = user;
+      res.json(userData);
+    } catch (error) {
+      console.error("Get user error:", error);
+      res.status(500).json({ message: "Failed to get user data" });
+    }
+  });
 
   // Bitcoin data
   app.get(`${apiPrefix}/bitcoin/market-data`, async (req, res) => {
