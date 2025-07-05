@@ -10,6 +10,9 @@ import MarketSentiment from "@/components/MarketSentiment";
 import FedWatchTool from "@/components/FedWatchTool";
 import UST10YTreasury from "@/components/UST10YTreasury";
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
+import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
+import PriceAlertsWidget from "@/components/PriceAlertsWidget";
+import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -109,10 +112,19 @@ const Dashboard = () => {
       {/* Bitcoin Metrics Grid */}
       <BitcoinMetricsGrid />
       
+      {/* Global Market Context */}
+      <GlobalMarketIndicators />
+      
       {/* Fed Watch Tool and Treasury Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <FedWatchTool />
         <UST10YTreasury />
+      </div>
+      
+      {/* Market Summary and Price Alerts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <MarketSummaryWidget />
+        <PriceAlertsWidget />
       </div>
       
       {/* Market Sentiment Analysis */}
