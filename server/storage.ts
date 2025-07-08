@@ -9,6 +9,8 @@ import {
 } from "@shared/schema";
 import { getBitcoinPrice } from "./api/cryptocompare";
 import { ForumPost as ForumPostType, DailyTip as DailyTipType, LearningProgress as LearningProgressType, PriceAlert as PriceAlertType, Portfolio } from "@/lib/types";
+import { db } from "./db";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -498,11 +500,10 @@ export class DatabaseStorage implements IStorage {
         .values({
           userId,
           asset,
-          amount,
+          amount
         });
     }
     
-    // Return updated portfolio
     return this.getPortfolio(userId);
   }
   
@@ -513,23 +514,24 @@ export class DatabaseStorage implements IStorage {
       
     return alerts.map(alert => ({
       id: alert.id.toString(),
-      type: alert.type as 'above' | 'below',
+      type: alert.type as "above" | "below",
       price: alert.price,
-      created: alert.createdAt.toISOString()
+      isTriggered: alert.isTriggered,
+      createdAt: alert.createdAt.toISOString()
     }));
   }
   
   async createPriceAlert(insertAlert: InsertPriceAlert): Promise<PriceAlertType> {
-    const [alert] = await db
-      .insert(priceAlerts)
+    const [alert] = await db.insert(priceAlerts)
       .values(insertAlert)
       .returning();
-    
+      
     return {
       id: alert.id.toString(),
-      type: alert.type as 'above' | 'below',
+      type: alert.type as "above" | "below",
       price: alert.price,
-      created: alert.createdAt.toISOString()
+      isTriggered: alert.isTriggered,
+      createdAt: alert.createdAt.toISOString()
     };
   }
   
@@ -538,27 +540,28 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getDailyTip(): Promise<DailyTipType> {
-    // Get count of tips
-    const countResult = await db.select({ count: sql`count(*)` }).from(dailyTips);
-    const count = Number(countResult[0].count);
+    // Get today's tip based on date
+    const today = new Date();
+    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
     
-    if (count === 0) {
-      // No tips in database, return a default tip
+    const tips = await db.select().from(dailyTips);
+    
+    if (tips.length === 0) {
+      // Return a default tip if no tips in database
       return {
-        id: "0",
-        title: "Welcome to Bitcoin Hub",
-        content: "Stay tuned for daily Bitcoin tips and best practices."
+        title: "Start Your Bitcoin Journey",
+        content: "The best time to start learning about Bitcoin was 10 years ago. The second best time is now!",
+        category: "General"
       };
     }
     
-    // Get a random tip
-    const randomOffset = Math.floor(Math.random() * count);
-    const [tip] = await db.select().from(dailyTips).limit(1).offset(randomOffset);
+    const tipIndex = dayOfYear % tips.length;
+    const tip = tips[tipIndex];
     
     return {
-      id: tip.id.toString(),
       title: tip.title,
-      content: tip.content
+      content: tip.content,
+      category: tip.category
     };
   }
   
@@ -566,9 +569,8 @@ export class DatabaseStorage implements IStorage {
     const [progress] = await db.select()
       .from(learningProgress)
       .where(eq(learningProgress.userId, userId));
-      
+    
     if (!progress) {
-      // Return default progress if none exists
       return {
         courseName: "Bitcoin Basics",
         completed: 0,
@@ -607,10 +609,6 @@ export class DatabaseStorage implements IStorage {
     };
   }
 }
-
-// Import necessary functions from drizzle-orm
-import { eq, desc, and, sql } from "drizzle-orm";
-import { db } from "./db";
 
 // Use the database storage implementation
 export const storage = new DatabaseStorage();
