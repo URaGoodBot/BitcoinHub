@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Bell, LogOut, User, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
+import characterImage from "@assets/20250522_083556_1751982148928.jpg";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -41,10 +42,14 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center">
-                <i className="fas fa-bitcoin text-primary text-2xl mr-2"></i>
+              <div className="flex items-center cursor-pointer">
+                <img 
+                  src={characterImage} 
+                  alt="BitcoinHub Character" 
+                  className="w-8 h-8 rounded-lg mr-2 object-cover"
+                />
                 <span className="text-xl font-bold text-foreground">BitcoinHub</span>
-              </a>
+              </div>
             </Link>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
               <Link href="/">
