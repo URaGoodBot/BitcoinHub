@@ -373,6 +373,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user's price alerts
+  app.get(`${apiPrefix}/alerts`, async (req, res) => {
+    try {
+      // For demo purposes, we'll use a guest user (id: 1)
+      const alerts = await storage.getPriceAlerts(1);
+      res.json(alerts);
+    } catch (error) {
+      console.error("Error fetching price alerts:", error);
+      res.status(500).json({ message: "Failed to fetch price alerts" });
+    }
+  });
+
   app.post(`${apiPrefix}/alerts`, async (req, res) => {
     try {
       const schema = z.object({

@@ -89,7 +89,8 @@ export interface PriceAlert {
   id: string;
   type: 'above' | 'below';
   price: number;
-  created: string;
+  isTriggered: boolean;
+  createdAt: string;
 }
 
 export interface LearningProgress {
