@@ -14,41 +14,26 @@ const Navbar = () => {
   
   const isActiveLink = (path: string) => location === path;
 
-  // Fetch Bitcoin price for notifications
-  const { data: marketData } = useQuery({
-    queryKey: ['/api/bitcoin/market-data'],
-    refetchInterval: 30000, // Check every 30 seconds for price changes
+  // Fetch real-time notifications
+  const { data: notifications = [], isLoading: notificationsLoading } = useQuery({
+    queryKey: ['/api/notifications'],
+    refetchInterval: 2 * 60 * 1000, // Check every 2 minutes for new notifications
   });
 
-  // Sample notifications - in a real app, these would come from a proper notification service
-  const notifications = [
-    {
-      id: 1,
-      type: 'price_alert',
-      message: 'Bitcoin crossed $109,000',
-      timestamp: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
-      read: false,
-      icon: TrendingUp,
-    },
-    {
-      id: 2,
-      type: 'news',
-      message: 'New Bitcoin ETF approved by SEC',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-      read: false,
-      icon: AlertCircle,
-    },
-    {
-      id: 3,
-      type: 'market',
-      message: 'Fed meeting results released',
-      timestamp: new Date(Date.now() - 60 * 60 * 1000), // 1 hour ago
-      read: true,
-      icon: TrendingDown,
-    },
-  ];
+  const unreadCount = notifications.filter((n: any) => !n.read).length;
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'price_alert':
+        return TrendingUp;
+      case 'news':
+        return AlertCircle;
+      case 'market':
+        return TrendingDown;
+      default:
+        return Bell;
+    }
+  };
 
   return (
     <nav className="bg-card border-b border-muted/20 sticky top-0 z-50">
@@ -109,14 +94,20 @@ const Navbar = () => {
                     <p className="text-sm text-muted-foreground">{unreadCount} new</p>
                   )}
                 </div>
-                {notifications.length > 0 ? (
+                {notificationsLoading ? (
+                  <div className="px-3 py-6 text-center">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-sm text-muted-foreground mt-2">Loading notifications...</p>
+                  </div>
+                ) : notifications.length > 0 ? (
                   <div className="max-h-96 overflow-y-auto">
-                    {notifications.map((notification) => {
-                      const Icon = notification.icon;
+                    {notifications.map((notification: any) => {
+                      const Icon = getNotificationIcon(notification.type);
                       return (
                         <DropdownMenuItem key={notification.id} className="px-3 py-3 cursor-pointer">
                           <div className="flex items-start gap-3 w-full">
                             <div className={`p-1 rounded-full ${
+                              notification.priority === 'high' ? 'bg-red-100 text-red-600' :
                               notification.type === 'price_alert' ? 'bg-green-100 text-green-600' :
                               notification.type === 'news' ? 'bg-blue-100 text-blue-600' :
                               'bg-orange-100 text-orange-600'
@@ -125,10 +116,13 @@ const Navbar = () => {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className={`text-sm ${!notification.read ? 'font-medium' : 'font-normal'}`}>
+                                {notification.title}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                                 {notification.message}
                               </p>
                               <p className="text-xs text-muted-foreground mt-1">
-                                {notification.timestamp.toLocaleTimeString([], { 
+                                {new Date(notification.timestamp).toLocaleTimeString([], { 
                                   hour: '2-digit', 
                                   minute: '2-digit' 
                                 })}

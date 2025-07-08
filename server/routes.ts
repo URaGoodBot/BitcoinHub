@@ -207,6 +207,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch Truflation data" });
     }
   });
+
+  app.get(`${apiPrefix}/notifications`, async (_req, res) => {
+    try {
+      const { getAllNotifications } = await import("./api/notifications");
+      const notifications = await getAllNotifications();
+      res.json(notifications);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+
+  app.post(`${apiPrefix}/notifications/:id/read`, async (req, res) => {
+    try {
+      const { id } = req.params;
+      // In a real app, this would update the database
+      // For now, just return success
+      res.json({ success: true, message: "Notification marked as read" });
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
   
   // Reddit API (using Twitter API functions internally for compatibility)
   app.get(`${apiPrefix}/twitter/tweets`, async (req, res) => {
