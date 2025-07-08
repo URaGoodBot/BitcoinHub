@@ -196,6 +196,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch financial market data" });
     }
   });
+
+  app.get(`${apiPrefix}/financial/truflation`, async (_req, res) => {
+    try {
+      const { getTruflationData } = await import("./api/truflation");
+      const truflationData = await getTruflationData();
+      res.json(truflationData);
+    } catch (error) {
+      console.error("Error fetching Truflation data:", error);
+      res.status(500).json({ message: "Failed to fetch Truflation data" });
+    }
+  });
   
   // Reddit API (using Twitter API functions internally for compatibility)
   app.get(`${apiPrefix}/twitter/tweets`, async (req, res) => {

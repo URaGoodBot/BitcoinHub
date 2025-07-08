@@ -9,6 +9,7 @@ import AIAnalysis from "@/components/AIAnalysis";
 import MarketSentiment from "@/components/MarketSentiment";
 import FedWatchTool from "@/components/FedWatchTool";
 import TreasuryWidget from "@/components/TreasuryWidget";
+import TruflationWidget from "@/components/TruflationWidget";
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
 import PriceAlertsWidget from "@/components/PriceAlertsWidget";
@@ -116,10 +117,11 @@ const Dashboard = () => {
       {/* Global Market Context */}
       <GlobalMarketIndicators />
       
-      {/* Fed Watch Tool and Treasury Dashboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      {/* Financial Indicators Dashboard */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <FedWatchTool />
         <TreasuryWidget />
+        <TruflationWidget />
       </div>
       
       {/* Market Summary, Price Alerts, and AI Prediction */}
