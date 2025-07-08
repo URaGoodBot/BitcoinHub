@@ -37,11 +37,18 @@ export const insertPriceAlertSchema = createInsertSchema(priceAlerts).pick({
 export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
+  title: text("title"), // Optional for tweet-style posts
   content: text("content").notNull(),
-  categories: text("categories").array().notNull(),
+  categories: text("categories").array().default([]),
   upvotes: integer("upvotes").default(0).notNull(),
+  downvotes: integer("downvotes").default(0).notNull(),
+  commentCount: integer("comment_count").default(0).notNull(),
+  isReply: boolean("is_reply").default(false).notNull(),
+  parentPostId: integer("parent_post_id").references(() => forumPosts.id),
+  mentions: text("mentions").array().default([]),
+  hashtags: text("hashtags").array().default([]),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const insertForumPostSchema = createInsertSchema(forumPosts).pick({
@@ -49,9 +56,29 @@ export const insertForumPostSchema = createInsertSchema(forumPosts).pick({
   title: true,
   content: true,
   categories: true,
+  isReply: true,
+  parentPostId: true,
+  mentions: true,
+  hashtags: true,
 });
 
 // Forum comments
+// Post reactions
+export const postReactions = pgTable("post_reactions", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").references(() => forumPosts.id, { onDelete: "cascade" }),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // 'like', 'love', 'rocket', 'fire'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertPostReactionSchema = createInsertSchema(postReactions).pick({
+  postId: true,
+  userId: true,
+  type: true,
+});
+
+// Forum comments (deprecated - now using replies in forumPosts)
 export const forumComments = pgTable("forum_comments", {
   id: serial("id").primaryKey(),
   postId: integer("post_id").references(() => forumPosts.id, { onDelete: "cascade" }),
@@ -121,6 +148,9 @@ export type InsertPriceAlert = z.infer<typeof insertPriceAlertSchema>;
 
 export type ForumPost = typeof forumPosts.$inferSelect;
 export type InsertForumPost = z.infer<typeof insertForumPostSchema>;
+
+export type PostReaction = typeof postReactions.$inferSelect;
+export type InsertPostReaction = z.infer<typeof insertPostReactionSchema>;
 
 export type ForumComment = typeof forumComments.$inferSelect;
 export type InsertForumComment = z.infer<typeof insertForumCommentSchema>;

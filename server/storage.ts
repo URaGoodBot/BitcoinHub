@@ -2,6 +2,7 @@ import {
   users, type User, type InsertUser,
   priceAlerts, type PriceAlert, type InsertPriceAlert,
   forumPosts, type ForumPost, type InsertForumPost,
+  postReactions, type PostReaction, type InsertPostReaction,
   forumComments, type ForumComment, type InsertForumComment,
   portfolioEntries, type PortfolioEntry, type InsertPortfolioEntry,
   dailyTips, type DailyTip, type InsertDailyTip,
@@ -20,10 +21,15 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   // Forum operations
-  getForumPosts(): Promise<ForumPostType[]>;
+  getForumPosts(userId?: number): Promise<ForumPostType[]>;
   getLatestForumPosts(limit?: number): Promise<ForumPostType[]>;
   getForumPost(id: number): Promise<ForumPostType | undefined>;
   createForumPost(post: InsertForumPost): Promise<ForumPostType>;
+  getPostReplies(postId: number, userId?: number): Promise<ForumPostType[]>;
+  
+  // Reaction operations
+  toggleReaction(postId: number, userId: number, reactionType: string): Promise<void>;
+  getPostReactions(postId: number): Promise<{[key: string]: number}>;
   
   // Portfolio operations
   getPortfolio(userId: number): Promise<Portfolio>;
@@ -400,14 +406,18 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
   
-  async getForumPosts(): Promise<ForumPostType[]> {
-    const posts = await db.select().from(forumPosts);
-    return Promise.all(posts.map(post => this.formatForumPost(post)));
+  async getForumPosts(userId?: number): Promise<ForumPostType[]> {
+    const posts = await db.select()
+      .from(forumPosts)
+      .where(eq(forumPosts.isReply, false))
+      .orderBy(desc(forumPosts.createdAt));
+    return Promise.all(posts.map(post => this.formatForumPost(post, userId)));
   }
   
   async getLatestForumPosts(limit: number = 2): Promise<ForumPostType[]> {
     const posts = await db.select()
       .from(forumPosts)
+      .where(eq(forumPosts.isReply, false))
       .orderBy(desc(forumPosts.createdAt))
       .limit(limit);
       
@@ -439,16 +449,28 @@ export class DatabaseStorage implements IStorage {
       
     return {
       id: post.id.toString(),
-      title: post.title,
+      title: post.title || undefined,
       content: post.content,
       author: {
         id: post.userId ? post.userId.toString() : "0",
         username: user?.username || "Unknown",
+        avatar: user?.profileImageUrl || undefined,
       },
       createdAt: post.createdAt.toISOString(),
       commentCount: comments.length,
       upvotes: post.upvotes,
-      categories: post.categories
+      downvotes: post.downvotes || 0,
+      categories: post.categories || [],
+      isReply: post.isReply || false,
+      parentPostId: post.parentPostId?.toString(),
+      mentions: post.mentions || [],
+      hashtags: post.hashtags || [],
+      reactions: {
+        like: 0,
+        love: 0,
+        rocket: 0,
+        fire: 0
+      }
     };
   }
   

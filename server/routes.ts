@@ -332,6 +332,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get replies for a post
+  app.get(`${apiPrefix}/forum/posts/:id/replies`, async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      if (isNaN(postId)) {
+        return res.status(400).json({ message: "Invalid post ID" });
+      }
+      
+      const replies = await storage.getPostReplies(postId);
+      res.json(replies);
+    } catch (error) {
+      console.error("Error fetching post replies:", error);
+      res.status(500).json({ message: "Failed to fetch post replies" });
+    }
+  });
+
+  // Toggle reaction on a post
+  app.post(`${apiPrefix}/forum/posts/:id/reactions`, async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      if (isNaN(postId)) {
+        return res.status(400).json({ message: "Invalid post ID" });
+      }
+      
+      const { type } = req.body;
+      if (!['like', 'love', 'rocket', 'fire'].includes(type)) {
+        return res.status(400).json({ message: "Invalid reaction type" });
+      }
+      
+      // For demo purposes, we'll use a guest user (id: 1)
+      await storage.toggleReaction(postId, 1, type);
+      
+      // Return updated reaction counts
+      const reactions = await storage.getPostReactions(postId);
+      res.json(reactions);
+    } catch (error) {
+      console.error("Error toggling reaction:", error);
+      res.status(500).json({ message: "Failed to toggle reaction" });
+    }
+  });
+
   // Portfolio
   app.get(`${apiPrefix}/portfolio`, async (req, res) => {
     try {

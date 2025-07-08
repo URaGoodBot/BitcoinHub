@@ -8,7 +8,7 @@ import Layout from "@/components/Layout";
 import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Learn from "@/pages/Learn";
-import Community from "@/pages/Community";
+import SocialCommunity from "@/pages/SocialCommunity";
 import Portfolio from "@/pages/Portfolio";
 import NewsFeed from "@/pages/NewsFeed";
 import NotFound from "@/pages/not-found";
@@ -40,7 +40,7 @@ function Router() {
         <Route path="/" component={Dashboard} />
         <Route path="/news" component={NewsFeed} />
         <Route path="/learn" component={Learn} />
-        <Route path="/community" component={Community} />
+        <Route path="/community" component={SocialCommunity} />
         <Route path="/portfolio" component={Portfolio} />
         <Route component={NotFound} />
       </Switch>

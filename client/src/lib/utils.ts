@@ -55,6 +55,8 @@ export function formatRelativeTime(dateString: string): string {
   return date.toLocaleDateString();
 }
 
+
+
 // Truncate text with ellipsis
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;

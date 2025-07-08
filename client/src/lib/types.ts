@@ -58,7 +58,7 @@ export interface DailyTip {
 
 export interface ForumPost {
   id: string;
-  title: string;
+  title?: string;
   content: string;
   author: {
     id: string;
@@ -68,7 +68,22 @@ export interface ForumPost {
   createdAt: string;
   commentCount: number;
   upvotes: number;
+  downvotes: number;
   categories: string[];
+  isReply: boolean;
+  parentPostId?: string;
+  mentions: string[];
+  hashtags: string[];
+  reactions?: PostReactionSummary;
+  replies?: ForumPost[];
+}
+
+export interface PostReactionSummary {
+  like: number;
+  love: number;
+  rocket: number;
+  fire: number;
+  userReaction?: string;
 }
 
 export interface BitcoinHolding {
