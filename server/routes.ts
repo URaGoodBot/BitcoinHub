@@ -162,6 +162,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch news" });
     }
   });
+
+  // Financial data routes
+  app.get(`${apiPrefix}/financial/treasury`, async (_req, res) => {
+    try {
+      const { getTreasuryData } = await import("./api/financial");
+      const treasuryData = await getTreasuryData();
+      res.json(treasuryData);
+    } catch (error) {
+      console.error("Error fetching Treasury data:", error);
+      res.status(500).json({ message: "Failed to fetch Treasury data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/financial/fedwatch`, async (_req, res) => {
+    try {
+      const { getFedWatchData } = await import("./api/financial");
+      const fedWatchData = await getFedWatchData();
+      res.json(fedWatchData);
+    } catch (error) {
+      console.error("Error fetching Fed Watch data:", error);
+      res.status(500).json({ message: "Failed to fetch Fed Watch data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/financial/markets`, async (_req, res) => {
+    try {
+      const { getFinancialMarketData } = await import("./api/financial");
+      const marketData = await getFinancialMarketData();
+      res.json(marketData);
+    } catch (error) {
+      console.error("Error fetching financial market data:", error);
+      res.status(500).json({ message: "Failed to fetch financial market data" });
+    }
+  });
   
   // Reddit API (using Twitter API functions internally for compatibility)
   app.get(`${apiPrefix}/twitter/tweets`, async (req, res) => {

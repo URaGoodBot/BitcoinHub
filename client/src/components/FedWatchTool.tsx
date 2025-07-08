@@ -1,20 +1,73 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { BarChart3, Calendar, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, Calendar, TrendingUp, RefreshCw } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+
+interface FedWatchData {
+  currentRate: string;
+  nextMeeting: string;
+  probabilities: Array<{
+    rate: string;
+    probability: number;
+    label: string;
+  }>;
+  futureOutlook: {
+    oneWeek: { noChange: number; cut: number; hike: number };
+    oneMonth: { noChange: number; cut: number; hike: number };
+  };
+  lastUpdated: string;
+}
 
 const FedWatchTool = () => {
-  // Mock data based on the screenshot - in production this would come from CME API
-  const fedData = {
-    currentRate: "425-450",
-    nextMeeting: "30 Jul 2025",
-    probabilities: [
-      { rate: "400-425", probability: 4.7, label: "Lower" },
-      { rate: "425-450", probability: 95.3, label: "No Change (Current)" },
-    ],
-    futureOutlook: {
-      oneWeek: { noChange: 81.4, cut: 18.6, hike: 0.0 },
-      oneMonth: { noChange: 70.5, cut: 28.5, hike: 1.0 }
-    }
-  };
+  const queryClient = useQueryClient();
+
+  const { data: fedData, isLoading, error } = useQuery<FedWatchData>({
+    queryKey: ['/api/financial/fedwatch'],
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+  });
+
+  const refreshMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('/api/financial/fedwatch');
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['/api/financial/fedwatch'], data);
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <Card className="bg-card border">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">Loading Fed Watch data...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error || !fedData) {
+    return (
+      <Card className="bg-card border">
+        <CardContent className="p-6">
+          <div className="text-center">
+            <p className="text-red-500 mb-4">Failed to load Fed Watch data</p>
+            <Button 
+              onClick={() => refreshMutation.mutate()} 
+              disabled={refreshMutation.isPending}
+              variant="outline"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+              Retry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-card border">
@@ -24,9 +77,19 @@ const FedWatchTool = () => {
             <BarChart3 className="h-5 w-5 text-blue-500" />
             CME Fed Watch Tool
           </h3>
-          <div className="text-xs text-muted-foreground flex items-center gap-1">
-            <Calendar className="h-3 w-3" />
-            Next Meeting: {fedData.nextMeeting}
+          <div className="flex items-center gap-3">
+            <div className="text-xs text-muted-foreground flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              Next Meeting: {fedData.nextMeeting}
+            </div>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => refreshMutation.mutate()}
+              disabled={refreshMutation.isPending}
+            >
+              <RefreshCw className={`h-3 w-3 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
         </div>
 
@@ -107,6 +170,9 @@ const FedWatchTool = () => {
           <p className="text-xs text-muted-foreground">
             <TrendingUp className="h-3 w-3 inline mr-1" />
             Data from CME FedWatch Tool. Fed rate changes significantly impact Bitcoin markets through liquidity and risk appetite.
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Last updated: {new Date(fedData.lastUpdated).toLocaleTimeString()}
           </p>
         </div>
       </CardContent>

@@ -1,34 +1,105 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, DollarSign, Globe, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, TrendingDown, DollarSign, Globe, Zap, RefreshCw } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+
+interface FinancialMarketData {
+  dxy: { value: number; change: number };
+  gold: { value: number; change: number };
+  spx: { value: number; change: number };
+  vix: { value: number; change: number };
+  lastUpdated: string;
+}
 
 const GlobalMarketIndicators = () => {
-  // These would come from backend APIs in production
+  const queryClient = useQueryClient();
+
+  const { data: marketData, isLoading, error } = useQuery<FinancialMarketData>({
+    queryKey: ['/api/financial/markets'],
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+  });
+
+  const refreshMutation = useMutation({
+    mutationFn: async () => {
+      return apiRequest('/api/financial/markets');
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['/api/financial/markets'], data);
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Global Market Context
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-32">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">Loading market data...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error || !marketData) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Global Market Context
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center">
+            <p className="text-red-500 mb-4">Failed to load market data</p>
+            <Button 
+              onClick={() => refreshMutation.mutate()} 
+              disabled={refreshMutation.isPending}
+              variant="outline"
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+              Retry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const indicators = [
     {
       title: "DXY (US Dollar Index)",
-      value: "106.45",
-      change: -0.12,
+      value: marketData.dxy.value.toFixed(2),
+      change: marketData.dxy.change,
       description: "Strong dollar often inversely correlates with Bitcoin",
       icon: <DollarSign className="h-4 w-4" />,
     },
     {
       title: "Gold (XAU/USD)",
-      value: "$2,635",
-      change: 0.8,
+      value: `$${marketData.gold.value.toLocaleString()}`,
+      change: marketData.gold.change,
       description: "Digital gold vs traditional store of value",
       icon: <Globe className="h-4 w-4" />,
     },
     {
       title: "SPX (S&P 500)",
-      value: "5,995",
-      change: 0.25,
+      value: marketData.spx.value.toLocaleString(),
+      change: marketData.spx.change,
       description: "Risk-on sentiment indicator for crypto markets",
       icon: <TrendingUp className="h-4 w-4" />,
     },
     {
       title: "VIX (Fear Index)",
-      value: "14.2",
-      change: -1.5,
+      value: marketData.vix.value.toFixed(1),
+      change: marketData.vix.change,
       description: "Market volatility and fear indicator",
       icon: <Zap className="h-4 w-4" />,
     },
@@ -37,9 +108,19 @@ const GlobalMarketIndicators = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Globe className="h-5 w-5" />
-          Global Market Context
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Global Market Context
+          </div>
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={() => refreshMutation.mutate()}
+            disabled={refreshMutation.isPending}
+          >
+            <RefreshCw className={`h-3 w-3 ${refreshMutation.isPending ? 'animate-spin' : ''}`} />
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -65,6 +146,9 @@ const GlobalMarketIndicators = () => {
               <p className="text-xs text-muted-foreground">{indicator.description}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-4 text-xs text-muted-foreground text-center">
+          Last updated: {new Date(marketData.lastUpdated).toLocaleTimeString()}
         </div>
       </CardContent>
     </Card>

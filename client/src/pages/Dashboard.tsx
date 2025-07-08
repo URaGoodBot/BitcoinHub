@@ -8,7 +8,7 @@ import { BitcoinMarketData } from "@/lib/types";
 import AIAnalysis from "@/components/AIAnalysis";
 import MarketSentiment from "@/components/MarketSentiment";
 import FedWatchTool from "@/components/FedWatchTool";
-import UST10YTreasury from "@/components/UST10YTreasury";
+import TreasuryWidget from "@/components/TreasuryWidget";
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
 import PriceAlertsWidget from "@/components/PriceAlertsWidget";
@@ -119,7 +119,7 @@ const Dashboard = () => {
       {/* Fed Watch Tool and Treasury Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <FedWatchTool />
-        <UST10YTreasury />
+        <TreasuryWidget />
       </div>
       
       {/* Market Summary, Price Alerts, and AI Prediction */}
