@@ -1,5 +1,113 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+
+interface CryptoEvent {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  isVirtual: boolean;
+  url: string;
+  category: 'conference' | 'webinar' | 'workshop' | 'meetup' | 'launch';
+  priority: 'high' | 'medium' | 'low';
+}
+
+const UpcomingEvents = () => {
+  const { data: events = [], isLoading: eventsLoading } = useQuery({
+    queryKey: ['/api/events'],
+    refetchInterval: 24 * 60 * 60 * 1000, // Refresh daily
+  });
+
+  const getDaysUntilEvent = (eventDate: string): string => {
+    const now = new Date();
+    const event = new Date(eventDate);
+    const timeDiff = event.getTime() - now.getTime();
+    const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Tomorrow';
+    if (days < 7) return `${days} days`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks`;
+    return `${Math.floor(days / 30)} months`;
+  };
+
+  const formatEventDate = (startDate: string, endDate: string): string => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    const startFormatted = start.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
+    
+    const endFormatted = end.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
+
+    const year = start.getFullYear();
+
+    if (start.toDateString() === end.toDateString()) {
+      return `${startFormatted}, ${year}`;
+    }
+
+    if (start.getMonth() === end.getMonth()) {
+      return `${startFormatted}-${end.getDate()}, ${year}`;
+    }
+
+    return `${startFormatted} - ${endFormatted}, ${year}`;
+  };
+
+  if (eventsLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-muted/20 p-3 rounded-lg border border-muted/30 animate-pulse">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-muted/50 rounded w-1/2"></div>
+              </div>
+              <div className="h-6 bg-muted/50 rounded w-16"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {events.map((event: CryptoEvent) => (
+        <div key={event.id} className="bg-muted/20 p-3 rounded-lg border border-muted/30">
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <h3 className="font-medium">
+                <a 
+                  href={event.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  {event.title}
+                </a>
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                {formatEventDate(event.startDate, event.endDate)} • {event.location}
+              </p>
+            </div>
+            <Badge variant={event.priority === 'high' ? 'default' : 'secondary'}>
+              {getDaysUntilEvent(event.startDate)}
+            </Badge>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 import { 
   Card, 
   CardContent, 
@@ -693,35 +801,7 @@ const NewsFeed = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="bg-muted/20 p-3 rounded-lg border border-muted/30">
-                <div className="flex justify-between">
-                  <h3 className="font-medium">Bitcoin 2025 Conference</h3>
-                  <Badge>2 days</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  May 13-15, 2025 • Miami, FL
-                </p>
-              </div>
-              
-              <div className="bg-muted/20 p-3 rounded-lg border border-muted/30">
-                <div className="flex justify-between">
-                  <h3 className="font-medium">Lightning Network Summit</h3>
-                  <Badge>8 days</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  May 19-20, 2025 • Virtual Event
-                </p>
-              </div>
-              
-              <div className="bg-muted/20 p-3 rounded-lg border border-muted/30">
-                <div className="flex justify-between">
-                  <h3 className="font-medium">DeFi & Bitcoin Conference</h3>
-                  <Badge>12 days</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  May 23-24, 2025 • Berlin, Germany
-                </p>
-              </div>
+              <UpcomingEvents />
             </CardContent>
           </Card>
         </div>

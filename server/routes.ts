@@ -230,6 +230,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to mark notification as read" });
     }
   });
+
+  app.get(`${apiPrefix}/events`, async (_req, res) => {
+    try {
+      const { getUpcomingEvents } = await import("./api/events");
+      const events = await getUpcomingEvents();
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      res.status(500).json({ message: "Failed to fetch events" });
+    }
+  });
   
   // Reddit API (using Twitter API functions internally for compatibility)
   app.get(`${apiPrefix}/twitter/tweets`, async (req, res) => {
