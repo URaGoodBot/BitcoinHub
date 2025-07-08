@@ -439,25 +439,37 @@ export class DatabaseStorage implements IStorage {
     return this.formatForumPost(post);
   }
   
-  private async formatForumPost(post: ForumPost): Promise<ForumPostType> {
+  private async formatForumPost(post: ForumPost, userId?: number): Promise<ForumPostType> {
     const [user] = post.userId 
       ? await db.select().from(users).where(eq(users.id, post.userId))
       : [undefined];
       
-    const comments = await db.select().from(forumComments)
-      .where(eq(forumComments.postId, post.id));
+    const replies = await db.select().from(forumPosts)
+      .where(and(eq(forumPosts.parentPostId, post.id), eq(forumPosts.isReply, true)))
+      .orderBy(desc(forumPosts.createdAt));
+      
+    // Get reaction counts
+    const reactions = await this.getPostReactions(post.id);
+    
+    // Get user's reaction if logged in
+    let userReaction = undefined;
+    if (userId) {
+      const [userReactionRecord] = await db.select().from(postReactions)
+        .where(and(eq(postReactions.postId, post.id), eq(postReactions.userId, userId)));
+      userReaction = userReactionRecord?.type;
+    }
       
     return {
       id: post.id.toString(),
       title: post.title || undefined,
       content: post.content,
       author: {
-        id: post.userId ? post.userId.toString() : "0",
-        username: user?.username || "Unknown",
+        id: user?.id?.toString() || "0",
+        username: user?.username || "Anonymous",
         avatar: user?.profileImageUrl || undefined,
       },
       createdAt: post.createdAt.toISOString(),
-      commentCount: comments.length,
+      commentCount: replies.length,
       upvotes: post.upvotes,
       downvotes: post.downvotes || 0,
       categories: post.categories || [],
@@ -466,11 +478,13 @@ export class DatabaseStorage implements IStorage {
       mentions: post.mentions || [],
       hashtags: post.hashtags || [],
       reactions: {
-        like: 0,
-        love: 0,
-        rocket: 0,
-        fire: 0
-      }
+        like: reactions.like || 0,
+        love: reactions.love || 0,
+        rocket: reactions.rocket || 0,
+        fire: reactions.fire || 0,
+        userReaction
+      },
+      replies: await Promise.all(replies.slice(0, 3).map(reply => this.formatForumPost(reply, userId)))
     };
   }
   
@@ -629,6 +643,57 @@ export class DatabaseStorage implements IStorage {
         }
       ]
     };
+  }
+
+  async getPostReplies(postId: number, userId?: number): Promise<ForumPostType[]> {
+    const replies = await db.select().from(forumPosts)
+      .where(and(eq(forumPosts.parentPostId, postId), eq(forumPosts.isReply, true)))
+      .orderBy(desc(forumPosts.createdAt));
+      
+    return Promise.all(replies.map(reply => this.formatForumPost(reply)));
+  }
+
+  async toggleReaction(postId: number, userId: number, reactionType: string): Promise<void> {
+    const [existingReaction] = await db.select().from(postReactions)
+      .where(and(eq(postReactions.postId, postId), eq(postReactions.userId, userId)));
+
+    if (existingReaction) {
+      if (existingReaction.type === reactionType) {
+        // Remove reaction if same type
+        await db.delete(postReactions)
+          .where(and(eq(postReactions.postId, postId), eq(postReactions.userId, userId)));
+      } else {
+        // Update reaction type
+        await db.update(postReactions)
+          .set({ type: reactionType })
+          .where(and(eq(postReactions.postId, postId), eq(postReactions.userId, userId)));
+      }
+    } else {
+      // Add new reaction
+      await db.insert(postReactions).values({
+        postId,
+        userId,
+        type: reactionType
+      });
+    }
+  }
+
+  async getPostReactions(postId: number): Promise<{[key: string]: number}> {
+    const reactions = await db.select().from(postReactions)
+      .where(eq(postReactions.postId, postId));
+
+    const counts: {[key: string]: number} = {
+      like: 0,
+      love: 0,
+      rocket: 0,
+      fire: 0
+    };
+
+    reactions.forEach(reaction => {
+      counts[reaction.type] = (counts[reaction.type] || 0) + 1;
+    });
+
+    return counts;
   }
 }
 

@@ -68,13 +68,15 @@ const NewPostForm = ({ onPostCreated, placeholder = "What's happening in Bitcoin
     const mentions = content.match(/@(\w+)/g)?.map(mention => mention.slice(1)) || [];
 
     createPostMutation.mutate({
-      userId: 1, // Demo user
-      title: showTitle ? title || undefined : undefined,
+      userId: 2, // HodlMyBeer21 user
+      title: showTitle && title ? title : undefined,
       content: content.trim(),
       categories,
       hashtags,
       mentions,
-      isReply: false
+      isReply: false,
+      upvotes: 0,
+      downvotes: 0
     });
   };
 
@@ -101,7 +103,7 @@ const NewPostForm = ({ onPostCreated, placeholder = "What's happening in Bitcoin
         <div className="flex items-start space-x-3">
           <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center">
             <span className="text-white text-sm font-medium">
-              {getUserInitials("HodlMyBeer21")}
+              HM
             </span>
           </div>
           <div className="flex-1">

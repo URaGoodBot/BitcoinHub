@@ -361,8 +361,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid reaction type" });
       }
       
-      // For demo purposes, we'll use a guest user (id: 1)
-      await storage.toggleReaction(postId, 1, type);
+      // For demo purposes, we'll use HodlMyBeer21 user (id: 2)
+      await storage.toggleReaction(postId, 2, type);
       
       // Return updated reaction counts
       const reactions = await storage.getPostReactions(postId);

@@ -12,7 +12,8 @@ import {
   MoreHorizontal,
   Rocket,
   ThumbsUp,
-  Reply
+  Reply,
+  Zap
 } from "lucide-react";
 import { formatRelativeTime, getUserInitials } from "@/lib/utils";
 import { ForumPost } from "@/lib/types";
@@ -56,11 +57,13 @@ const SocialForumPost = ({ post, showReplies = true }: SocialForumPostProps) => 
   const replyMutation = useMutation({
     mutationFn: async (content: string) => {
       const response = await apiRequest('POST', '/api/forum/posts', {
-        userId: 1, // Demo user
+        userId: 2, // HodlMyBeer21 user
         content,
         isReply: true,
         parentPostId: parseInt(post.id),
-        categories: []
+        categories: [],
+        upvotes: 0,
+        downvotes: 0
       });
       return response.json();
     },
@@ -111,7 +114,7 @@ const SocialForumPost = ({ post, showReplies = true }: SocialForumPostProps) => 
     { type: 'like', icon: ThumbsUp, label: 'Like', count: post.reactions?.like || 0 },
     { type: 'love', icon: Heart, label: 'Love', count: post.reactions?.love || 0 },
     { type: 'rocket', icon: Rocket, label: 'Rocket', count: post.reactions?.rocket || 0 },
-    { type: 'fire', icon: Heart, label: 'Fire', count: post.reactions?.fire || 0 },
+    { type: 'fire', icon: Zap, label: 'Fire', count: post.reactions?.fire || 0 },
   ];
 
   const displayReplies = showAllReplies ? allReplies : (post.replies || []);
