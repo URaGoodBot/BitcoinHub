@@ -26,7 +26,11 @@ const TreasuryWidget = () => {
 
   const refreshMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/financial/treasury');
+      const response = await fetch('/api/financial/treasury');
+      if (!response.ok) {
+        throw new Error('Failed to fetch Treasury data');
+      }
+      return response.json();
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/financial/treasury'], data);

@@ -28,7 +28,11 @@ const TruflationWidget = () => {
 
   const refreshMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/financial/truflation');
+      const response = await fetch('/api/financial/truflation');
+      if (!response.ok) {
+        throw new Error('Failed to fetch Truflation data');
+      }
+      return response.json();
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/financial/truflation'], data);

@@ -22,7 +22,11 @@ const GlobalMarketIndicators = () => {
 
   const refreshMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/financial/markets');
+      const response = await fetch('/api/financial/markets');
+      if (!response.ok) {
+        throw new Error('Failed to fetch market data');
+      }
+      return response.json();
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/financial/markets'], data);

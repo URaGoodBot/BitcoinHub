@@ -29,7 +29,11 @@ const FedWatchTool = () => {
 
   const refreshMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest('/api/financial/fedwatch');
+      const response = await fetch('/api/financial/fedwatch');
+      if (!response.ok) {
+        throw new Error('Failed to fetch Fed Watch data');
+      }
+      return response.json();
     },
     onSuccess: (data) => {
       queryClient.setQueryData(['/api/financial/fedwatch'], data);
