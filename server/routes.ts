@@ -203,6 +203,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Web Resources API endpoints
+  app.get(`${apiPrefix}/web-resources/m2-chart`, async (_req, res) => {
+    try {
+      const { getM2ChartData } = await import("./api/webResources");
+      const data = await getM2ChartData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching M2 chart data:", error);
+      res.status(500).json({ message: "Failed to fetch M2 chart data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/web-resources/liquidation`, async (_req, res) => {
+    try {
+      const { getLiquidationData } = await import("./api/webResources");
+      const data = await getLiquidationData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching liquidation data:", error);
+      res.status(500).json({ message: "Failed to fetch liquidation data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/web-resources/pi-cycle`, async (_req, res) => {
+    try {
+      const { getPiCycleData } = await import("./api/webResources");
+      const data = await getPiCycleData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching Pi Cycle data:", error);
+      res.status(500).json({ message: "Failed to fetch Pi Cycle data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/web-resources/fear-greed`, async (_req, res) => {
+    try {
+      const { getFearGreedData } = await import("./api/webResources");
+      const data = await getFearGreedData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching Fear & Greed data:", error);
+      res.status(500).json({ message: "Failed to fetch Fear & Greed data" });
+    }
+  });
+
   app.get(`${apiPrefix}/financial/truflation`, async (_req, res) => {
     try {
       const { getTruflationData } = await import("./api/truflation");

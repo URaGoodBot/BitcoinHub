@@ -152,6 +152,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 09, 2025. Fixed price alert functionality: implemented proper session-based authentication for all user-specific features (price alerts, portfolio, learning progress), replacing hardcoded user IDs with dynamic session user identification
 - July 09, 2025. Enhanced notification system with interactive functionality: notifications are now clickable to dismiss/view, automatically removed when clicked, "View all notifications" toggles full list display, added "Clear all" button, and implemented proper backend notification management with removal tracking
 - July 09, 2025. Removed Total Bitcoin Spot ETF Net Inflow widget entirely from Dashboard at user request, cleaned up component file and imports
+- July 09, 2025. Created comprehensive Web Resources tab displaying live data from 4 essential Bitcoin analysis websites: BGEometrics M2/Bitcoin correlation charts, Coinglass liquidation heatmaps, Bitcoin Magazine Pro Pi Cycle Top Indicator, and CoinMarketCap Fear & Greed Index with real-time API integration and automatic refresh intervals
 
 ## User Preferences
 

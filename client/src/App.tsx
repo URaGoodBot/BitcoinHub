@@ -11,6 +11,7 @@ import Learn from "@/pages/Learn";
 import MemeCommunity from "@/pages/MemeCommunity";
 import Portfolio from "@/pages/Portfolio";
 import NewsFeed from "@/pages/NewsFeed";
+import WebResources from "@/pages/WebResources";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -42,6 +43,7 @@ function Router() {
         <Route path="/learn" component={Learn} />
         <Route path="/community" component={MemeCommunity} />
         <Route path="/portfolio" component={Portfolio} />
+        <Route path="/web-resources" component={WebResources} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

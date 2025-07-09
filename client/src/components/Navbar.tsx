@@ -117,6 +117,11 @@ const Navbar = () => {
                   Portfolio
                 </a>
               </Link>
+              <Link href="/web-resources">
+                <a className={`${isActiveLink('/web-resources') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Web Resources
+                </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center">
