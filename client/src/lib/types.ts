@@ -60,6 +60,9 @@ export interface ForumPost {
   id: string;
   title?: string;
   content: string;
+  imageUrl?: string; // For meme images
+  memeCaption?: string; // Caption for memes
+  memeTemplate?: string; // Template name (e.g., "Drake pointing", "Distracted boyfriend")
   author: {
     id: string;
     username: string;
@@ -85,6 +88,9 @@ export interface PostReactionSummary {
   fire: number;
   userReaction?: string;
 }
+
+// Alias for compatibility
+export type ForumPostType = ForumPost;
 
 export interface BitcoinHolding {
   amount: number;

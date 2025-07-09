@@ -463,6 +463,9 @@ export class DatabaseStorage implements IStorage {
       id: post.id.toString(),
       title: post.title || undefined,
       content: post.content,
+      imageUrl: post.imageUrl || undefined,
+      memeCaption: post.memeCaption || undefined,
+      memeTemplate: post.memeTemplate || undefined,
       author: {
         id: user?.id?.toString() || "0",
         username: user?.username || "Anonymous",

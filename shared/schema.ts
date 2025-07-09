@@ -33,12 +33,15 @@ export const insertPriceAlertSchema = createInsertSchema(priceAlerts).pick({
   price: true,
 });
 
-// Forum posts
+// Forum posts (now meme-focused)
 export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
   title: text("title"), // Optional for tweet-style posts
   content: text("content").notNull(),
+  imageUrl: text("image_url"), // For meme images
+  memeCaption: text("meme_caption"), // Caption for memes
+  memeTemplate: text("meme_template"), // Template name (e.g., "Drake pointing", "Distracted boyfriend")
   categories: text("categories").array().default([]),
   upvotes: integer("upvotes").default(0).notNull(),
   downvotes: integer("downvotes").default(0).notNull(),
@@ -55,6 +58,9 @@ export const insertForumPostSchema = createInsertSchema(forumPosts).pick({
   userId: true,
   title: true,
   content: true,
+  imageUrl: true,
+  memeCaption: true,
+  memeTemplate: true,
   categories: true,
   isReply: true,
   parentPostId: true,

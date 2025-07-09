@@ -69,7 +69,7 @@ const Navbar = () => {
               </Link>
               <Link href="/community">
                 <a className={`${isActiveLink('/community') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                  Community
+                  Memes
                 </a>
               </Link>
               <Link href="/portfolio">
