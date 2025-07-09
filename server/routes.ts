@@ -219,8 +219,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get(`${apiPrefix}/notifications`, async (_req, res) => {
     try {
-      const { getAllNotifications } = await import("./api/notifications");
-      const notifications = await getAllNotifications();
+      const { getFilteredNotifications } = await import("./api/notifications");
+      const notifications = await getFilteredNotifications();
       res.json(notifications);
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -231,12 +231,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(`${apiPrefix}/notifications/:id/read`, async (req, res) => {
     try {
       const { id } = req.params;
-      // In a real app, this would update the database
-      // For now, just return success
-      res.json({ success: true, message: "Notification marked as read" });
+      const { removeNotification } = await import("./api/notifications");
+      
+      const success = removeNotification(id);
+      if (success) {
+        res.json({ success: true, message: "Notification marked as read and removed" });
+      } else {
+        res.status(400).json({ success: false, message: "Failed to remove notification" });
+      }
     } catch (error) {
       console.error("Error marking notification as read:", error);
       res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  app.post(`${apiPrefix}/notifications/clear-all`, async (req, res) => {
+    try {
+      const { clearAllNotifications } = await import("./api/notifications");
+      
+      const success = clearAllNotifications();
+      if (success) {
+        res.json({ success: true, message: "All notifications cleared" });
+      } else {
+        res.status(400).json({ success: false, message: "Failed to clear notifications" });
+      }
+    } catch (error) {
+      console.error("Error clearing all notifications:", error);
+      res.status(500).json({ message: "Failed to clear all notifications" });
     }
   });
 

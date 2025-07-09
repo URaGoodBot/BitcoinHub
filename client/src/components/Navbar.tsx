@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Bell, LogOut, User, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
+import { Bell, LogOut, User, TrendingUp, TrendingDown, AlertCircle, X } from "lucide-react";
 import characterImage from "@assets/20250522_083556_1751982148928.jpg";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showAllNotifications, setShowAllNotifications] = useState(false);
   const { user, isAuthenticated, isGuest, logout } = useAuth();
+  const queryClient = useQueryClient();
   
   const isActiveLink = (path: string) => location === path;
 
@@ -22,6 +25,43 @@ const Navbar = () => {
   });
 
   const unreadCount = notifications.filter((n: any) => !n.read).length;
+
+  // Mutation to mark notification as read and remove it
+  const markAsReadMutation = useMutation({
+    mutationFn: async (notificationId: string) => {
+      await apiRequest('POST', `/api/notifications/${notificationId}/read`, {});
+    },
+    onSuccess: (_, notificationId) => {
+      // Remove the notification from the cache
+      queryClient.setQueryData(['/api/notifications'], (oldData: any[]) => {
+        return oldData ? oldData.filter(n => n.id !== notificationId) : [];
+      });
+    },
+  });
+
+  // Mutation to clear all notifications
+  const clearAllMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest('POST', '/api/notifications/clear-all', {});
+    },
+    onSuccess: () => {
+      // Clear all notifications from cache
+      queryClient.setQueryData(['/api/notifications'], []);
+      setShowAllNotifications(false);
+    },
+  });
+
+  const handleNotificationClick = (notificationId: string) => {
+    markAsReadMutation.mutate(notificationId);
+  };
+
+  const handleViewAllNotifications = () => {
+    setShowAllNotifications(!showAllNotifications);
+  };
+
+  const handleClearAllNotifications = () => {
+    clearAllMutation.mutate();
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -106,10 +146,14 @@ const Navbar = () => {
                   </div>
                 ) : notifications.length > 0 ? (
                   <div className="max-h-96 overflow-y-auto">
-                    {notifications.map((notification: any) => {
+                    {(showAllNotifications ? notifications : notifications.slice(0, 5)).map((notification: any) => {
                       const Icon = getNotificationIcon(notification.type);
                       return (
-                        <DropdownMenuItem key={notification.id} className="px-3 py-3 cursor-pointer">
+                        <DropdownMenuItem 
+                          key={notification.id} 
+                          className="px-3 py-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                          onClick={() => handleNotificationClick(notification.id)}
+                        >
                           <div className="flex items-start gap-3 w-full">
                             <div className={`p-1 rounded-full ${
                               notification.priority === 'high' ? 'bg-red-100 text-red-600' :
@@ -133,9 +177,22 @@ const Navbar = () => {
                                 })}
                               </p>
                             </div>
-                            {!notification.read && (
-                              <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
-                            )}
+                            <div className="flex items-center gap-2">
+                              {!notification.read && (
+                                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleNotificationClick(notification.id);
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </div>
                         </DropdownMenuItem>
                       );
@@ -148,9 +205,22 @@ const Navbar = () => {
                   </div>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="px-3 py-2 justify-center text-sm text-primary cursor-pointer">
-                  View all notifications
-                </DropdownMenuItem>
+                <div className="px-3 py-2 flex gap-2">
+                  <DropdownMenuItem 
+                    className="flex-1 justify-center text-sm text-primary cursor-pointer"
+                    onClick={handleViewAllNotifications}
+                  >
+                    {showAllNotifications ? 'Show less' : `View all (${notifications.length})`}
+                  </DropdownMenuItem>
+                  {notifications.length > 0 && (
+                    <DropdownMenuItem 
+                      className="justify-center text-sm text-destructive cursor-pointer"
+                      onClick={handleClearAllNotifications}
+                    >
+                      Clear all
+                    </DropdownMenuItem>
+                  )}
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
             

@@ -21,6 +21,9 @@ let notificationCache: {
   data: Notification[];
 } | null = null;
 
+// Track removed notifications per session
+let removedNotifications: Set<string> = new Set();
+
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 function isCacheValid(): boolean {
@@ -292,6 +295,50 @@ export async function getAllNotifications(): Promise<Notification[]> {
     return notificationCache.data;
   } catch (error) {
     console.error('Error getting all notifications:', error);
+    return [];
+  }
+}
+
+export function removeNotification(notificationId: string): boolean {
+  try {
+    // Add to removed set
+    removedNotifications.add(notificationId);
+    
+    // Remove from cache if it exists
+    if (notificationCache) {
+      notificationCache.data = notificationCache.data.filter(n => n.id !== notificationId);
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error removing notification:', error);
+    return false;
+  }
+}
+
+export function clearAllNotifications(): boolean {
+  try {
+    // Clear cache
+    if (notificationCache) {
+      // Add all current notifications to removed set
+      notificationCache.data.forEach(n => removedNotifications.add(n.id));
+      notificationCache.data = [];
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error clearing all notifications:', error);
+    return false;
+  }
+}
+
+export async function getFilteredNotifications(): Promise<Notification[]> {
+  try {
+    const allNotifications = await getAllNotifications();
+    // Filter out removed notifications
+    return allNotifications.filter(n => !removedNotifications.has(n.id));
+  } catch (error) {
+    console.error('Error getting filtered notifications:', error);
     return [];
   }
 }
