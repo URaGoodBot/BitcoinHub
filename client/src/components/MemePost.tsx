@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   Heart, 
   MessageCircle, 
@@ -41,12 +42,8 @@ export function MemePost({ post }: MemePostProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Check current user authentication
-  const { data: currentUser } = useQuery({
-    queryKey: ['/api/auth/me'],
-    retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  // Check current user authentication - use auth context instead
+  const { user: currentUser } = useAuth();
 
   const reactionMutation = useMutation({
     mutationFn: async (type: string) => {

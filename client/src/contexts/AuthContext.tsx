@@ -39,23 +39,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isGuest, setIsGuest] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [hasTriedAuth, setHasTriedAuth] = useState(false);
   const { toast } = useToast();
 
-  // Check for existing session on mount
-  const { data: sessionData, isLoading: sessionLoading } = useQuery({
+  // Check for existing session on mount - only run once
+  const { data: sessionData, isLoading: sessionLoading, isError } = useQuery({
     queryKey: ["/api/auth/me"],
     retry: false,
-    enabled: !isInitialized,
+    enabled: !hasTriedAuth,
+    staleTime: Infinity, // Don't refetch automatically
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   useEffect(() => {
-    if (!sessionLoading && !isInitialized) {
-      if (sessionData) {
+    if (!sessionLoading && !hasTriedAuth) {
+      setHasTriedAuth(true);
+      if (sessionData && !isError) {
         setUser(sessionData as User);
       }
       setIsInitialized(true);
     }
-  }, [sessionData, sessionLoading, isInitialized]);
+  }, [sessionData, sessionLoading, hasTriedAuth, isError]);
+
+  // If still initializing, show loading
+  const isLoading = !isInitialized;
 
   const loginMutation = useMutation({
     mutationFn: async ({ username, password }: { username: string; password: string }) => {
@@ -135,7 +144,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     isAuthenticated: !!user,
     isGuest,
-    isLoading: sessionLoading || !isInitialized,
+    isLoading: !isInitialized,
     login,
     register,
     logout,
