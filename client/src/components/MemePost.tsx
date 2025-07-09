@@ -95,6 +95,26 @@ export function MemePost({ post }: MemePostProps) {
     }
   });
 
+  const deleteReplyMutation = useMutation({
+    mutationFn: async (replyId: string) => {
+      await apiRequest('DELETE', `/api/forum/posts/${replyId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/forum/posts'] });
+      toast({
+        title: "Reply deleted",
+        description: "The reply has been successfully deleted",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting reply",
+        description: "Failed to delete the reply. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleReaction = (type: string) => {
     if (!isAuthenticated || isGuest) {
       toast({
@@ -124,6 +144,12 @@ export function MemePost({ post }: MemePostProps) {
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete this post?')) {
       deletePostMutation.mutate();
+    }
+  };
+
+  const handleDeleteReply = (replyId: string) => {
+    if (confirm('Are you sure you want to delete this reply?')) {
+      deleteReplyMutation.mutate(replyId);
     }
   };
 
@@ -413,11 +439,25 @@ export function MemePost({ post }: MemePostProps) {
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2">
-                    <span className="font-medium text-sm">{reply.author.username}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}
-                    </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-medium text-sm">{reply.author.username}</span>
+                      <span className="text-muted-foreground text-xs">
+                        {formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}
+                      </span>
+                    </div>
+                    {/* Delete button for replies - only for HodlMyBeer21 */}
+                    {currentUser?.username === "HodlMyBeer21" && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleDeleteReply(reply.id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-6 w-6 p-0"
+                        disabled={deleteReplyMutation.isPending}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    )}
                   </div>
                   <p className="text-sm mt-1">{reply.content}</p>
                 </div>
