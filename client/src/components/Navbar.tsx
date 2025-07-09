@@ -288,30 +288,20 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="sm:hidden border-t border-muted/20" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link href="/">
-              <a className={`${isActiveLink('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Dashboard
-              </a>
+            <Link href="/" className={`${isActiveLink('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              Dashboard
             </Link>
-            <Link href="/news">
-              <a className={`${isActiveLink('/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                News
-              </a>
+            <Link href="/news" className={`${isActiveLink('/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              News
             </Link>
-            <Link href="/learn">
-              <a className={`${isActiveLink('/learn') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Learn
-              </a>
+            <Link href="/learn" className={`${isActiveLink('/learn') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              Learn
             </Link>
-            <Link href="/community">
-              <a className={`${isActiveLink('/community') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Community
-              </a>
+            <Link href="/community" className={`${isActiveLink('/community') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              Community
             </Link>
-            <Link href="/portfolio">
-              <a className={`${isActiveLink('/portfolio') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Portfolio
-              </a>
+            <Link href="/portfolio" className={`${isActiveLink('/portfolio') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              Portfolio
             </Link>
           </div>
         </div>
