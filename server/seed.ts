@@ -16,32 +16,7 @@ async function seed() {
 
     console.log("Created demo user:", user.username);
 
-    // Create some demo forum posts
-    await db.insert(forumPosts).values([
-      {
-        userId: user.id,
-        title: "Bitcoin's Lightning Network: The Future of Payments?",
-        content: "I've been experimenting with Lightning Network payments and the speed is incredible. What are your thoughts on its adoption potential?",
-        categories: ["Technology", "Lightning"],
-        upvotes: 15
-      },
-      {
-        userId: user.id,
-        title: "HODLing Strategy Discussion",
-        content: "What's your long-term Bitcoin strategy? DCA? Lump sum? I'm curious about different approaches to building a position.",
-        categories: ["Investment", "Strategy"],
-        upvotes: 8
-      },
-      {
-        userId: user.id,
-        title: "Self-Custody vs Exchange Storage",
-        content: "Just moved my Bitcoin to a hardware wallet. The peace of mind is worth the extra steps. Anyone else making the transition?",
-        categories: ["Security", "Wallets"],
-        upvotes: 22
-      }
-    ]);
-
-    console.log("Created demo forum posts");
+    // No demo forum posts - keep memes section clean for user-generated content
 
     // Create some daily tips
     await db.insert(dailyTips).values([

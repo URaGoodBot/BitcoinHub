@@ -99,20 +99,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date()
     });
     
-    // Create sample forum posts
-    this.createForumPost({
-      userId: 1,
-      title: "What's the safest hardware wallet for small holdings?",
-      content: "I'm new to Bitcoin and looking for recommendations on a beginner-friendly hardware wallet that doesn't break the bank. I've heard about Ledger and Trezor but I'm not sure which one is better for a beginner with a small amount of Bitcoin.",
-      categories: ["Wallets"]
-    });
-    
-    this.createForumPost({
-      userId: 1,
-      title: "Discussion: What's your Bitcoin price prediction for EOY?",
-      content: "With the recent pump and macro environment changing, I'm curious what everyone thinks about BTC's price by the end of the year. I'm personally thinking we might see $60k again if the market sentiment continues to improve.",
-      categories: ["Price Discussion"]
-    });
+    // No sample forum posts - keep memes section clean
     
     // Add daily tips
     this.tips.push({
