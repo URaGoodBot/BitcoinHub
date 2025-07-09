@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Heart, 
   MessageCircle, 
@@ -16,7 +17,8 @@ import {
   Rocket,
   Hash,
   Tag,
-  Music
+  Music,
+  Trash2
 } from "lucide-react";
 import type { ForumPostType } from "@/lib/types";
 
@@ -37,6 +39,7 @@ export function MemePost({ post }: MemePostProps) {
   const [showFullImage, setShowFullImage] = useState(false);
 
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const reactionMutation = useMutation({
     mutationFn: async (type: string) => {
@@ -68,6 +71,26 @@ export function MemePost({ post }: MemePostProps) {
     }
   });
 
+  const deletePostMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest('DELETE', `/api/forum/posts/${post.id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/forum/posts'] });
+      toast({
+        title: "Post deleted",
+        description: "The meme post has been successfully deleted",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting post",
+        description: "Failed to delete the post. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleReaction = (type: string) => {
     reactionMutation.mutate(type);
   };
@@ -76,6 +99,12 @@ export function MemePost({ post }: MemePostProps) {
     e.preventDefault();
     if (!replyContent.trim()) return;
     replyMutation.mutate(replyContent);
+  };
+
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete this post?')) {
+      deletePostMutation.mutate();
+    }
   };
 
   const getUserInitials = (username: string) => {
@@ -107,9 +136,23 @@ export function MemePost({ post }: MemePostProps) {
               )}
             </div>
           </div>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center space-x-2">
+            {/* Delete button only for HodlMyBeer21 (user ID 2) */}
+            {post.author.username === "HodlMyBeer21" && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleDelete}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                disabled={deletePostMutation.isPending}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
 

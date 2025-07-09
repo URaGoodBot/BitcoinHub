@@ -31,6 +31,9 @@ export interface IStorage {
   toggleReaction(postId: number, userId: number, reactionType: string): Promise<void>;
   getPostReactions(postId: number): Promise<{[key: string]: number}>;
   
+  // Delete operations (only for HodlMyBeer21)
+  deleteForumPost(postId: number, userId: number): Promise<boolean>;
+  
   // Portfolio operations
   getPortfolio(userId: number): Promise<Portfolio>;
   updatePortfolio(userId: number, asset: string, amount: number): Promise<Portfolio>;
@@ -384,6 +387,27 @@ export class MemStorage implements IStorage {
       ]
     };
   }
+
+  async deleteForumPost(postId: number, userId: number): Promise<boolean> {
+    // Only HodlMyBeer21 (user ID 2) can delete posts
+    if (userId !== 2) {
+      return false;
+    }
+    
+    const post = this.posts.get(postId);
+    if (!post) {
+      return false;
+    }
+    
+    // Delete the post
+    this.posts.delete(postId);
+    
+    // Delete any replies to this post
+    const repliesToDelete = Array.from(this.posts.values()).filter(p => p.replyToId === postId);
+    repliesToDelete.forEach(reply => this.posts.delete(reply.id));
+    
+    return true;
+  }
 }
 
 // Database storage implementation
@@ -700,6 +724,29 @@ export class DatabaseStorage implements IStorage {
     });
 
     return counts;
+  }
+
+  async deleteForumPost(postId: number, userId: number): Promise<boolean> {
+    // Only HodlMyBeer21 (user ID 2) can delete posts
+    if (userId !== 2) {
+      return false;
+    }
+    
+    const [post] = await db.select().from(forumPosts).where(eq(forumPosts.id, postId));
+    if (!post) {
+      return false;
+    }
+    
+    // Delete any replies to this post first
+    await db.delete(forumPosts).where(eq(forumPosts.parentPostId, postId));
+    
+    // Delete the post reactions
+    await db.delete(postReactions).where(eq(postReactions.postId, postId));
+    
+    // Delete the post itself
+    await db.delete(forumPosts).where(eq(forumPosts.id, postId));
+    
+    return true;
   }
 }
 

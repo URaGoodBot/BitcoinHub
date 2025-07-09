@@ -376,6 +376,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete a forum post (only HodlMyBeer21 can delete)
+  app.delete(`${apiPrefix}/forum/posts/:id`, async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      if (isNaN(postId)) {
+        return res.status(400).json({ message: "Invalid post ID" });
+      }
+      
+      // Only HodlMyBeer21 (user ID 2) can delete posts
+      const userId = 2; // HodlMyBeer21
+      
+      const success = await storage.deleteForumPost(postId, userId);
+      if (!success) {
+        return res.status(403).json({ message: "Not authorized to delete this post" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      res.status(500).json({ message: "Failed to delete post" });
+    }
+  });
+
   // File upload endpoint
   app.post(`${apiPrefix}/upload`, upload.single('file'), handleFileUpload);
 
