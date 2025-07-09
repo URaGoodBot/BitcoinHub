@@ -454,11 +454,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Static file serving for uploads
   app.use('/static', express.static(path.join(process.cwd(), 'static')));
 
-  // Portfolio
-  app.get(`${apiPrefix}/portfolio`, async (req, res) => {
+  // Portfolio - require authentication
+  app.get(`${apiPrefix}/portfolio`, requireAuth, async (req, res) => {
     try {
-      // For demo purposes, we'll use a guest user (id: 1)
-      const portfolio = await storage.getPortfolio(1);
+      const userId = (req.session as any).userId;
+      const portfolio = await storage.getPortfolio(userId);
       res.json(portfolio);
     } catch (error) {
       console.error("Error fetching portfolio:", error);
@@ -466,16 +466,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post(`${apiPrefix}/portfolio/bitcoin`, async (req, res) => {
+  app.post(`${apiPrefix}/portfolio/bitcoin`, requireAuth, async (req, res) => {
     try {
       const schema = z.object({
         amount: z.number().positive()
       });
       
       const { amount } = schema.parse(req.body);
+      const userId = (req.session as any).userId;
       
-      // For demo purposes, we'll use a guest user (id: 1)
-      const portfolio = await storage.updatePortfolio(1, "bitcoin", amount);
+      const portfolio = await storage.updatePortfolio(userId, "bitcoin", amount);
       res.json(portfolio);
     } catch (error) {
       console.error("Error updating portfolio:", error);
@@ -483,11 +483,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Price alerts
-  app.get(`${apiPrefix}/alerts`, async (req, res) => {
+  // Price alerts - require authentication
+  app.get(`${apiPrefix}/alerts`, requireAuth, async (req, res) => {
     try {
-      // For demo purposes, we'll use a guest user (id: 1)
-      const alerts = await storage.getPriceAlerts(1);
+      const userId = (req.session as any).userId;
+      const alerts = await storage.getPriceAlerts(userId);
       res.json(alerts);
     } catch (error) {
       console.error("Error fetching price alerts:", error);
@@ -495,19 +495,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user's price alerts
-  app.get(`${apiPrefix}/alerts`, async (req, res) => {
-    try {
-      // For demo purposes, we'll use a guest user (id: 1)
-      const alerts = await storage.getPriceAlerts(1);
-      res.json(alerts);
-    } catch (error) {
-      console.error("Error fetching price alerts:", error);
-      res.status(500).json({ message: "Failed to fetch price alerts" });
-    }
-  });
-
-  app.post(`${apiPrefix}/alerts`, async (req, res) => {
+  app.post(`${apiPrefix}/alerts`, requireAuth, async (req, res) => {
     try {
       const schema = z.object({
         type: z.enum(["above", "below"]),
@@ -515,10 +503,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const { type, price } = schema.parse(req.body);
+      const userId = (req.session as any).userId;
       
-      // For demo purposes, we'll use a guest user (id: 1)
       const alert = await storage.createPriceAlert({
-        userId: 1,
+        userId,
         type,
         price
       });
@@ -530,12 +518,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete(`${apiPrefix}/alerts/:id`, async (req, res) => {
+  app.delete(`${apiPrefix}/alerts/:id`, requireAuth, async (req, res) => {
     try {
       const alertId = parseInt(req.params.id);
+      const userId = (req.session as any).userId;
       
       if (isNaN(alertId)) {
         return res.status(400).json({ message: "Invalid alert ID" });
+      }
+      
+      // Verify the alert belongs to the current user before deleting
+      const userAlerts = await storage.getPriceAlerts(userId);
+      const alertToDelete = userAlerts.find(alert => alert.id === alertId.toString());
+      
+      if (!alertToDelete) {
+        return res.status(404).json({ message: "Alert not found or not owned by user" });
       }
       
       await storage.deletePriceAlert(alertId);
@@ -546,11 +543,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Learning progress
-  app.get(`${apiPrefix}/learning/progress`, async (req, res) => {
+  // Learning progress - require authentication
+  app.get(`${apiPrefix}/learning/progress`, requireAuth, async (req, res) => {
     try {
-      // For demo purposes, we'll use a guest user (id: 1)
-      const progress = await storage.getLearningProgress(1);
+      const userId = (req.session as any).userId;
+      const progress = await storage.getLearningProgress(userId);
       res.json(progress);
     } catch (error) {
       console.error("Error fetching learning progress:", error);

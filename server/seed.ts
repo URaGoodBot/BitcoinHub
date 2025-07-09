@@ -6,15 +6,24 @@ async function seed() {
   console.log("Starting database seeding...");
 
   try {
-    // Create a demo user
+    // Create demo users
     const hashedPassword = await bcrypt.hash("demo123", 10);
+    const hodlPassword = await bcrypt.hash("hodlmybeer21", 10);
+    
     const [user] = await db.insert(users).values({
       username: "bitcoinfan",
       password: hashedPassword,
       streakDays: 5
     }).returning();
 
+    const [hodlUser] = await db.insert(users).values({
+      username: "HodlMyBeer21",
+      password: hodlPassword,
+      streakDays: 42
+    }).returning();
+
     console.log("Created demo user:", user.username);
+    console.log("Created HodlMyBeer21 user:", hodlUser.username);
 
     // No demo forum posts - keep memes section clean for user-generated content
 
@@ -56,7 +65,7 @@ async function seed() {
 }
 
 // Run the seed function if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   seed().then(() => process.exit(0));
 }
 

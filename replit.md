@@ -149,6 +149,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 09, 2025. Removed all fallback baseline values from financial APIs: Both Truflation and Treasury APIs now only display data from authentic website sources, returning error messages when live data is unavailable instead of showing outdated information
 - July 09, 2025. Replaced Truflation API widget with direct visual representation showing authentic 1.66% inflation rate from Truflation.com, including prominent link to view live widget on source website for real-time data access
 - July 09, 2025. Updated U.S. 10 Year Treasury widget with visual representation showing authentic 4.419% yield, realistic daily change (+0.004) and percentage change (+0.09%), with links to MarketWatch for live updates
+- July 09, 2025. Fixed price alert functionality: implemented proper session-based authentication for all user-specific features (price alerts, portfolio, learning progress), replacing hardcoded user IDs with dynamic session user identification
 
 ## User Preferences
 
