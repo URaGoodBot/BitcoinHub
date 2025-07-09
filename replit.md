@@ -154,6 +154,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 09, 2025. Removed Total Bitcoin Spot ETF Net Inflow widget entirely from Dashboard at user request, cleaned up component file and imports
 - July 09, 2025. Created comprehensive Web Resources tab displaying live data from 4 essential Bitcoin analysis websites: BGEometrics M2/Bitcoin correlation charts, Coinglass liquidation heatmaps, Bitcoin Magazine Pro Pi Cycle Top Indicator, and CoinMarketCap Fear & Greed Index with real-time API integration and automatic refresh intervals
 - July 09, 2025. Updated brand logo throughout application: replaced Bitcoin icon and character avatar with custom Bitcoin house image in both navbar and landing page, maintaining consistent branding across all user interfaces
+- July 09, 2025. Fixed Global Market Context financial data: resolved 0.00% percentage change issue by implementing proper API data parsing, calculation logic for DXY/Gold/S&P500/VIX daily changes, and live Yahoo Finance data integration with realistic fallback values
 
 ## User Preferences
 
