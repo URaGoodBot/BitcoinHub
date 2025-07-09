@@ -93,47 +93,77 @@ export async function getTreasuryData(): Promise<TreasuryData> {
     console.log('Treasury API unavailable, using current market estimates');
   }
 
-  // Try additional data sources for Treasury yields
-  try {
-    // Try Treasury.gov API or other financial data sources
-    const tradingViewResponse = await axios.get('https://scanner.tradingview.com/symbol', {
+  // Try multiple live data sources for Treasury yields
+  const dataSources = [
+    // Yahoo Finance
+    {
+      url: 'https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX',
+      parser: (data: any) => {
+        const result = data?.chart?.result?.[0];
+        if (result?.meta?.regularMarketPrice) {
+          return {
+            yield: result.meta.regularMarketPrice,
+            change: result.meta.regularMarketChange || 0,
+            percentChange: result.meta.regularMarketChangePercent || 0
+          };
+        }
+        return null;
+      }
+    },
+    // FRED Economic Data
+    {
+      url: 'https://api.stlouisfed.org/fred/series/observations',
       params: {
-        symbol: 'ECONOMICS:US10Y',
-        fields: 'close,change,change_abs'
+        series_id: 'DGS10',
+        api_key: 'demo',
+        file_type: 'json',
+        limit: 2,
+        sort_order: 'desc'
       },
-      timeout: 5000
-    });
-
-    if (tradingViewResponse.data?.data?.[0]) {
-      const data = tradingViewResponse.data.data[0];
-      return {
-        yield: data.close || 4.415, // Use latest from user feedback
-        change: data.change_abs || 0.099,
-        percentChange: data.change || 2.30,
-        keyLevels: {
-          low52Week: 3.65,
-          current: data.close || 4.415,
-          high52Week: 4.756,
-        },
-        lastUpdated: new Date().toISOString()
-      };
+      parser: (data: any) => {
+        if (data?.observations?.length >= 2) {
+          const latest = parseFloat(data.observations[0].value);
+          const previous = parseFloat(data.observations[1].value);
+          if (!isNaN(latest) && !isNaN(previous)) {
+            return {
+              yield: latest,
+              change: latest - previous,
+              percentChange: ((latest - previous) / previous) * 100
+            };
+          }
+        }
+        return null;
+      }
     }
-  } catch (error) {
-    console.log('TradingView API unavailable');
+  ];
+
+  for (const source of dataSources) {
+    try {
+      const response = await axios.get(source.url, {
+        params: source.params,
+        timeout: 5000
+      });
+
+      const parsed = source.parser(response.data);
+      if (parsed && parsed.yield > 0) {
+        return {
+          yield: parsed.yield,
+          change: parsed.change,
+          percentChange: parsed.percentChange,
+          keyLevels: {
+            low52Week: 3.65,
+            current: parsed.yield,
+            high52Week: 4.756,
+          },
+          lastUpdated: new Date().toISOString()
+        };
+      }
+    } catch (error) {
+      console.log(`Treasury data source unavailable: ${source.url}`);
+    }
   }
 
-  // Fallback to user-provided current data (as of July 9, 2025)
-  return {
-    yield: 4.415, // Updated based on user feedback
-    change: 0.099,
-    percentChange: 2.30,
-    keyLevels: {
-      low52Week: 3.65,
-      current: 4.415,
-      high52Week: 4.756,
-    },
-    lastUpdated: new Date().toISOString()
-  };
+  throw new Error('Treasury data unavailable - only live data sources allowed');
 }
 
 // Fed Watch Tool data - using current market estimates

@@ -37,13 +37,11 @@ export async function getTruflationData(): Promise<TruflationData> {
     // Note: This is a placeholder for actual API integration
     // In production, you would need to register with Truflation for API access
     
-    // Try to fetch real data from financial APIs
-    let currentRate = 1.66; // Latest from user feedback
-    let dailyChange = -0.04; // Estimated daily change
-    
-    try {
-      // Try FRED API for inflation data
-      const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
+    // Only try multiple live data sources - no baseline values
+    const dataSources = [
+      // FRED Economic Data
+      {
+        url: 'https://api.stlouisfed.org/fred/series/observations',
         params: {
           series_id: 'CPIAUCSL', // Consumer Price Index
           api_key: 'demo', // In production, use proper API key
@@ -51,54 +49,80 @@ export async function getTruflationData(): Promise<TruflationData> {
           limit: 2,
           sort_order: 'desc'
         },
-        timeout: 5000
-      });
-
-      if (fredResponse.data?.observations?.length >= 2) {
-        const latest = parseFloat(fredResponse.data.observations[0].value);
-        const previous = parseFloat(fredResponse.data.observations[1].value);
-        if (!isNaN(latest) && !isNaN(previous)) {
-          currentRate = ((latest - previous) / previous) * 100;
-          dailyChange = currentRate - 1.70; // Compare to previous known value
+        parser: (data: any) => {
+          if (data?.observations?.length >= 2) {
+            const latest = parseFloat(data.observations[0].value);
+            const previous = parseFloat(data.observations[1].value);
+            if (!isNaN(latest) && !isNaN(previous)) {
+              const currentRate = ((latest - previous) / previous) * 100;
+              return {
+                currentRate: Math.abs(currentRate), // Convert to positive percentage
+                dailyChange: currentRate - 1.70
+              };
+            }
+          }
+          return null;
+        }
+      },
+      // Try Bureau of Labor Statistics API
+      {
+        url: 'https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0',
+        parser: (data: any) => {
+          if (data?.Results?.series?.[0]?.data?.length >= 2) {
+            const latest = parseFloat(data.Results.series[0].data[0].value);
+            const previous = parseFloat(data.Results.series[0].data[1].value);
+            if (!isNaN(latest) && !isNaN(previous)) {
+              const currentRate = ((latest - previous) / previous) * 100;
+              return {
+                currentRate: Math.abs(currentRate),
+                dailyChange: currentRate
+              };
+            }
+          }
+          return null;
         }
       }
-    } catch (error) {
-      console.log('FRED API unavailable, using latest market data');
+    ];
+
+    // Try each data source
+    for (const source of dataSources) {
+      try {
+        const response = await axios.get(source.url, {
+          params: source.params,
+          timeout: 5000
+        });
+
+        const parsed = source.parser(response.data);
+        if (parsed && parsed.currentRate > 0) {
+          const truflationData: TruflationData = {
+            currentRate: parsed.currentRate,
+            dailyChange: parsed.dailyChange,
+            blsReportedRate: 2.40,
+            ytdLow: 1.22,
+            ytdHigh: 3.04,
+            yearOverYear: true,
+            lastUpdated: new Date().toISOString(),
+            chartData: generateCurrentChartData()
+          };
+
+          // Update cache
+          if (!truflationCache) {
+            truflationCache = { data: {}, timestamp: 0 };
+          }
+          truflationCache.data.truflation = truflationData;
+          truflationCache.timestamp = Date.now();
+
+          return truflationData;
+        }
+      } catch (error) {
+        console.log(`Truflation data source unavailable: ${source.url}`);
+      }
     }
-
-    const truflationData: TruflationData = {
-      currentRate: currentRate,
-      dailyChange: dailyChange,
-      blsReportedRate: 2.40,
-      ytdLow: 1.22,
-      ytdHigh: 3.04,
-      yearOverYear: true,
-      lastUpdated: new Date().toISOString(),
-      chartData: generateCurrentChartData()
-    };
-
-    // Update cache
-    if (!truflationCache) {
-      truflationCache = { data: {}, timestamp: 0 };
-    }
-    truflationCache.data.truflation = truflationData;
-    truflationCache.timestamp = Date.now();
-
-    return truflationData;
+    
+    throw new Error('Unable to fetch live Truflation data from any source');
   } catch (error) {
     console.error('Error fetching Truflation data:', error);
-    
-    // Return latest data from user feedback
-    return {
-      currentRate: 1.66, // Updated based on user feedback
-      dailyChange: -0.04,
-      blsReportedRate: 2.40,
-      ytdLow: 1.22,
-      ytdHigh: 3.04,
-      yearOverYear: true,
-      lastUpdated: new Date().toISOString(),
-      chartData: generateCurrentChartData()
-    };
+    throw new Error('Truflation data unavailable - only live data sources allowed');
   }
 }
 

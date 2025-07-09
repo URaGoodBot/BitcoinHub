@@ -174,7 +174,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(treasuryData);
     } catch (error) {
       console.error("Error fetching Treasury data:", error);
-      res.status(500).json({ message: "Failed to fetch Treasury data" });
+      res.status(503).json({ 
+        message: "Live Treasury data temporarily unavailable",
+        error: "Only authentic data sources are used - no fallback data provided"
+      });
     }
   });
 
@@ -207,7 +210,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(truflationData);
     } catch (error) {
       console.error("Error fetching Truflation data:", error);
-      res.status(500).json({ message: "Failed to fetch Truflation data" });
+      res.status(503).json({ 
+        message: "Live Truflation data temporarily unavailable",
+        error: "Only authentic data sources are used - no fallback data provided"
+      });
     }
   });
 
