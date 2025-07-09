@@ -92,23 +92,35 @@ const Navbar = () => {
               </div>
             </Link>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-              <Link href="/" className={`${isActiveLink('/') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                Dashboard
+              <Link href="/">
+                <a className={`${isActiveLink('/') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Dashboard
+                </a>
               </Link>
-              <Link href="/news" className={`${isActiveLink('/news') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                News
+              <Link href="/news">
+                <a className={`${isActiveLink('/news') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  News
+                </a>
               </Link>
-              <Link href="/learn" className={`${isActiveLink('/learn') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                Learn
+              <Link href="/learn">
+                <a className={`${isActiveLink('/learn') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Learn
+                </a>
               </Link>
-              <Link href="/community" className={`${isActiveLink('/community') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                Memes
+              <Link href="/community">
+                <a className={`${isActiveLink('/community') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Memes
+                </a>
               </Link>
-              <Link href="/portfolio" className={`${isActiveLink('/portfolio') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                Portfolio
+              <Link href="/portfolio">
+                <a className={`${isActiveLink('/portfolio') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Portfolio
+                </a>
               </Link>
-              <Link href="/web-resources" className={`${isActiveLink('/web-resources') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                Web Resources
+              <Link href="/web-resources">
+                <a className={`${isActiveLink('/web-resources') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Web Resources
+                </a>
               </Link>
             </div>
           </div>
