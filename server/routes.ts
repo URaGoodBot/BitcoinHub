@@ -326,7 +326,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post(`${apiPrefix}/forum/posts`, async (req, res) => {
     try {
-      const postData = insertForumPostSchema.parse(req.body);
+      // Check if user is authenticated
+      const sessionUserId = (req.session as any).userId;
+      if (!sessionUserId) {
+        return res.status(401).json({ message: "Authentication required to post" });
+      }
+
+      // Verify the user exists
+      const user = await storage.getUser(sessionUserId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      // Parse the request body but replace userId with session userId
+      const { userId, ...postDataWithoutUserId } = req.body;
+      const postData = insertForumPostSchema.parse({
+        ...postDataWithoutUserId,
+        userId: sessionUserId // Use session user ID instead of request body
+      });
+      
       const post = await storage.createForumPost(postData);
       res.status(201).json(post);
     } catch (error) {
@@ -359,13 +377,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid post ID" });
       }
       
+      // Check if user is authenticated
+      const sessionUserId = (req.session as any).userId;
+      if (!sessionUserId) {
+        return res.status(401).json({ message: "Authentication required to react" });
+      }
+
+      // Verify the user exists
+      const user = await storage.getUser(sessionUserId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+      
       const { type } = req.body;
       if (!['like', 'love', 'rocket', 'fire'].includes(type)) {
         return res.status(400).json({ message: "Invalid reaction type" });
       }
       
-      // For demo purposes, we'll use HodlMyBeer21 user (id: 2)
-      await storage.toggleReaction(postId, 2, type);
+      await storage.toggleReaction(postId, sessionUserId, type);
       
       // Return updated reaction counts
       const reactions = await storage.getPostReactions(postId);

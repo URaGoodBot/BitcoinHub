@@ -43,7 +43,7 @@ export function MemePost({ post }: MemePostProps) {
   const { toast } = useToast();
 
   // Check current user authentication - use auth context instead
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, isAuthenticated, isGuest } = useAuth();
 
   const reactionMutation = useMutation({
     mutationFn: async (type: string) => {
@@ -58,7 +58,7 @@ export function MemePost({ post }: MemePostProps) {
   const replyMutation = useMutation({
     mutationFn: async (content: string) => {
       const response = await apiRequest('POST', '/api/forum/posts', {
-        userId: 2, // HodlMyBeer21 user
+        userId: currentUser?.id,
         content,
         isReply: true,
         parentPostId: parseInt(post.id),
@@ -96,11 +96,27 @@ export function MemePost({ post }: MemePostProps) {
   });
 
   const handleReaction = (type: string) => {
+    if (!isAuthenticated || isGuest) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to react to posts",
+        variant: "destructive",
+      });
+      return;
+    }
     reactionMutation.mutate(type);
   };
 
   const handleReply = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAuthenticated || isGuest) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to reply to posts",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!replyContent.trim()) return;
     replyMutation.mutate(replyContent);
   };
@@ -321,16 +337,18 @@ export function MemePost({ post }: MemePostProps) {
               );
             })}
 
-            {/* Reply button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowReplyForm(!showReplyForm)}
-              className="flex items-center space-x-1 text-muted-foreground hover:text-foreground h-8 px-2"
-            >
-              <MessageCircle className="w-4 h-4" />
-              {post.commentCount > 0 && <span className="text-xs">{post.commentCount}</span>}
-            </Button>
+            {/* Reply button - only for authenticated users */}
+            {isAuthenticated && !isGuest && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowReplyForm(!showReplyForm)}
+                className="flex items-center space-x-1 text-muted-foreground hover:text-foreground h-8 px-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                {post.commentCount > 0 && <span className="text-xs">{post.commentCount}</span>}
+              </Button>
+            )}
           </div>
 
           <div className="flex items-center space-x-2">
@@ -343,13 +361,15 @@ export function MemePost({ post }: MemePostProps) {
           </div>
         </div>
 
-        {/* Reply form */}
-        {showReplyForm && (
+        {/* Reply form - only for authenticated users */}
+        {showReplyForm && isAuthenticated && !isGuest && (
           <div className="mt-4 pt-4 border-t border-muted/20">
             <form onSubmit={handleReply} className="space-y-3">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">HM</span>
+                  <span className="text-white text-xs font-medium">
+                    {currentUser ? getUserInitials(currentUser.username) : "U"}
+                  </span>
                 </div>
                 <div className="flex-1">
                   <Textarea

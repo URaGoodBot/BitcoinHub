@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest } from "@/lib/queryClient";
 import { ImageIcon, Upload, Hash, Laugh, X, Film, Music, FileIcon, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const MEME_TEMPLATES = [
   "Drake Pointing",
@@ -53,6 +54,25 @@ export function MemePostForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user, isAuthenticated, isGuest } = useAuth();
+
+  // Don't render the form for guests
+  if (!isAuthenticated || isGuest) {
+    return (
+      <Card className="bg-card border border-muted/20">
+        <CardContent className="p-6 text-center">
+          <Laugh className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Join the Fun!</h3>
+          <p className="text-muted-foreground mb-4">
+            Sign in to share memes and join the Bitcoin community discussions.
+          </p>
+          <Button onClick={() => window.location.href = '/api/login'}>
+            Sign In to Post
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const uploadFileMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -95,7 +115,7 @@ export function MemePostForm() {
       const finalImageUrl = uploadedFile?.url || imageUrl;
       
       const response = await apiRequest('POST', '/api/forum/posts', {
-        userId: 2, // HodlMyBeer21 user
+        userId: user?.id,
         content: content.trim(),
         imageUrl: finalImageUrl || undefined,
         fileName: uploadedFile?.originalName || undefined,
