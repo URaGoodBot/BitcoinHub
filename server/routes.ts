@@ -8,6 +8,9 @@ import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema } from "@shared/schema";
 import session from "express-session";
 import bcrypt from "bcryptjs";
+import { upload, handleFileUpload } from "./upload";
+import path from "path";
+import express from "express";
 
 // Extend session type
 declare module 'express-session' {
@@ -372,6 +375,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to toggle reaction" });
     }
   });
+
+  // File upload endpoint
+  app.post(`${apiPrefix}/upload`, upload.single('file'), handleFileUpload);
+
+  // Static file serving for uploads
+  app.use('/static', express.static(path.join(process.cwd(), 'static')));
 
   // Portfolio
   app.get(`${apiPrefix}/portfolio`, async (req, res) => {

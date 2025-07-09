@@ -61,6 +61,9 @@ export interface ForumPost {
   title?: string;
   content: string;
   imageUrl?: string; // For meme images
+  fileName?: string; // Original filename
+  fileType?: string; // MIME type (image/jpeg, video/mp4, etc.)
+  fileSize?: number; // File size in bytes
   memeCaption?: string; // Caption for memes
   memeTemplate?: string; // Template name (e.g., "Drake pointing", "Distracted boyfriend")
   author: {

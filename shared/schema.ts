@@ -40,6 +40,9 @@ export const forumPosts = pgTable("forum_posts", {
   title: text("title"), // Optional for tweet-style posts
   content: text("content").notNull(),
   imageUrl: text("image_url"), // For meme images
+  fileName: text("file_name"), // Original filename
+  fileType: text("file_type"), // MIME type (image/jpeg, video/mp4, etc.)
+  fileSize: integer("file_size"), // File size in bytes
   memeCaption: text("meme_caption"), // Caption for memes
   memeTemplate: text("meme_template"), // Template name (e.g., "Drake pointing", "Distracted boyfriend")
   categories: text("categories").array().default([]),
@@ -59,6 +62,9 @@ export const insertForumPostSchema = createInsertSchema(forumPosts).pick({
   title: true,
   content: true,
   imageUrl: true,
+  fileName: true,
+  fileType: true,
+  fileSize: true,
   memeCaption: true,
   memeTemplate: true,
   categories: true,

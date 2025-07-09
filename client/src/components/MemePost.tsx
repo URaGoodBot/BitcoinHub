@@ -15,7 +15,8 @@ import {
   Flame,
   Rocket,
   Hash,
-  Tag
+  Tag,
+  Music
 } from "lucide-react";
 import type { ForumPostType } from "@/lib/types";
 
@@ -148,20 +149,67 @@ export function MemePost({ post }: MemePostProps) {
             </div>
           )}
 
-          {/* Meme image */}
+          {/* Meme file */}
           {post.imageUrl && (
             <div className="rounded-lg overflow-hidden border border-muted/20">
-              <img 
-                src={post.imageUrl} 
-                alt={post.memeCaption || "Meme"}
-                className={`w-full transition-all duration-200 cursor-pointer ${
-                  showFullImage ? 'max-h-none' : 'max-h-96 object-cover'
-                }`}
-                onClick={() => setShowFullImage(!showFullImage)}
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+              {/* Image files */}
+              {(!post.fileType || post.fileType.startsWith('image/')) && (
+                <img 
+                  src={post.imageUrl} 
+                  alt={post.memeCaption || "Meme"}
+                  className={`w-full transition-all duration-200 cursor-pointer ${
+                    showFullImage ? 'max-h-none' : 'max-h-96 object-cover'
+                  }`}
+                  onClick={() => setShowFullImage(!showFullImage)}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              )}
+              
+              {/* Video files */}
+              {post.fileType && post.fileType.startsWith('video/') && (
+                <video 
+                  src={post.imageUrl} 
+                  controls 
+                  className="w-full max-h-96"
+                  poster={post.imageUrl}
+                />
+              )}
+              
+              {/* Audio files */}
+              {post.fileType && post.fileType.startsWith('audio/') && (
+                <div className="p-6 bg-muted/10">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <Music className="w-6 h-6 text-orange-500" />
+                    <div>
+                      <p className="font-medium">{post.fileName || "Audio File"}</p>
+                      {post.fileSize && (
+                        <p className="text-sm text-muted-foreground">
+                          {Math.round(post.fileSize / 1024 / 1024 * 100) / 100} MB
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <audio 
+                    src={post.imageUrl} 
+                    controls 
+                    className="w-full"
+                  />
+                </div>
+              )}
+              
+              {/* File info for uploaded files */}
+              {post.fileName && (
+                <div className="px-3 py-2 bg-muted/5 border-t border-muted/20">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{post.fileName}</span>
+                    {post.fileSize && (
+                      <span>{Math.round(post.fileSize / 1024 / 1024 * 100) / 100} MB</span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

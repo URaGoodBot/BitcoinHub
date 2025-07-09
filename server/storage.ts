@@ -464,6 +464,9 @@ export class DatabaseStorage implements IStorage {
       title: post.title || undefined,
       content: post.content,
       imageUrl: post.imageUrl || undefined,
+      fileName: post.fileName || undefined,
+      fileType: post.fileType || undefined,
+      fileSize: post.fileSize || undefined,
       memeCaption: post.memeCaption || undefined,
       memeTemplate: post.memeTemplate || undefined,
       author: {
