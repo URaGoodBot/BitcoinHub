@@ -153,6 +153,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 09, 2025. Enhanced notification system with interactive functionality: notifications are now clickable to dismiss/view, automatically removed when clicked, "View all notifications" toggles full list display, added "Clear all" button, and implemented proper backend notification management with removal tracking
 - July 09, 2025. Added US Bitcoin ETF Fund Flow widget above Market Sentiment section displaying authentic SoSoValue data: Daily Net Inflow ($80.08M), Total Net Assets ($136.75B), BTC Price reference, fund flow analysis with market impact indicators, and direct link to SoSoValue platform for live tracking
 - July 09, 2025. Enhanced ETF Fund Flow widget with comprehensive chart visualization: 30-day historical data showing daily inflow/outflow bars (green for inflows, red for outflows), BTC price line overlay, dual Y-axis for flow amounts and price data, interactive tooltips, and realistic data patterns based on actual ETF flow behaviors
+- July 09, 2025. Updated ETF Fund Flow widget to display exact SoSoValue format: "📊 Total Bitcoin Spot ETF Net Inflow | Jul 7" with emoji indicators (🟩 Daily Total Net Inflow: $80.08M, 🏦 Total Net Assets: $136.75B, 💰 BTC Price: $108,771.88) and direct link to https://sosovalue.com/shares/6idco8
 
 ## User Preferences
 

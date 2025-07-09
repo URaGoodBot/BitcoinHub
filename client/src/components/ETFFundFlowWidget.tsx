@@ -74,79 +74,63 @@ const ETFFundFlowWidget = () => {
               <BarChart3 className="h-4 w-4 text-white" />
             </div>
             <CardTitle className="text-lg font-semibold text-purple-900 dark:text-purple-100">
-              US Bitcoin ETF Fund Flow
+              📊 Total Bitcoin Spot ETF Net Inflow | Jul 7
             </CardTitle>
           </div>
           <Button 
             variant="outline" 
             size="sm" 
             className="text-purple-700 border-purple-300 hover:bg-purple-100 dark:text-purple-300 dark:border-purple-700"
-            onClick={() => window.open('https://sosovalue.com/assets/etf/Total_Crypto_Spot_ETF_Fund_Flow?page=usBTC', '_blank')}
+            onClick={() => window.open('https://sosovalue.com/shares/6idco8', '_blank')}
           >
             <ExternalLink className="h-3 w-3 mr-1" />
-            SoSoValue
+            #SoSoValue
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Daily Net Inflow */}
+        <div className="space-y-4">
+          {/* Daily Total Net Inflow */}
           <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-purple-200/50">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                Daily Net Inflow
-              </span>
-              <div className="flex items-center gap-1">
-                <TrendingUp className={`h-3 w-3 ${isPositive ? 'text-green-600' : 'text-red-600'}`} />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                ${dailyNetInflow.toFixed(2)}M
-              </div>
-              <div className={`text-xs flex items-center gap-1 ${
-                dailyChangePercent >= 0 ? 'text-green-600' : 'text-red-600'
-              }`}>
-                <span>{dailyChangePercent >= 0 ? '+' : ''}{dailyChangePercent}%</span>
-                <span>(${dailyChangeAmount}M)</span>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🟩</span>
+              <div>
+                <div className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">
+                  Daily Total Net Inflow
+                </div>
+                <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                  $80.08M
+                </div>
               </div>
             </div>
           </div>
 
           {/* Total Net Assets */}
           <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-purple-200/50">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                Total Net Assets
-              </span>
-              <DollarSign className="h-3 w-3 text-purple-600" />
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                ${totalNetAssets.toFixed(2)}B
-              </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
-                Across all US Bitcoin ETFs
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">🏦</span>
+              <div>
+                <div className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">
+                  Total Net Assets
+                </div>
+                <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                  $136.75B
+                </div>
               </div>
             </div>
           </div>
 
-          {/* BTC Price Reference */}
+          {/* BTC Price */}
           <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-purple-200/50">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                BTC Price
-              </span>
-              <Badge variant="secondary" className="text-xs">
-                Live
-              </Badge>
-            </div>
-            <div className="space-y-1">
-              <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
-                ${btcPrice.toLocaleString()}
-              </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
-                Reference price
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">💰</span>
+              <div>
+                <div className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">
+                  BTC Price
+                </div>
+                <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                  $108,771.88
+                </div>
               </div>
             </div>
           </div>
@@ -275,9 +259,20 @@ const ETFFundFlowWidget = () => {
           </div>
         </div>
 
-        {/* Data Source Footer */}
-        <div className="text-xs text-center text-purple-600 dark:text-purple-400 pt-2 border-t border-purple-200/50">
-          Data sourced from SoSoValue ETF tracking platform • Updated daily
+        {/* Explore More Link */}
+        <div className="text-center pt-4 border-t border-purple-200/50">
+          <p className="text-sm text-purple-700 dark:text-purple-300 mb-2">
+            Explore more key information on #SoSoValue
+          </p>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-purple-700 border-purple-300 hover:bg-purple-100 dark:text-purple-300 dark:border-purple-700"
+            onClick={() => window.open('https://sosovalue.com/shares/6idco8', '_blank')}
+          >
+            <ExternalLink className="h-3 w-3 mr-1" />
+            View Live Data
+          </Button>
         </div>
       </CardContent>
     </Card>
