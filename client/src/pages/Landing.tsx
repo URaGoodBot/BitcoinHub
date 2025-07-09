@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertCircle, User, Users, Bitcoin, TrendingUp, BookOpen, Shield, Zap } from "lucide-react";
+import bitcoinHouseImage from "@assets/Screen Shot 2025-07-09 at 3.38.43 PM_1752093374897.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -69,7 +70,11 @@ const Landing = () => {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-6">
             <div className="bg-primary/10 p-3 rounded-full mr-4">
-              <Bitcoin className="h-8 w-8 text-primary" />
+              <img 
+                src={bitcoinHouseImage} 
+                alt="BitcoinHub Logo" 
+                className="h-8 w-8 object-cover rounded-full"
+              />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               BitcoinHub

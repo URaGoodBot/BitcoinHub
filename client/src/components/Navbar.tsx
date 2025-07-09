@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Bell, LogOut, User, TrendingUp, TrendingDown, AlertCircle, X } from "lucide-react";
-import characterImage from "@assets/20250522_083556_1751982148928.jpg";
+import bitcoinHouseImage from "@assets/Screen Shot 2025-07-09 at 3.38.43 PM_1752093374897.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -84,8 +84,8 @@ const Navbar = () => {
             <Link href="/">
               <div className="flex items-center cursor-pointer">
                 <img 
-                  src={characterImage} 
-                  alt="BitcoinHub Character" 
+                  src={bitcoinHouseImage} 
+                  alt="BitcoinHub Logo" 
                   className="w-8 h-8 rounded-lg mr-2 object-cover"
                 />
                 <span className="text-xl font-bold text-foreground">BitcoinHub</span>
