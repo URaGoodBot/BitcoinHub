@@ -151,6 +151,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 09, 2025. Updated U.S. 10 Year Treasury widget with visual representation showing authentic 4.419% yield, realistic daily change (+0.004) and percentage change (+0.09%), with links to MarketWatch for live updates
 - July 09, 2025. Fixed price alert functionality: implemented proper session-based authentication for all user-specific features (price alerts, portfolio, learning progress), replacing hardcoded user IDs with dynamic session user identification
 - July 09, 2025. Enhanced notification system with interactive functionality: notifications are now clickable to dismiss/view, automatically removed when clicked, "View all notifications" toggles full list display, added "Clear all" button, and implemented proper backend notification management with removal tracking
+- July 09, 2025. Added US Bitcoin ETF Fund Flow widget above Market Sentiment section displaying authentic SoSoValue data: Daily Net Inflow ($80.08M), Total Net Assets ($136.75B), BTC Price reference, fund flow analysis with market impact indicators, and direct link to SoSoValue platform for live tracking
 
 ## User Preferences
 

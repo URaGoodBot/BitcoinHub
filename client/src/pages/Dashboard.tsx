@@ -15,6 +15,7 @@ import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
 import PriceAlertsWidget from "@/components/PriceAlertsWidget";
 import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 import AITrendPrediction from "@/components/AITrendPrediction";
+import ETFFundFlowWidget from "@/components/ETFFundFlowWidget";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -129,6 +130,11 @@ const Dashboard = () => {
         <MarketSummaryWidget />
         <PriceAlertsWidget />
         <AITrendPrediction />
+      </div>
+      
+      {/* ETF Fund Flow Analysis */}
+      <div className="mb-6">
+        <ETFFundFlowWidget />
       </div>
       
       {/* Market Sentiment Analysis */}
