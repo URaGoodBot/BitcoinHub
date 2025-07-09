@@ -384,10 +384,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid post ID" });
       }
       
-      // Only HodlMyBeer21 (user ID 2) can delete posts
-      const userId = 2; // HodlMyBeer21
+      // Check if user is authenticated
+      const sessionUserId = (req.session as any).userId;
+      if (!sessionUserId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
       
-      const success = await storage.deleteForumPost(postId, userId);
+      // Get the current user
+      const currentUser = await storage.getUser(sessionUserId);
+      if (!currentUser) {
+        return res.status(401).json({ message: "User not found" });
+      }
+      
+      // Only HodlMyBeer21 can delete posts
+      if (currentUser.username !== "HodlMyBeer21") {
+        return res.status(403).json({ message: "Only HodlMyBeer21 can delete posts" });
+      }
+      
+      const success = await storage.deleteForumPost(postId, sessionUserId);
       if (!success) {
         return res.status(403).json({ message: "Not authorized to delete this post" });
       }

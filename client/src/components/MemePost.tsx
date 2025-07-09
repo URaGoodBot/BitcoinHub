@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,6 +40,13 @@ export function MemePost({ post }: MemePostProps) {
 
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  // Check current user authentication
+  const { data: currentUser } = useQuery({
+    queryKey: ['/api/auth/me'],
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   const reactionMutation = useMutation({
     mutationFn: async (type: string) => {
@@ -137,8 +144,8 @@ export function MemePost({ post }: MemePostProps) {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            {/* Delete button only for HodlMyBeer21 (user ID 2) */}
-            {post.author.username === "HodlMyBeer21" && (
+            {/* Delete button only for HodlMyBeer21 when logged in */}
+            {currentUser?.username === "HodlMyBeer21" && (
               <Button 
                 variant="ghost" 
                 size="sm" 
