@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext"; // Temporarily disabled
 import { 
   Heart, 
   MessageCircle, 
@@ -42,8 +42,10 @@ export function MemePost({ post }: MemePostProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Check current user authentication - use auth context instead
-  const { user: currentUser, isAuthenticated, isGuest } = useAuth();
+  // Temporary auth bypass while implementing authentication
+  const currentUser = { username: "HodlMyBeer21" };
+  const isAuthenticated = false;
+  const isGuest = false;
 
   const reactionMutation = useMutation({
     mutationFn: async (type: string) => {

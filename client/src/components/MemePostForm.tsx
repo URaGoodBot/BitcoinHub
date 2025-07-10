@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest } from "@/lib/queryClient";
 import { ImageIcon, Upload, Hash, Laugh, X, Film, Music, FileIcon, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext"; // Temporarily disabled
 
 const MEME_TEMPLATES = [
   "Drake Pointing",
@@ -54,7 +54,10 @@ export function MemePostForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { user, isAuthenticated, isGuest } = useAuth();
+  // Temporary auth bypass while implementing authentication
+  const user = null;
+  const isAuthenticated = false;
+  const isGuest = false;
 
   // Don't render the form for guests
   if (!isAuthenticated || isGuest) {

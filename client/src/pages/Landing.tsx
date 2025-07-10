@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { AlertCircle, User, Users, Bitcoin, TrendingUp, BookOpen, Shield, Zap } from "lucide-react";
 import bitcoinHouseImage from "@assets/Screen Shot 2025-07-09 at 3.38.43 PM_1752093374897.png";
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext"; // Temporarily disabled
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Landing = () => {
@@ -16,7 +16,10 @@ const Landing = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [activeTab, setActiveTab] = useState("login");
-  const { login, register, continueAsGuest } = useAuth();
+  // Temporary auth bypass while implementing authentication
+  const login = async () => {};
+  const register = async () => {};
+  const continueAsGuest = () => window.location.href = "/";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
