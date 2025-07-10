@@ -1,19 +1,17 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Bell, User, TrendingUp, TrendingDown, AlertCircle, X, Bitcoin } from "lucide-react";
+import { Bell, TrendingUp, TrendingDown, AlertCircle, X } from "lucide-react";
 import bitcoinHouseImage from "@assets/Screen Shot 2025-07-09 at 3.38.43 PM_1752093374897.png";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { useDonation } from "@/contexts/DonationContext";
+import { DonationButton } from "@/components/DonationButton";
 
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAllNotifications, setShowAllNotifications] = useState(false);
-  const { hasDonated, donationAddress } = useDonation();
   const queryClient = useQueryClient();
   
   const isActiveLink = (path: string) => location === path;
@@ -107,16 +105,6 @@ const Navbar = () => {
                   Learn
                 </a>
               </Link>
-              <Link href="/community">
-                <a className={`${isActiveLink('/community') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                  Memes
-                </a>
-              </Link>
-              <Link href="/portfolio">
-                <a className={`${isActiveLink('/portfolio') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                  Portfolio
-                </a>
-              </Link>
               <Link href="/web-resources">
                 <a className={`${isActiveLink('/web-resources') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
                   Web Resources
@@ -124,10 +112,10 @@ const Navbar = () => {
               </Link>
             </div>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="mr-3 relative">
+                <Button variant="outline" size="icon" className="relative">
                   <Bell className="h-4 w-4" />
                   {unreadCount > 0 && (
                     <span className="absolute top-0 right-0 flex h-2 w-2">
@@ -229,45 +217,14 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
-                  <div className="flex items-center bg-muted rounded-full p-1 pr-3">
-                    <div className="rounded-full bg-muted/50 p-1">
-                      {hasDonated ? <Bitcoin className="h-4 w-4 text-orange-500" /> : <User className="h-4 w-4" />}
-                    </div>
-                    <span className="ml-2 text-sm font-medium">
-                      {hasDonated ? "Donor" : "Visitor"}
-                    </span>
-                    {hasDonated && (
-                      <Badge variant="secondary" className="ml-2 text-xs bg-orange-100 text-orange-800">
-                        ₿ Donor
-                      </Badge>
-                    )}
-                  </div>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem disabled>
-                  {hasDonated ? <Bitcoin className="mr-2 h-4 w-4 text-orange-500" /> : <User className="mr-2 h-4 w-4" />}
-                  {hasDonated ? "Bitcoin Donor" : "Visitor"}
-                </DropdownMenuItem>
-                {hasDonated && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem disabled className="text-xs text-muted-foreground">
-                      Thank you for supporting BitcoinHub!
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Bitcoin Donation Button */}
+            <DonationButton />
             
             {/* Mobile menu button */}
             <Button
               variant="ghost"
               size="sm"
-              className="ml-4 sm:hidden"
+              className="sm:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <div className="space-y-1">
@@ -297,16 +254,6 @@ const Navbar = () => {
             <Link href="/learn">
               <a className={`${isActiveLink('/learn') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
                 Learn
-              </a>
-            </Link>
-            <Link href="/community">
-              <a className={`${isActiveLink('/community') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Memes
-              </a>
-            </Link>
-            <Link href="/portfolio">
-              <a className={`${isActiveLink('/portfolio') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Portfolio
               </a>
             </Link>
             <Link href="/web-resources">

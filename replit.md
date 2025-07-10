@@ -48,17 +48,11 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - Progress tracking and gamification elements
 - Mobile-friendly course navigation
 
-### Community Features
-- Threaded forum discussions with categories
-- Real-time chat functionality
-- Content referencing system linking to educational materials
-- User engagement tracking with upvotes and reactions
-
-### Portfolio Management
-- Bitcoin holdings tracking with real-time valuation
-- Performance metrics and historical tracking
-- Price alert system with customizable thresholds
-- Visual portfolio analytics with charts
+### Optional Bitcoin Donations
+- Simple Bitcoin donation button with QR code support
+- No access restrictions or payment requirements
+- Address: bc1q2hglmlutz959c30s9cc83p7edvnmrj536dgsx2
+- Encourages voluntary support for site maintenance
 
 ### AI-Powered Analysis
 - Market sentiment analysis based on price movements
@@ -158,6 +152,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 10, 2025. **CRITICAL FIX**: Implemented proper auto-updating for Truflation and US 10 Year Treasury data with real-time API integration, dynamic React Query hooks, manual refresh buttons, 1-minute auto-refresh intervals, and authentic data sources with realistic market variations replacing static visual widgets
 - July 10, 2025. **AUTHENTICATION SUCCESS**: Fixed financial data APIs to display verified authentic values - Truflation now shows 1.66% inflation rate from authoritative research, Treasury shows 4.352% yield from live Yahoo Finance API, eliminated all unreliable website scraping that was returning incorrect values (65.99%, 13.93%), implemented proper cache clearing and fallback systems using verified rates from financial sources
 - July 10, 2025. **LIVE DATA IMPLEMENTATION**: Completely eliminated all placeholder data from Web Resources section implementing comprehensive live API integration - Fear & Greed Index now correctly shows verified current value of 58 (was 52 yesterday) using CoinyBubble API with user-confirmed accuracy override, Pi Cycle Top Indicator calculates real-time 111DMA ($98,375) and 350DMA×2 ($172,694) from CoinGecko historical data, M2 Chart displays current Bitcoin price ($111,129) with live correlation data, Liquidation Heatmap shows dynamic risk zones based on real-time Bitcoin price movements
+- July 10, 2025. **MAJOR NAVIGATION OVERHAUL**: Completely removed memes and portfolio sections per user request, eliminated authentication requirements allowing open access to all visitors, simplified donation system from access-control to optional Bitcoin support button (bc1q2hglmlutz959c30s9cc83p7edvnmrj536dgsx2), removed DonationContext dependencies, cleaned up App.tsx routing to include only Dashboard, News, Learn, and Web Resources sections with streamlined Navbar design
 
 ## User Preferences
 
