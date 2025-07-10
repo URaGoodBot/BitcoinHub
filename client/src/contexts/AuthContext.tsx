@@ -63,6 +63,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [sessionData, sessionLoading, hasTriedAuth, isError]);
 
+  // Set initialized to true after a short timeout if still loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isInitialized) {
+        setIsInitialized(true);
+      }
+    }, 1000); // 1 second timeout
+
+    return () => clearTimeout(timer);
+  }, [isInitialized]);
+
   // If still initializing, show loading
   const isLoading = !isInitialized;
 
