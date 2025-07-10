@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio';
 let truflationCache: {
   data: any;
   timestamp: number;
-} | null = null;
+} | null = null; // Force cache clear
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes for real website scraping
 

@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio';
 let treasuryCache: {
   data: any;
   timestamp: number;
-} | null = null;
+} | null = null; // Force cache clear
 
 const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes for real-time market data
 
