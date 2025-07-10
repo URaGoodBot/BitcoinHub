@@ -71,32 +71,20 @@ const BitcoinMetricsGrid = () => {
     refetchInterval: 60000,
   });
 
-  // For now, use calculated/derived metrics from Bitcoin data
-  // Future: Add backend routes for Fear & Greed Index and network stats
+  // Fetch live Fear and Greed Index data (same as Web Resources page)
+  const { data: fearGreedData, isLoading: isLoadingFearGreed } = useQuery({
+    queryKey: ["/api/web-resources/fear-greed"],
+    refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes
+  });
 
   const marketCap = (bitcoinData as any)?.market_cap?.usd || 0;
   const marketCapChange = (bitcoinData as any)?.market_cap_change_percentage_24h || 0;
   const volume24h = (bitcoinData as any)?.total_volume?.usd || 0;
   const volumeChange = (bitcoinData as any)?.total_volume_change_percentage_24h || 0;
   
-  // Derived metrics based on Bitcoin price data
-  const priceChange24h = (bitcoinData as any)?.price_change_percentage_24h || 0;
-  
-  // Calculate Fear & Greed Index based on price movement and volume
-  const calculateFearGreed = () => {
-    const absChange = Math.abs(priceChange24h);
-    const volumeScore = volume24h > 50e9 ? 20 : 10; // High volume adds to greed
-    
-    if (priceChange24h > 5) return { index: Math.min(80 + volumeScore, 100), classification: "Extreme Greed" };
-    if (priceChange24h > 2) return { index: 60 + volumeScore, classification: "Greed" };
-    if (priceChange24h > -2) return { index: 50, classification: "Neutral" };
-    if (priceChange24h > -5) return { index: 40 - volumeScore, classification: "Fear" };
-    return { index: Math.max(20 - volumeScore, 0), classification: "Extreme Fear" };
-  };
-  
-  const fearGreed = calculateFearGreed();
-  const fearGreedIndex = fearGreed.index;
-  const fearGreedClassification = fearGreed.classification;
+  // Use live Fear and Greed Index data (same source as Web Resources page)
+  const fearGreedIndex = fearGreedData?.currentValue || 58;
+  const fearGreedClassification = fearGreedData?.classification || 'Greed';
   
   // Bitcoin dominance (estimated based on market cap)
   const btcDominance = marketCap > 0 ? 54.8 : 54.8; // Current BTC dominance estimate
@@ -140,8 +128,8 @@ const BitcoinMetricsGrid = () => {
       value: fearGreedIndex,
       suffix: ` (${fearGreedClassification})`,
       icon: <Users className="h-4 w-4" />,
-      description: "Market sentiment indicator (0=Fear, 100=Greed)",
-      isLoading: isLoadingBitcoin,
+      description: "Live Bitcoin market sentiment (0=Fear, 100=Greed)",
+      isLoading: isLoadingFearGreed,
     },
     {
       title: "Bitcoin Dominance",
