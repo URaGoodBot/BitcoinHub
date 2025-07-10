@@ -5,7 +5,7 @@ import bitcoinHouseImage from "@assets/Screen Shot 2025-07-09 at 3.38.43 PM_1752
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/contexts/AuthContext";
+// import { useAuth } from "@/contexts/AuthContext"; // Temporarily disabled
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -13,7 +13,12 @@ const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAllNotifications, setShowAllNotifications] = useState(false);
-  const { user, isAuthenticated, isGuest, logout } = useAuth();
+  // Temporarily comment out auth while implementing authentication
+  // const { user, isAuthenticated, isGuest, logout } = useAuth();
+  const user = null;
+  const isAuthenticated = false;
+  const isGuest = false;
+  const logout = () => {};
   const queryClient = useQueryClient();
   
   const isActiveLink = (path: string) => location === path;
