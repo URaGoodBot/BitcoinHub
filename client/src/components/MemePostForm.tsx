@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiRequest } from "@/lib/queryClient";
 import { ImageIcon, Upload, Hash, Laugh, X, Film, Music, FileIcon, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-// import { useAuth } from "@/contexts/AuthContext"; // Temporarily disabled
+import { useDonation } from "@/contexts/DonationContext";
+import { DonationButton } from "@/components/DonationButton";
 
 const MEME_TEMPLATES = [
   "Drake Pointing",
@@ -54,27 +55,11 @@ export function MemePostForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  // Temporary auth bypass while implementing authentication
-  const user = null;
-  const isAuthenticated = false;
-  const isGuest = false;
+  const { canPostMeme, incrementMemeCount } = useDonation();
 
-  // Don't render the form for guests
-  if (!isAuthenticated || isGuest) {
-    return (
-      <Card className="bg-card border border-muted/20">
-        <CardContent className="p-6 text-center">
-          <Laugh className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Join the Fun!</h3>
-          <p className="text-muted-foreground mb-4">
-            Sign in to share memes and join the Bitcoin community discussions.
-          </p>
-          <Button onClick={() => window.location.href = '/api/login'}>
-            Sign In to Post
-          </Button>
-        </CardContent>
-      </Card>
-    );
+  // Show donation prompt if user hasn't donated or already posted their meme
+  if (!canPostMeme) {
+    return <DonationButton />;
   }
 
   const uploadFileMutation = useMutation({
@@ -118,7 +103,6 @@ export function MemePostForm() {
       const finalImageUrl = uploadedFile?.url || imageUrl;
       
       const response = await apiRequest('POST', '/api/forum/posts', {
-        userId: user?.id,
         content: content.trim(),
         imageUrl: finalImageUrl || undefined,
         fileName: uploadedFile?.originalName || undefined,
@@ -136,7 +120,7 @@ export function MemePostForm() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/forum/posts'] });
+      // Reset form
       setContent("");
       setImageUrl("");
       setUploadedFile(null);
@@ -144,9 +128,14 @@ export function MemePostForm() {
       setMemeTemplate("");
       setCategories([]);
       setShowAdvanced(false);
+      
+      // Increment meme count (this will disable further posting)
+      incrementMemeCount();
+      
+      queryClient.invalidateQueries({ queryKey: ['/api/forum/posts'] });
       toast({
         title: "Meme posted!",
-        description: "Your meme has been shared with the community",
+        description: "Your meme has been shared with the community. Thanks for your donation!",
       });
     },
     onError: (error) => {

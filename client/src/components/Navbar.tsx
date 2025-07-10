@@ -1,24 +1,19 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Bell, LogOut, User, TrendingUp, TrendingDown, AlertCircle, X } from "lucide-react";
+import { Bell, User, TrendingUp, TrendingDown, AlertCircle, X, Bitcoin } from "lucide-react";
 import bitcoinHouseImage from "@assets/Screen Shot 2025-07-09 at 3.38.43 PM_1752093374897.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-// import { useAuth } from "@/contexts/AuthContext"; // Temporarily disabled
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useDonation } from "@/contexts/DonationContext";
 
 const Navbar = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAllNotifications, setShowAllNotifications] = useState(false);
-  // Temporarily comment out auth while implementing authentication
-  // const { user, isAuthenticated, isGuest, logout } = useAuth();
-  const user = null;
-  const isAuthenticated = false;
-  const isGuest = false;
-  const logout = () => {};
+  const { hasDonated, donationAddress } = useDonation();
   const queryClient = useQueryClient();
   
   const isActiveLink = (path: string) => location === path;
@@ -239,57 +234,48 @@ const Navbar = () => {
                 <Button variant="ghost" className="flex items-center gap-2 h-auto p-2">
                   <div className="flex items-center bg-muted rounded-full p-1 pr-3">
                     <div className="rounded-full bg-muted/50 p-1">
-                      <User className="h-4 w-4" />
+                      {hasDonated ? <Bitcoin className="h-4 w-4 text-orange-500" /> : <User className="h-4 w-4" />}
                     </div>
                     <span className="ml-2 text-sm font-medium">
-                      {isAuthenticated ? user?.username : isGuest ? "Guest" : "User"}
+                      {hasDonated ? "Donor" : "Visitor"}
                     </span>
-                    {isAuthenticated && user?.streakDays > 0 && (
-                      <Badge variant="secondary" className="ml-2 text-xs">
-                        🔥 {user.streakDays} day streak
-                      </Badge>
-                    )}
-                    {isGuest && (
-                      <Badge variant="outline" className="ml-2 text-xs">
-                        Guest Mode
+                    {hasDonated && (
+                      <Badge variant="secondary" className="ml-2 text-xs bg-orange-100 text-orange-800">
+                        ₿ Donor
                       </Badge>
                     )}
                   </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {isAuthenticated && (
-                  <>
-                    <DropdownMenuItem disabled>
-                      <User className="mr-2 h-4 w-4" />
-                      {user?.username}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                  </>
-                )}
-                {isGuest && (
-                  <>
-                    <DropdownMenuItem disabled>
-                      <User className="mr-2 h-4 w-4" />
-                      Guest Mode Active
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                  </>
-                )}
-                <DropdownMenuItem onClick={logout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  {isAuthenticated ? "Sign Out" : "Exit Guest Mode"}
+                <DropdownMenuItem disabled>
+                  {hasDonated ? <Bitcoin className="mr-2 h-4 w-4 text-orange-500" /> : <User className="mr-2 h-4 w-4" />}
+                  {hasDonated ? "Bitcoin Donor" : "Visitor"}
                 </DropdownMenuItem>
+                {hasDonated && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem disabled className="text-xs text-muted-foreground">
+                      Thank you for supporting BitcoinHub!
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <button 
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="sm"
               className="ml-4 sm:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-expanded={mobileMenuOpen}
             >
-              <i className={`fas fa-${mobileMenuOpen ? 'times' : 'bars'} text-foreground`}></i>
-            </button>
+              <div className="space-y-1">
+                <div className="w-5 h-0.5 bg-foreground"></div>
+                <div className="w-5 h-0.5 bg-foreground"></div>
+                <div className="w-5 h-0.5 bg-foreground"></div>
+              </div>
+            </Button>
           </div>
         </div>
       </div>
@@ -315,12 +301,17 @@ const Navbar = () => {
             </Link>
             <Link href="/community">
               <a className={`${isActiveLink('/community') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
-                Community
+                Memes
               </a>
             </Link>
             <Link href="/portfolio">
               <a className={`${isActiveLink('/portfolio') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
                 Portfolio
+              </a>
+            </Link>
+            <Link href="/web-resources">
+              <a className={`${isActiveLink('/web-resources') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+                Web Resources
               </a>
             </Link>
           </div>
