@@ -1,161 +1,91 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-
-interface User {
-  id: number;
-  username: string;
-  streakDays: number;
-  createdAt: string;
-}
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import type { User } from '@shared/schema';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isGuest: boolean;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string) => Promise<void>;
-  logout: () => void;
+  login: (usernameOrEmail: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
   continueAsGuest: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isGuest, setIsGuest] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [hasTriedAuth, setHasTriedAuth] = useState(false);
-  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Check for existing session on mount - only run once
-  const { data: sessionData, isLoading: sessionLoading, isError } = useQuery({
-    queryKey: ["/api/auth/me"],
+  // Check if user is authenticated
+  const { data: user, isLoading } = useQuery<User>({
+    queryKey: ['/api/auth/me'],
     retry: false,
-    enabled: !hasTriedAuth,
-    staleTime: Infinity, // Don't refetch automatically
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  useEffect(() => {
-    if (!sessionLoading && !hasTriedAuth) {
-      setHasTriedAuth(true);
-      if (sessionData && !isError) {
-        setUser(sessionData as User);
-      }
-      setIsInitialized(true);
-    }
-  }, [sessionData, sessionLoading, hasTriedAuth, isError]);
-
-  // Set initialized to true after a short timeout if still loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isInitialized) {
-        setIsInitialized(true);
-      }
-    }, 1000); // 1 second timeout
-
-    return () => clearTimeout(timer);
-  }, [isInitialized]);
-
-  // If still initializing, show loading
-  const isLoading = !isInitialized;
-
   const loginMutation = useMutation({
-    mutationFn: async ({ username, password }: { username: string; password: string }) => {
-      const response = await apiRequest('POST', '/api/auth/login', { username, password });
-      return response.json();
+    mutationFn: async ({ usernameOrEmail, password }: { usernameOrEmail: string; password: string }) => {
+      const response = await apiRequest('/api/auth/login', {
+        method: 'POST',
+        body: { usernameOrEmail, password },
+      });
+      return response.user;
     },
     onSuccess: (userData) => {
-      setUser(userData);
+      queryClient.setQueryData(['/api/auth/me'], userData);
       setIsGuest(false);
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      toast({
-        title: "Welcome back!",
-        description: `Logged in as ${userData.username}`,
-      });
     },
-    onError: (error: any) => {
-      toast({
-        title: "Login failed",
-        description: error.message || "Invalid username or password",
-        variant: "destructive",
-      });
-    }
   });
 
   const registerMutation = useMutation({
-    mutationFn: async ({ username, password }: { username: string; password: string }) => {
-      const response = await apiRequest('POST', '/api/auth/register', { username, password });
-      return response.json();
+    mutationFn: async ({ username, email, password }: { username: string; email: string; password: string }) => {
+      return await apiRequest('/api/auth/register', {
+        method: 'POST',
+        body: { username, email, password },
+      });
     },
     onSuccess: (userData) => {
-      setUser(userData);
+      queryClient.setQueryData(['/api/auth/me'], userData);
       setIsGuest(false);
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      toast({
-        title: "Account created!",
-        description: `Welcome to BitcoinHub, ${userData.username}!`,
-      });
     },
-    onError: (error: any) => {
-      toast({
-        title: "Registration failed",
-        description: error.message || "Username may already be taken",
-        variant: "destructive",
-      });
-    }
   });
 
-  const login = async (username: string, password: string) => {
-    await loginMutation.mutateAsync({ username, password });
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest('/api/auth/logout', { method: 'POST' });
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(['/api/auth/me'], null);
+      queryClient.clear();
+      setIsGuest(false);
+    },
+  });
+
+  const login = async (usernameOrEmail: string, password: string) => {
+    await loginMutation.mutateAsync({ usernameOrEmail, password });
   };
 
-  const register = async (username: string, password: string) => {
-    await registerMutation.mutateAsync({ username, password });
+  const register = async (username: string, email: string, password: string) => {
+    await registerMutation.mutateAsync({ username, email, password });
   };
 
-  const logout = () => {
-    apiRequest('POST', '/api/auth/logout', {});
-    setUser(null);
-    setIsGuest(false);
-    queryClient.clear();
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
-    });
+  const logout = async () => {
+    await logoutMutation.mutateAsync();
   };
 
   const continueAsGuest = () => {
     setIsGuest(true);
-    setIsInitialized(true);
-    toast({
-      title: "Guest mode",
-      description: "Your progress won't be saved in guest mode",
-    });
   };
 
   const value: AuthContextType = {
-    user,
+    user: user || null,
     isAuthenticated: !!user,
     isGuest,
-    isLoading: !isInitialized,
+    isLoading,
     login,
     register,
     logout,
@@ -163,4 +93,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}

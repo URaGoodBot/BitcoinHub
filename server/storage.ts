@@ -18,7 +18,13 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByUsernameOrEmail(usernameOrEmail: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: Partial<User>): Promise<User | undefined>;
+  verifyEmail(token: string): Promise<boolean>;
+  setPasswordResetToken(email: string, token: string, expiry: Date): Promise<boolean>;
+  resetPassword(token: string, newPassword: string): Promise<boolean>;
   
   // Forum operations
   getForumPosts(userId?: number): Promise<ForumPostType[]>;
@@ -415,6 +421,108 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserByUsernameOrEmail(usernameOrEmail: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(or(eq(users.username, usernameOrEmail), eq(users.email, usernameOrEmail)));
+    return user || undefined;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async verifyEmail(token: string): Promise<boolean> {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            eq(users.emailVerificationToken, token),
+            gt(users.emailVerificationExpiry, new Date())
+          )
+        );
+
+      if (!user) return false;
+
+      await db
+        .update(users)
+        .set({
+          isEmailVerified: true,
+          emailVerificationToken: null,
+          emailVerificationExpiry: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, user.id));
+
+      return true;
+    } catch (error) {
+      console.error('Error verifying email:', error);
+      return false;
+    }
+  }
+
+  async setPasswordResetToken(email: string, token: string, expiry: Date): Promise<boolean> {
+    try {
+      const result = await db
+        .update(users)
+        .set({
+          passwordResetToken: token,
+          passwordResetExpiry: expiry,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.email, email));
+
+      return true;
+    } catch (error) {
+      console.error('Error setting password reset token:', error);
+      return false;
+    }
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<boolean> {
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(
+          and(
+            eq(users.passwordResetToken, token),
+            gt(users.passwordResetExpiry, new Date())
+          )
+        );
+
+      if (!user) return false;
+
+      await db
+        .update(users)
+        .set({
+          password: newPassword,
+          passwordResetToken: null,
+          passwordResetExpiry: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, user.id));
+
+      return true;
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      return false;
+    }
   }
   
   async getForumPosts(userId?: number): Promise<ForumPostType[]> {

@@ -8,7 +8,8 @@ import { getRealTruflationData } from "./api/realTruflation";
 import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { z } from "zod";
-import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema } from "@shared/schema";
+import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
+import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
 import session from "express-session";
 import bcrypt from "bcryptjs";
 import { upload, handleFileUpload } from "./upload";
@@ -48,25 +49,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post(`${apiPrefix}/auth/register`, async (req, res) => {
     try {
-      const { username, password } = insertUserSchema.parse(req.body);
+      const { username, email, password } = registerSchema.parse(req.body);
       
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(username);
-      if (existingUser) {
+      const existingUserByUsername = await storage.getUserByUsername(username);
+      if (existingUserByUsername) {
         return res.status(400).json({ message: "Username already exists" });
       }
 
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const existingUserByEmail = await storage.getUserByEmail(email);
+      if (existingUserByEmail) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+
+      // Hash password and generate verification token
+      const hashedPassword = await hashPassword(password);
+      const verificationToken = generateToken();
+      const verificationExpiry = getTokenExpiry(24); // 24 hours
       
       // Create user
       const user = await storage.createUser({
         username,
-        password: hashedPassword
+        email,
+        password: hashedPassword,
+        emailVerificationToken: verificationToken,
+        emailVerificationExpiry: verificationExpiry,
+        isEmailVerified: false
       });
 
-      // Set session
-      (req.session as any).userId = user.id;
+      // Send verification email
+      const emailSent = await sendVerificationEmail(email, username, verificationToken);
+      if (!emailSent) {
+        console.error('Failed to send verification email');
+      }
 
       // Return user data (without password)
       const { password: _, ...userData } = user;
@@ -79,29 +94,136 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post(`${apiPrefix}/auth/login`, async (req, res) => {
     try {
-      const { username, password } = insertUserSchema.parse(req.body);
+      const { usernameOrEmail, password } = loginSchema.parse(req.body);
       
-      // Find user
-      const user = await storage.getUserByUsername(username);
+      // Find user by username or email
+      const user = await storage.getUserByUsernameOrEmail(usernameOrEmail);
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
+      // Check if email is verified
+      if (!user.isEmailVerified) {
+        return res.status(401).json({ 
+          message: "Please verify your email address before logging in",
+          needsVerification: true 
+        });
+      }
+
       // Check password
-      const isValidPassword = await bcrypt.compare(password, user.password);
+      const isValidPassword = await verifyPassword(password, user.password);
       if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
+
+      // Update last login
+      await storage.updateUser(user.id, { lastLoginAt: new Date() });
 
       // Set session
       (req.session as any).userId = user.id;
 
       // Return user data (without password)
-      const { password: _, ...userData } = user;
-      res.json(userData);
+      const { password: _, emailVerificationToken: __, passwordResetToken: ___, ...userData } = user;
+      res.json({ user: userData });
     } catch (error) {
       console.error("Login error:", error);
       res.status(400).json({ message: "Login failed" });
+    }
+  });
+
+  // Email verification route
+  app.get('/verify-email', async (req, res) => {
+    try {
+      const { token } = req.query;
+      if (!token || typeof token !== 'string') {
+        return res.status(400).send('Invalid verification token');
+      }
+
+      const success = await storage.verifyEmail(token);
+      if (success) {
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+          <head><title>Email Verified - BitcoinHub</title></head>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h1 style="color: #f97316;">Email Verified Successfully!</h1>
+            <p>Your email has been verified. You can now log in to your BitcoinHub account.</p>
+            <a href="/login" style="background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">Go to Login</a>
+          </body>
+          </html>
+        `);
+      } else {
+        res.status(400).send(`
+          <!DOCTYPE html>
+          <html>
+          <head><title>Verification Failed - BitcoinHub</title></head>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+            <h1 style="color: #dc2626;">Verification Failed</h1>
+            <p>The verification link is invalid or has expired. Please register again or contact support.</p>
+            <a href="/register" style="background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">Register Again</a>
+          </body>
+          </html>
+        `);
+      }
+    } catch (error) {
+      console.error('Email verification error:', error);
+      res.status(500).send('Internal server error');
+    }
+  });
+
+  // Password reset routes
+  app.post(`${apiPrefix}/auth/forgot-password`, async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if email exists for security
+        return res.json({ message: "If the email exists, a reset link has been sent" });
+      }
+
+      const resetToken = generateToken();
+      const resetExpiry = getTokenExpiry(1); // 1 hour
+
+      await storage.setPasswordResetToken(email, resetToken, resetExpiry);
+      const emailSent = await sendPasswordResetEmail(email, user.username, resetToken);
+
+      if (emailSent) {
+        res.json({ message: "If the email exists, a reset link has been sent" });
+      } else {
+        res.status(500).json({ message: "Failed to send reset email" });
+      }
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({ message: "Failed to process request" });
+    }
+  });
+
+  app.post(`${apiPrefix}/auth/reset-password`, async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      if (!token || !password) {
+        return res.status(400).json({ message: "Token and password are required" });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({ message: "Password must be at least 8 characters" });
+      }
+
+      const hashedPassword = await hashPassword(password);
+      const success = await storage.resetPassword(token, hashedPassword);
+
+      if (success) {
+        res.json({ message: "Password reset successfully" });
+      } else {
+        res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({ message: "Failed to reset password" });
     }
   });
 
