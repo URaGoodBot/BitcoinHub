@@ -17,7 +17,7 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const { isAuthenticated, isGuest, isLoading } = useAuth();
 
-  // Show loading state while checking authentication
+  // Show loading state briefly while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
