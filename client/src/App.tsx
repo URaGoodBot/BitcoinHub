@@ -15,29 +15,11 @@ import WebResources from "@/pages/WebResources";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isGuest, isLoading } = useAuth();
-
-  // Show loading state briefly while checking authentication
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show landing page if not authenticated and not in guest mode
-  if (!isAuthenticated && !isGuest) {
-    return <Landing />;
-  }
-
-  // Show main app for authenticated users or guests
+  // Temporarily bypass authentication - show main app directly
   return (
     <Layout>
       <Switch>
+        <Route path="/landing" component={Landing} />
         <Route path="/" component={Dashboard} />
         <Route path="/news" component={NewsFeed} />
         <Route path="/learn" component={Learn} />

@@ -81,6 +81,7 @@ const BitcoinMetricsGrid = () => {
   const marketCapChange = (bitcoinData as any)?.market_cap_change_percentage_24h || 0;
   const volume24h = (bitcoinData as any)?.total_volume?.usd || 0;
   const volumeChange = (bitcoinData as any)?.total_volume_change_percentage_24h || 0;
+  const priceChange24h = (bitcoinData as any)?.price_change_percentage_24h || 0;
   
   // Use live Fear and Greed Index data (same source as Web Resources page)
   const fearGreedIndex = fearGreedData?.currentValue || 58;
