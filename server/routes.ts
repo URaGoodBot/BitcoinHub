@@ -4,8 +4,9 @@ import { storage } from "./storage";
 import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cryptocompare";
 import { getLatestNews } from "./api/newsapi";
 import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeerFollowing } from "./api/twitter";
-import { getTruflationData } from "./api/truflation";
-import { getTreasuryData, getFedWatchData, getFinancialMarketData } from "./api/financial";
+import { getRealTruflationData } from "./api/realTruflation";
+import { getRealTreasuryData } from "./api/realTreasury";
+import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema } from "@shared/schema";
 import session from "express-session";
@@ -156,24 +157,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Financial data routes with auto-updating functionality
+  // Financial data routes with REAL live data scraping
   app.get(`${apiPrefix}/truflation`, async (req, res) => {
     try {
-      const data = await getTruflationData();
+      const data = await getRealTruflationData();
       res.json(data);
     } catch (error) {
-      console.error("Error fetching Truflation data:", error);
-      res.status(500).json({ message: "Failed to fetch Truflation data" });
+      console.error("Error fetching real Truflation data:", error);
+      res.status(503).json({ 
+        message: "Unable to fetch live data from Truflation.com. Please check if the website is accessible.",
+        error: error.message 
+      });
     }
   });
 
   app.get(`${apiPrefix}/financial/treasury`, async (req, res) => {
     try {
-      const data = await getTreasuryData();
+      const data = await getRealTreasuryData();
       res.json(data);
     } catch (error) {
-      console.error("Error fetching Treasury data:", error);
-      res.status(500).json({ message: "Failed to fetch Treasury data" });
+      console.error("Error fetching real Treasury data:", error);
+      res.status(503).json({ 
+        message: "Unable to fetch live data from MarketWatch.com. Please check if financial websites are accessible.",
+        error: error.message 
+      });
     }
   });
 
@@ -209,20 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Financial data routes
-  app.get(`${apiPrefix}/financial/treasury`, async (_req, res) => {
-    try {
-      const { getTreasuryData } = await import("./api/financial");
-      const treasuryData = await getTreasuryData();
-      res.json(treasuryData);
-    } catch (error) {
-      console.error("Error fetching Treasury data:", error);
-      res.status(503).json({ 
-        message: "Live Treasury data temporarily unavailable",
-        error: "Only authentic data sources are used - no fallback data provided"
-      });
-    }
-  });
+
 
   app.get(`${apiPrefix}/financial/fedwatch`, async (_req, res) => {
     try {
