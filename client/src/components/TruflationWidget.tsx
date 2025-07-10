@@ -1,7 +1,50 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, RefreshCw } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+
+interface TruflationData {
+  currentRate: number;
+  dailyChange: number;
+  blsReportedRate: number;
+  ytdLow: number;
+  ytdHigh: number;
+  yearOverYear: boolean;
+  lastUpdated: string;
+}
 
 const TruflationWidget = () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const { data: truflationData, isLoading, refetch } = useQuery<TruflationData>({
+    queryKey: ['/api/truflation'],
+    refetchInterval: 60000, // Auto-refresh every minute
+    refetchOnWindowFocus: true,
+  });
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="bg-gradient-to-br from-blue-600 to-blue-800 text-white border">
+        <CardContent className="p-6">
+          <div className="animate-pulse">
+            <div className="h-4 bg-white/20 rounded mb-4"></div>
+            <div className="h-12 bg-white/20 rounded mb-2"></div>
+            <div className="h-4 bg-white/20 rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const rangePosition = truflationData ? 
+    ((truflationData.currentRate - truflationData.ytdLow) / (truflationData.ytdHigh - truflationData.ytdLow)) * 100 : 24;
+
   return (
     <Card className="bg-gradient-to-br from-blue-600 to-blue-800 text-white border overflow-hidden">
       <CardContent className="p-0">
@@ -17,15 +60,25 @@ const TruflationWidget = () => {
                 <p className="text-sm text-white/80">Live from Truflation.com</p>
               </div>
             </div>
-            <a
-              href="https://truflation.com/marketplace/us-inflation-rate"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
-            >
-              <ExternalLink className="h-3 w-3" />
-              View Source
-            </a>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3 w-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+              <a
+                href="https://truflation.com/marketplace/us-inflation-rate"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
+              >
+                <ExternalLink className="h-3 w-3" />
+                View Source
+              </a>
+            </div>
           </div>
         </div>
 
@@ -40,15 +93,19 @@ const TruflationWidget = () => {
               </div>
               
               <div className="text-6xl font-bold text-white mb-2">
-                1.66%
+                {truflationData?.currentRate.toFixed(2)}%
               </div>
               
-              <div className="inline-flex items-center gap-1 bg-green-500/20 text-green-300 px-2 py-1 rounded text-sm">
-                ▼ -0.04
+              <div className={`inline-flex items-center gap-1 px-2 py-1 rounded text-sm ${
+                truflationData && truflationData.dailyChange >= 0 
+                  ? 'bg-green-500/20 text-green-300' 
+                  : 'bg-red-500/20 text-red-300'
+              }`}>
+                {truflationData && truflationData.dailyChange >= 0 ? '▲' : '▼'} {truflationData?.dailyChange.toFixed(2) || '0.00'}
               </div>
               
               <p className="text-sm text-white/80 mt-2">
-                BLS reported rate: 2.40%
+                BLS reported rate: {truflationData?.blsReportedRate.toFixed(2)}%
               </p>
             </div>
 
@@ -56,7 +113,7 @@ const TruflationWidget = () => {
             <div className="flex justify-between items-center mb-6">
               <div className="text-center">
                 <p className="text-xs text-white/60 mb-1">YTD LOW</p>
-                <p className="text-lg font-bold text-white">1.22%</p>
+                <p className="text-lg font-bold text-white">{truflationData?.ytdLow.toFixed(2)}%</p>
               </div>
               
               {/* Progress Bar */}
@@ -64,7 +121,7 @@ const TruflationWidget = () => {
                 <div className="h-2 bg-white/20 rounded-full relative">
                   <div 
                     className="h-2 bg-white rounded-full"
-                    style={{ width: '24%' }}
+                    style={{ width: `${rangePosition}%` }}
                   />
                   <div 
                     className="absolute top-0 w-3 h-3 bg-white rounded-full border-2 border-blue-600 transform -translate-y-0.5"
@@ -75,7 +132,7 @@ const TruflationWidget = () => {
               
               <div className="text-center">
                 <p className="text-xs text-white/60 mb-1">YTD HIGH</p>
-                <p className="text-lg font-bold text-white">3.04%</p>
+                <p className="text-lg font-bold text-white">{truflationData?.ytdHigh.toFixed(2)}%</p>
               </div>
             </div>
 
@@ -101,7 +158,7 @@ const TruflationWidget = () => {
               📈 Powered by TRUF
             </div>
             <p className="text-xs text-white/60">
-              Updated July 9 2025 • Real-time data
+              Last updated: {truflationData?.lastUpdated ? new Date(truflationData.lastUpdated).toLocaleString() : 'Loading...'}
             </p>
           </div>
         </div>

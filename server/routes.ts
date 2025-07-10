@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cryptocompare";
 import { getLatestNews } from "./api/newsapi";
 import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeerFollowing } from "./api/twitter";
+import { getTruflationData } from "./api/truflation";
+import { getTreasuryData, getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema } from "@shared/schema";
 import session from "express-session";
@@ -147,6 +149,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const timeframe = req.query.timeframe || "1d";
       const data = await getBitcoinChart(timeframe as string);
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching Bitcoin chart data:", error);
+      res.status(500).json({ message: "Failed to fetch Bitcoin chart data" });
+    }
+  });
+
+  // Financial data routes with auto-updating functionality
+  app.get(`${apiPrefix}/truflation`, async (req, res) => {
+    try {
+      const data = await getTruflationData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching Truflation data:", error);
+      res.status(500).json({ message: "Failed to fetch Truflation data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/financial/treasury`, async (req, res) => {
+    try {
+      const data = await getTreasuryData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching Treasury data:", error);
+      res.status(500).json({ message: "Failed to fetch Treasury data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/financial/fed-watch`, async (req, res) => {
+    try {
+      const data = await getFedWatchData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching Fed Watch data:", error);
+      res.status(500).json({ message: "Failed to fetch Fed Watch data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/financial/markets`, async (req, res) => {
+    try {
+      const data = await getFinancialMarketData();
       res.json(data);
     } catch (error) {
       console.error("Error fetching Bitcoin chart data:", error);
