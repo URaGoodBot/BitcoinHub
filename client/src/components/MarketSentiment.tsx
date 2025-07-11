@@ -48,13 +48,13 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
   // Get appropriate icon for each sentiment source
   const getSourceIcon = (source: string) => {
     switch (source) {
-      case 'News Articles':
+      case 'News & Media':
         return <Newspaper className="h-4 w-4 text-blue-400" />;
-      case 'Social Media':
+      case 'Social Sentiment':
         return <Twitter className="h-4 w-4 text-sky-400" />;
-      case 'On-Chain Metrics':
+      case 'Market Data':
         return <BarChart3 className="h-4 w-4 text-green-400" />;
-      case 'Derivatives Market':
+      case 'Trading Activity':
         return <Users className="h-4 w-4 text-amber-400" />;
       default:
         return <Globe className="h-4 w-4 text-gray-400" />;
@@ -202,56 +202,48 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
               Overall Score: {sentimentData.overallScore}/100
             </p>
             <span className="text-xs text-muted-foreground">
-              Confidence: {Math.round(sentimentData.confidence * 100)}%
+              Based on real-time news & market data
             </span>
           </div>
           <Progress 
             value={sentimentData.overallScore} 
-            className="h-2"
+            className="h-3"
           />
         </div>
 
-        {/* Source Breakdown */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-muted-foreground">
-            Source Analysis
-          </h4>
+        {/* Simplified Source Cards */}
+        <div className="grid grid-cols-2 gap-3">
           {sentimentData.sources.map((source, index) => (
             <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
               <div className="flex items-center gap-2 flex-1">
                 {getSourceIcon(source.source)}
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{source.source}</span>
-                    <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium">{source.source}</span>
+                    <div className="flex items-center gap-1">
                       {getTrendIcon(source.trend)}
-                      <span className="text-sm text-muted-foreground">
-                        {source.score}
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        {Math.round(source.score)}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <Progress 
-                      value={source.score} 
-                      className="h-1 flex-1 mr-2"
-                    />
-                    <span className="text-xs text-muted-foreground">
-                      {Math.round(source.confidence * 100)}%
-                    </span>
-                  </div>
+                  <Progress 
+                    value={source.score} 
+                    className="h-1 mt-1"
+                  />
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Trending Keywords */}
-        <div className="space-y-3">
+        {/* Key Market Indicators */}
+        <div className="space-y-2">
           <h4 className="text-sm font-medium text-muted-foreground">
-            Trending Keywords
+            Key Market Signals
           </h4>
           <div className="flex flex-wrap gap-2">
-            {sentimentData.keywords.map((keyword, index) => (
+            {sentimentData.keywords.slice(0, 6).map((keyword, index) => (
               <Badge 
                 key={index}
                 variant={keyword.type === 'bullish' ? 'default' : keyword.type === 'bearish' ? 'destructive' : 'outline'}
@@ -262,19 +254,14 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
                 }`}
               >
                 {keyword.text}
-                <span className="ml-1 text-xs opacity-70">
-                  {keyword.weight}
-                </span>
               </Badge>
             ))}
           </div>
         </div>
 
-        {/* Last Updated */}
+        {/* Simplified Footer */}
         <div className="text-xs text-muted-foreground text-center pt-2 border-t border-muted/20">
-          Last updated: {formatTime(sentimentData.lastUpdated)}
-          <span className="mx-2">•</span>
-          Real-time analysis from {sentimentData.sources.length} sources
+          Live data from news, social media, and market analysis • Updated {formatTime(sentimentData.lastUpdated)}
         </div>
       </CardContent>
     </Card>

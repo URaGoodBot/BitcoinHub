@@ -260,7 +260,7 @@ export async function getMarketSentiment(): Promise<SentimentData> {
   }
 
   try {
-    console.log('Analyzing market sentiment from multiple sources...');
+    console.log('Analyzing market sentiment from authentic data sources...');
     
     // Fetch data from all sources
     const [
@@ -277,10 +277,10 @@ export async function getMarketSentiment(): Promise<SentimentData> {
       analyzeDerivativesSentiment()
     ]);
 
-    // Create source-specific sentiment data
+    // Create source-specific sentiment data with clearer naming
     const sources: SentimentSource[] = [
       {
-        source: 'News Articles',
+        source: 'News & Media',
         score: newsSentiment.score,
         type: newsSentiment.type,
         trend: newsSentiment.score > 55 ? 'increasing' : newsSentiment.score < 45 ? 'decreasing' : 'stable',
@@ -288,7 +288,7 @@ export async function getMarketSentiment(): Promise<SentimentData> {
         lastUpdated: new Date().toISOString()
       },
       {
-        source: 'Social Media',
+        source: 'Social Sentiment',
         score: socialSentiment.score,
         type: socialSentiment.type,
         trend: socialSentiment.score > 55 ? 'increasing' : socialSentiment.score < 45 ? 'decreasing' : 'stable',
@@ -296,7 +296,7 @@ export async function getMarketSentiment(): Promise<SentimentData> {
         lastUpdated: new Date().toISOString()
       },
       {
-        source: 'On-Chain Metrics',
+        source: 'Market Data',
         score: onChainSentiment.score,
         type: onChainSentiment.type,
         trend: onChainSentiment.score > 55 ? 'increasing' : onChainSentiment.score < 45 ? 'decreasing' : 'stable',
@@ -304,7 +304,7 @@ export async function getMarketSentiment(): Promise<SentimentData> {
         lastUpdated: new Date().toISOString()
       },
       {
-        source: 'Derivatives Market',
+        source: 'Trading Activity',
         score: derivativesSentiment.score,
         type: derivativesSentiment.type,
         trend: derivativesSentiment.score > 55 ? 'increasing' : derivativesSentiment.score < 45 ? 'decreasing' : 'stable',
@@ -321,8 +321,8 @@ export async function getMarketSentiment(): Promise<SentimentData> {
     const overallType: 'bullish' | 'bearish' | 'neutral' = 
       weightedScore > 60 ? 'bullish' : weightedScore < 40 ? 'bearish' : 'neutral';
 
-    // Extract keywords from news articles
-    const keywords = extractKeywords(articles, overallType);
+    // Extract simpler, more actionable keywords from news articles
+    const keywords = extractActionableKeywords(articles, overallType);
 
     sentimentCache = {
       overall: overallType,
@@ -334,7 +334,7 @@ export async function getMarketSentiment(): Promise<SentimentData> {
     };
 
     lastSentimentUpdate = now;
-    console.log(`Market sentiment analysis complete: ${overallType} (${Math.round(weightedScore)})`);
+    console.log(`Live sentiment analysis: ${overallType} (${Math.round(weightedScore)}) from ${sources.length} data sources`);
     
     return sentimentCache;
   } catch (error) {
@@ -347,7 +347,7 @@ export async function getMarketSentiment(): Promise<SentimentData> {
       confidence: 0.5,
       sources: [
         {
-          source: 'News Articles',
+          source: 'Market Data',
           score: 50,
           type: 'neutral',
           trend: 'stable',
@@ -362,6 +362,52 @@ export async function getMarketSentiment(): Promise<SentimentData> {
       lastUpdated: new Date().toISOString()
     };
   }
+}
+
+// Extract more actionable keywords
+function extractActionableKeywords(articles: NewsArticle[], overallSentiment: 'bullish' | 'bearish' | 'neutral') {
+  const allText = articles.map(article => `${article.title} ${article.description}`).join(' ').toLowerCase();
+  
+  const actionableKeywords = [
+    // Bullish signals
+    'breaking out', 'institutional buying', 'adoption surge', 'price target', 'strong support',
+    // Bearish signals  
+    'selling pressure', 'resistance level', 'profit taking', 'market correction', 'regulatory concerns',
+    // Neutral signals
+    'consolidation', 'range trading', 'volatility', 'waiting for breakout', 'technical analysis'
+  ];
+
+  const keywordCounts: { [key: string]: number } = {};
+  
+  actionableKeywords.forEach(keyword => {
+    const matches = (allText.match(new RegExp(keyword.replace(' ', '\\s+'), 'g')) || []).length;
+    if (matches > 0) {
+      keywordCounts[keyword] = matches;
+    }
+  });
+
+  // If no specific keywords found, use general market terms
+  if (Object.keys(keywordCounts).length === 0) {
+    return [
+      { text: 'market analysis', weight: 6, type: 'neutral' as const },
+      { text: 'price action', weight: 5, type: overallSentiment },
+      { text: 'trading volume', weight: 4, type: 'neutral' as const },
+      { text: 'technical levels', weight: 4, type: 'neutral' as const }
+    ];
+  }
+
+  // Sort by frequency and take top 6
+  const sortedKeywords = Object.entries(keywordCounts)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 6)
+    .map(([text, weight]) => ({
+      text,
+      weight: Math.min(10, weight * 3),
+      type: getBullishKeywords().some(k => text.includes(k)) ? 'bullish' as const :
+            getBearishKeywords().some(k => text.includes(k)) ? 'bearish' as const : 'neutral' as const
+    }));
+
+  return sortedKeywords;
 }
 
 // Extract trending keywords from news articles
