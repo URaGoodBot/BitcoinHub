@@ -493,6 +493,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("API request: Get Reddit posts");
       const filter = req.query.filter as string;
+      console.log("Filter parameter:", filter);
       const redditPosts = await getLatestTweets(filter);
       res.json(redditPosts);
     } catch (error) {

@@ -267,11 +267,13 @@ const NewsFeed = () => {
   
   // Handle applying Twitter filter
   const applyTwitterFilter = (filter: string) => {
+    console.log("Applying Twitter filter:", filter);
     setTwitterFilter(prevFilter => prevFilter === filter ? "" : filter);
   };
   
   // Handle applying News filter
   const applyNewsFilter = (category: string) => {
+    console.log("Applying News filter:", category);
     setNewsFilter(prevFilter => prevFilter === category ? "" : category);
   };
   
@@ -709,19 +711,24 @@ const NewsFeed = () => {
               </div>
               
               <div>
-                <h3 className="text-sm font-medium mb-2">Hashtags</h3>
+                <h3 className="text-sm font-medium mb-2">Reddit Topics</h3>
                 <div className="flex flex-wrap gap-2">
                   {!isLoadingHashtags && (twitterHashtags as string[])?.map((hashtag) => (
                     <Badge 
                       key={hashtag}
                       variant={twitterFilter === hashtag ? "default" : "outline"}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:bg-primary/20 transition-colors"
                       onClick={() => applyTwitterFilter(hashtag)}
                     >
                       {hashtag}
                     </Badge>
                   ))}
                 </div>
+                {twitterFilter && (
+                  <div className="mt-2 text-xs text-muted-foreground">
+                    Filtering by: <span className="font-medium text-primary">{twitterFilter}</span>
+                  </div>
+                )}
               </div>
               
               <div>
@@ -895,69 +902,83 @@ interface RedditPostCardProps {
 
 const RedditPostCard: React.FC<RedditPostCardProps> = ({ post }) => {
   return (
-    <div className="bg-card hover:bg-muted/20 transition-colors p-4 rounded-lg border border-muted">
+    <div className="bg-card hover:bg-muted/10 transition-all duration-200 p-4 rounded-lg border border-muted/50">
       <div className="flex gap-3">
         <div className="flex-shrink-0">
-          <Avatar className="h-10 w-10 bg-orange-500/90">
+          <Avatar className="h-10 w-10 bg-gradient-to-br from-orange-500 to-red-500">
             <AvatarImage src={post.author.profileImageUrl} alt={post.author.displayName} />
-            <AvatarFallback>r/</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-500 text-white font-bold">
+              r/
+            </AvatarFallback>
           </Avatar>
         </div>
         
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <span className="font-medium text-orange-500">r/{post.author.displayName}</span>
-              {post.author.verified && (
-                <svg className="ml-1 h-4 w-4 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
-                </svg>
-              )}
-              <span className="text-muted-foreground text-sm ml-1">u/{post.author.username}</span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-semibold text-orange-500 text-sm">r/{post.author.displayName}</span>
+              <span className="text-muted-foreground text-xs">•</span>
+              <span className="text-muted-foreground text-xs truncate">u/{post.author.username}</span>
+              <span className="text-muted-foreground text-xs">•</span>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {formatRelativeTime(post.createdAt)}
+              </span>
             </div>
-            <span className="text-xs text-muted-foreground">{formatRelativeTime(post.createdAt)}</span>
           </div>
           
-          <p className="text-base mt-2 font-medium">{post.text}</p>
+          <h3 className="text-base font-medium leading-snug mb-3 text-foreground">
+            {post.text}
+          </h3>
           
           {post.imageUrl && (
-            <div className="mt-4 rounded-md overflow-hidden">
+            <div className="mt-3 mb-3 rounded-lg overflow-hidden bg-muted/20">
               <img 
                 src={post.imageUrl} 
                 alt="Reddit post content" 
-                className="w-full object-cover max-h-[400px]" 
+                className="w-full h-auto object-cover max-h-[300px]" 
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
               />
             </div>
           )}
           
           {post.hashtags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
-              {post.hashtags.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {post.hashtags.map((tag, index) => (
+                <Badge 
+                  key={`${tag}-${index}`} 
+                  variant="secondary" 
+                  className="text-xs px-2 py-1 bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer transition-colors"
+                >
                   {tag}
                 </Badge>
               ))}
             </div>
           )}
           
-          <div className="flex items-center mt-3 text-xs text-muted-foreground">
-            <button className="flex items-center mr-4 hover:text-primary">
-              <MessageCircle className="h-4 w-4 mr-1" />
-              {formatNumber(post.metrics.replies)} comments
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <button className="flex items-center gap-1.5 hover:text-primary transition-colors p-1 rounded">
+              <MessageCircle className="h-4 w-4" />
+              <span>{formatNumber(post.metrics.replies)}</span>
             </button>
-            <button className="flex items-center mr-4 hover:text-green-500">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide h-4 w-4 mr-1"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
-              {formatNumber(post.metrics.retweets)} votes
+            
+            <button className="flex items-center gap-1.5 hover:text-green-500 transition-colors p-1 rounded">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+              </svg>
+              <span>{formatNumber(post.metrics.retweets)}</span>
             </button>
-            <button className="flex items-center hover:text-orange-500">
-              <Bookmark className="h-4 w-4 mr-1" />
-              Save
+            
+            <button className="flex items-center gap-1.5 hover:text-yellow-500 transition-colors p-1 rounded">
+              <Bookmark className="h-4 w-4" />
+              <span>Save</span>
             </button>
-            <div className="ml-auto">
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                <Share className="h-4 w-4" />
-              </Button>
-            </div>
+            
+            <button className="flex items-center gap-1.5 hover:text-blue-500 transition-colors p-1 rounded ml-auto">
+              <Share className="h-4 w-4" />
+              <span>Share</span>
+            </button>
           </div>
         </div>
       </div>

@@ -80,11 +80,24 @@ export async function getLatestTweets(filter?: string): Promise<TwitterPost[]> {
       // Filter based on input
       if (filter) {
         const filterLower = filter.toLowerCase();
-        return posts.filter(post => 
-          post.text.toLowerCase().includes(filterLower) || 
-          post.author.username.toLowerCase().includes(filterLower) ||
-          post.hashtags.some(hashtag => hashtag.toLowerCase().includes(filterLower))
-        );
+        // Remove # symbol if present for better matching
+        const cleanFilter = filterLower.replace('#', '');
+        console.log("Filtering with:", filterLower, "cleaned:", cleanFilter);
+        
+        return posts.filter(post => {
+          const textMatch = post.text.toLowerCase().includes(filterLower);
+          const authorMatch = post.author.username.toLowerCase().includes(filterLower);
+          const hashtagMatch = post.hashtags.some(hashtag => {
+            const cleanHashtag = hashtag.toLowerCase().replace('#', '');
+            return cleanHashtag.includes(cleanFilter) || hashtag.toLowerCase().includes(filterLower);
+          });
+          
+          const match = textMatch || authorMatch || hashtagMatch;
+          if (match) {
+            console.log(`Post ${post.id} matched filter - text: ${textMatch}, author: ${authorMatch}, hashtag: ${hashtagMatch}`);
+          }
+          return match;
+        });
       }
       
       return posts;
