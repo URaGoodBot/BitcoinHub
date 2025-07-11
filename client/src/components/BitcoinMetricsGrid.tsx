@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
 import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, Activity, Shield, Users, Zap, ExternalLink } from "lucide-react";
@@ -71,16 +71,17 @@ const MetricCard = ({ title, value, change, suffix, icon, description, isLoading
 };
 
 const BitcoinMetricsGrid = () => {
-  // Fetch Bitcoin market data
+  const queryClient = useQueryClient();
+  // Fetch Bitcoin market data with 5-minute refresh
   const { data: bitcoinData, isLoading: isLoadingBitcoin } = useQuery({
     queryKey: ["/api/bitcoin/market-data"],
-    refetchInterval: 60000,
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes for live data
   });
 
-  // Fetch live Fear and Greed Index data (same as Web Resources page)
+  // Fetch live Fear and Greed Index data with 5-minute refresh
   const { data: fearGreedData, isLoading: isLoadingFearGreed } = useQuery({
     queryKey: ["/api/web-resources/fear-greed"],
-    refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
   });
 
   const marketCap = (bitcoinData as any)?.market_cap?.usd || 0;
@@ -131,7 +132,7 @@ const BitcoinMetricsGrid = () => {
     },
     {
       title: "24h Trading Volume",
-      value: volume24h > 0 ? `$${(volume24h / 1e9).toFixed(0)}B` : "$85B",
+      value: volume24h > 0 ? `$${(volume24h / 1e9).toFixed(1)}B` : "$77.0B",
       change: volumeChange,
       icon: <Activity className="h-4 w-4" />,
       description: "Total Bitcoin traded in last 24 hours",
@@ -201,12 +202,28 @@ const BitcoinMetricsGrid = () => {
     },
   ];
 
+  const handleManualRefresh = () => {
+    // Force refresh by invalidating all relevant queries
+    queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/market-data"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/web-resources/fear-greed"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/dominance"] });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Bitcoin Market Metrics</h2>
-        <div className="text-sm text-muted-foreground">
-          Updates every minute
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleManualRefresh}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            title="Refresh all metrics now"
+          >
+            🔄 Refresh Now
+          </button>
+          <div className="text-sm text-muted-foreground">
+            Updates every 5 minutes
+          </div>
         </div>
       </div>
       

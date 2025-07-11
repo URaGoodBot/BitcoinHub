@@ -134,15 +134,15 @@ export async function getBitcoinMarketData(): Promise<BitcoinMarketData> {
       return cacheData.marketData;
     }
     
-    // Last resort fallback
+    // Last resort fallback with updated realistic values
     return {
-      current_price: { usd: 41285.34 },
-      market_cap: { usd: 815200000000 },
-      total_volume: { usd: 28900000000 },
+      current_price: { usd: 117000 },
+      market_cap: { usd: 2300000000000 },
+      total_volume: { usd: 77000000000 }, // Updated to match current market (77B+)
       price_change_percentage_24h: 2.14,
-      circulating_supply: 19400000,
-      ath: { usd: 69044 },
-      high_24h: { usd: 42100.75 },
+      circulating_supply: 19800000,
+      ath: { usd: 73800 },
+      high_24h: { usd: 118000 },
       low_24h: { usd: 40950.25 }
     };
   }
