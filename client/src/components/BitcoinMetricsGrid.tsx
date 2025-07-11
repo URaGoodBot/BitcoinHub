@@ -126,6 +126,8 @@ const BitcoinMetricsGrid = () => {
       icon: <TrendingUp className="h-4 w-4" />,
       description: "Total value of all Bitcoin in circulation",
       isLoading: isLoadingBitcoin,
+      clickable: true,
+      onClick: () => window.open('https://www.coingecko.com/en/coins/bitcoin', '_blank'),
     },
     {
       title: "24h Trading Volume",
@@ -134,6 +136,8 @@ const BitcoinMetricsGrid = () => {
       icon: <Activity className="h-4 w-4" />,
       description: "Total Bitcoin traded in last 24 hours",
       isLoading: isLoadingBitcoin,
+      clickable: true,
+      onClick: () => window.open('https://www.coingecko.com/en/coins/bitcoin', '_blank'),
     },
     {
       title: "Fear & Greed Index",
@@ -142,6 +146,8 @@ const BitcoinMetricsGrid = () => {
       icon: <Users className="h-4 w-4" />,
       description: "Live Bitcoin market sentiment (0=Fear, 100=Greed)",
       isLoading: isLoadingFearGreed,
+      clickable: true,
+      onClick: () => window.open('https://alternative.me/crypto/fear-and-greed-index/', '_blank'),
     },
     {
       title: "Bitcoin Dominance",
@@ -160,6 +166,8 @@ const BitcoinMetricsGrid = () => {
       icon: <Zap className="h-4 w-4" />,
       description: "Network computational power securing Bitcoin",
       isLoading: isLoadingBitcoin,
+      clickable: true,
+      onClick: () => window.open('https://www.blockchain.com/explorer/charts/hash-rate', '_blank'),
     },
     {
       title: "Supply Issued",
@@ -168,6 +176,8 @@ const BitcoinMetricsGrid = () => {
       icon: <TrendingDown className="h-4 w-4" />,
       description: `${circulatingSupply?.toLocaleString()} of 21M BTC mined`,
       isLoading: isLoadingBitcoin,
+      clickable: true,
+      onClick: () => window.open('https://www.blockchain.com/explorer/charts/total-bitcoins', '_blank'),
     },
     {
       title: "24h Volatility",
@@ -176,6 +186,8 @@ const BitcoinMetricsGrid = () => {
       icon: <Activity className="h-4 w-4" />,
       description: "Price fluctuation in last 24 hours",
       isLoading: isLoadingBitcoin,
+      clickable: true,
+      onClick: () => window.open('https://www.coingecko.com/en/coins/bitcoin', '_blank'),
     },
     {
       title: "Network Security",
@@ -184,6 +196,8 @@ const BitcoinMetricsGrid = () => {
       icon: <Shield className="h-4 w-4" />,
       description: "Mining difficulty ensuring network security",
       isLoading: isLoadingBitcoin,
+      clickable: true,
+      onClick: () => window.open('https://www.blockchain.com/explorer/charts/difficulty', '_blank'),
     },
   ];
 
