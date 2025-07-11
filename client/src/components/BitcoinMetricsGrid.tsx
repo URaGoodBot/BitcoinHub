@@ -157,7 +157,7 @@ const BitcoinMetricsGrid = () => {
       value: volume24h > 0 ? `$${(volume24h / 1e9).toFixed(1)}B` : "$125.0B",
       change: volumeChange,
       icon: <Activity className="h-4 w-4" />,
-      description: "Total Bitcoin traded in last 24 hours (CoinMarketCap)",
+      description: `Total Bitcoin traded in last 24 hours (${volumeData?.source || 'Multi-Exchange'})`,
       isLoading: isLoadingBitcoin || isLoadingVolume,
       clickable: true,
       onClick: () => window.open('https://coinmarketcap.com/currencies/bitcoin/', '_blank'),

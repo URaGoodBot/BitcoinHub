@@ -293,11 +293,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Bitcoin volume route (CoinMarketCap)
+  // Bitcoin volume route (Multi-source: CoinGecko + Binance)
   app.get(`${apiPrefix}/bitcoin/volume`, async (req, res) => {
     try {
-      const { getBitcoinVolumeData } = await import('./api/coinmarketcap');
-      const volumeData = await getBitcoinVolumeData();
+      const { getBitcoinVolume, clearVolumeCache } = await import('./api/volume');
+      
+      // Clear cache if refresh parameter is present
+      if (req.query.refresh === 'true') {
+        clearVolumeCache();
+      }
+      
+      const volumeData = await getBitcoinVolume();
       res.json(volumeData);
     } catch (error) {
       console.error("Error fetching Bitcoin volume:", error);
