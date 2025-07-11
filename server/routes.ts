@@ -269,6 +269,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bitcoin dominance route
+  app.get(`${apiPrefix}/bitcoin/dominance`, async (req, res) => {
+    try {
+      const { getBitcoinDominance } = await import('./api/coinmarketcap');
+      const dominanceData = await getBitcoinDominance();
+      res.json(dominanceData);
+    } catch (error) {
+      console.error("Error fetching Bitcoin dominance:", error);
+      res.status(500).json({ message: "Failed to fetch Bitcoin dominance" });
+    }
+  });
+
+  // Global crypto metrics route
+  app.get(`${apiPrefix}/crypto/global-metrics`, async (req, res) => {
+    try {
+      const { getGlobalCryptoMetrics } = await import('./api/coinmarketcap');
+      const globalMetrics = await getGlobalCryptoMetrics();
+      res.json(globalMetrics);
+    } catch (error) {
+      console.error("Error fetching global crypto metrics:", error);
+      res.status(500).json({ message: "Failed to fetch global crypto metrics" });
+    }
+  });
+
   app.get(`${apiPrefix}/bitcoin/chart`, async (req, res) => {
     try {
       const timeframe = req.query.timeframe || "1d";

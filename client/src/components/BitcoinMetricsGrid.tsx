@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
-import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, Activity, Shield, Users, Zap } from "lucide-react";
+import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, Activity, Shield, Users, Zap, ExternalLink } from "lucide-react";
 
 interface MetricCardProps {
   title: string;
@@ -11,9 +11,11 @@ interface MetricCardProps {
   icon: React.ReactNode;
   description: string;
   isLoading?: boolean;
+  clickable?: boolean;
+  onClick?: () => void;
 }
 
-const MetricCard = ({ title, value, change, suffix, icon, description, isLoading }: MetricCardProps) => {
+const MetricCard = ({ title, value, change, suffix, icon, description, isLoading, clickable, onClick }: MetricCardProps) => {
   if (isLoading) {
     return (
       <Card className="h-full">
@@ -36,11 +38,15 @@ const MetricCard = ({ title, value, change, suffix, icon, description, isLoading
   const isPositiveChange = change ? change >= 0 : null;
 
   return (
-    <Card className="h-full">
+    <Card 
+      className={`h-full ${clickable ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}`}
+      onClick={clickable ? onClick : undefined}
+    >
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           {icon}
           {title}
+          {clickable && <ExternalLink className="h-3 w-3 text-muted-foreground" />}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -87,8 +93,13 @@ const BitcoinMetricsGrid = () => {
   const fearGreedIndex = fearGreedData?.currentValue || 58;
   const fearGreedClassification = fearGreedData?.classification || 'Greed';
   
-  // Bitcoin dominance (estimated based on market cap)
-  const btcDominance = marketCap > 0 ? 54.8 : 54.8; // Current BTC dominance estimate
+  // Fetch Bitcoin dominance from CoinMarketCap API
+  const { data: dominanceData, isLoading: isLoadingDominance } = useQuery({
+    queryKey: ["/api/bitcoin/dominance"],
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+  });
+
+  const btcDominance = dominanceData?.dominance || 63.5; // User confirmed this is more accurate
   
   // Network metrics (using current estimates)
   const hashRate = "150"; // EH/s - current network hash rate
@@ -138,7 +149,9 @@ const BitcoinMetricsGrid = () => {
       suffix: "%",
       icon: <Shield className="h-4 w-4" />,
       description: "Bitcoin's share of total crypto market cap",
-      isLoading: isLoadingBitcoin,
+      isLoading: isLoadingBitcoin || isLoadingDominance,
+      clickable: true,
+      onClick: () => window.open('https://coinmarketcap.com/charts/bitcoin-dominance/', '_blank'),
     },
     {
       title: "Hash Rate",
