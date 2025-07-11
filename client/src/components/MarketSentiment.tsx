@@ -61,6 +61,26 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
     }
   };
 
+  const getSourceDescription = (source: string, score: number, type: SentimentType) => {
+    const scoreText = score >= 70 ? 'very positive' : 
+                      score >= 60 ? 'positive' :
+                      score >= 40 ? 'neutral' :
+                      score >= 30 ? 'negative' : 'very negative';
+    
+    switch (source) {
+      case 'News & Media':
+        return `Bitcoin news articles show ${scoreText} sentiment (${Math.round(score)}/100)`;
+      case 'Social Sentiment':
+        return `Social media discussions are ${scoreText} about Bitcoin (${Math.round(score)}/100)`;
+      case 'Market Data':
+        return `On-chain metrics and market indicators are ${scoreText} (${Math.round(score)}/100)`;
+      case 'Trading Activity':
+        return `Derivatives and trading patterns show ${scoreText} sentiment (${Math.round(score)}/100)`;
+      default:
+        return `Sentiment analysis shows ${scoreText} outlook (${Math.round(score)}/100)`;
+    }
+  };
+
   const getSentimentBadge = (type: SentimentType) => {
     switch (type) {
       case 'bullish':
@@ -214,8 +234,8 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
         {/* Simplified Source Cards */}
         <div className="grid grid-cols-2 gap-3">
           {sentimentData.sources.map((source, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-              <div className="flex items-center gap-2 flex-1">
+            <div key={index} className="flex flex-col gap-2 p-3 rounded-lg bg-muted/30">
+              <div className="flex items-center gap-2">
                 {getSourceIcon(source.source)}
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -232,6 +252,9 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
                     className="h-1 mt-1"
                   />
                 </div>
+              </div>
+              <div className="text-xs text-muted-foreground leading-tight">
+                {getSourceDescription(source.source, source.score, source.type)}
               </div>
             </div>
           ))}
