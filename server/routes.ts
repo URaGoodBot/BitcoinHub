@@ -305,6 +305,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bitcoin network stats route (Blockchain.com)
+  app.get(`${apiPrefix}/bitcoin/network-stats`, async (req, res) => {
+    try {
+      const { getBitcoinNetworkStats } = await import('./api/blockchain');
+      const networkStats = await getBitcoinNetworkStats();
+      res.json(networkStats);
+    } catch (error) {
+      console.error("Error fetching Bitcoin network stats:", error);
+      res.status(500).json({ message: "Failed to fetch Bitcoin network stats" });
+    }
+  });
+
+  // Bitcoin difficulty route (Blockchain.com)
+  app.get(`${apiPrefix}/bitcoin/difficulty`, async (req, res) => {
+    try {
+      const { getBitcoinDifficulty } = await import('./api/blockchain');
+      const difficultyData = await getBitcoinDifficulty();
+      res.json(difficultyData);
+    } catch (error) {
+      console.error("Error fetching Bitcoin difficulty:", error);
+      res.status(500).json({ message: "Failed to fetch Bitcoin difficulty" });
+    }
+  });
+
   app.get(`${apiPrefix}/bitcoin/chart`, async (req, res) => {
     try {
       const timeframe = req.query.timeframe || "1d";
