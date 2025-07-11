@@ -152,8 +152,6 @@ import { NewsItem, TwitterPost } from "@/lib/types";
 const NewsFeed = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [twitterFilter, setTwitterFilter] = useState("");
-  const [newsFilter, setNewsFilter] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   // News data
@@ -162,7 +160,7 @@ const NewsFeed = () => {
     isLoading: isLoadingNews, 
     refetch: refetchNews 
   } = useQuery({
-    queryKey: ["/api/news", newsFilter, refreshTrigger],
+    queryKey: ["/api/news", refreshTrigger],
     refetchOnWindowFocus: false,
     refetchInterval: 60000, // Refresh every minute
   });
@@ -173,7 +171,7 @@ const NewsFeed = () => {
     isLoading: isLoadingTwitter, 
     refetch: refetchTwitter 
   } = useQuery({
-    queryKey: ["/api/twitter/tweets", twitterFilter, refreshTrigger],
+    queryKey: ["/api/twitter/tweets", refreshTrigger],
     refetchOnWindowFocus: false,
     refetchInterval: 60000, // Refresh every minute
   });
@@ -265,22 +263,9 @@ const NewsFeed = () => {
     refetchHodlmybeer();
   };
   
-  // Handle applying Twitter filter
-  const applyTwitterFilter = (filter: string) => {
-    console.log("Applying Twitter filter:", filter);
-    setTwitterFilter(prevFilter => prevFilter === filter ? "" : filter);
-  };
+
   
-  // Handle applying News filter
-  const applyNewsFilter = (category: string) => {
-    console.log("Applying News filter:", category);
-    setNewsFilter(prevFilter => prevFilter === category ? "" : category);
-  };
-  
-  // Get unique news categories
-  const newsCategories = newsItems ? 
-    Array.from(new Set((newsItems as NewsItem[]).flatMap(item => item.categories))) : 
-    [];
+
   
   return (
     <div className="container mx-auto py-6">
@@ -396,9 +381,8 @@ const NewsFeed = () => {
                       {!isLoadingHashtags && (twitterHashtags as string[])?.map((hashtag) => (
                         <Badge 
                           key={hashtag}
-                          variant={twitterFilter === hashtag ? "default" : "outline"}
+                          variant="outline"
                           className="cursor-pointer whitespace-nowrap"
-                          onClick={() => applyTwitterFilter(hashtag)}
                         >
                           {hashtag}
                         </Badge>
@@ -672,134 +656,6 @@ const NewsFeed = () => {
         
         {/* Sidebar */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Filter Content</CardTitle>
-              <CardDescription>Refine your Bitcoin news feed</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <div>
-                <h3 className="text-sm font-medium mb-2">News Sources</h3>
-                <div className="flex flex-wrap gap-2">
-                  {['CoinDesk', 'Bloomberg', 'CryptoNews', 'Financial Times', 'Bitcoin Magazine'].map((source) => (
-                    <Badge 
-                      key={source} 
-                      variant={newsFilter === source ? "default" : "outline"}
-                      className="cursor-pointer"
-                      onClick={() => applyNewsFilter(source)}
-                    >
-                      {source}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium mb-2">Categories</h3>
-                <div className="flex flex-wrap gap-2">
-                  {newsCategories.map((category) => (
-                    <Badge 
-                      key={category}
-                      variant={newsFilter === category ? "default" : "outline"}
-                      className="cursor-pointer"
-                      onClick={() => applyNewsFilter(category)}
-                    >
-                      {category}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium mb-2">Reddit Topics</h3>
-                <div className="flex flex-wrap gap-2">
-                  {!isLoadingHashtags && (twitterHashtags as string[])?.map((hashtag) => (
-                    <Badge 
-                      key={hashtag}
-                      variant={twitterFilter === hashtag ? "default" : "outline"}
-                      className="cursor-pointer hover:bg-primary/20 transition-colors"
-                      onClick={() => applyTwitterFilter(hashtag)}
-                    >
-                      {hashtag}
-                    </Badge>
-                  ))}
-                </div>
-                {twitterFilter && (
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    Filtering by: <span className="font-medium text-primary">{twitterFilter}</span>
-                  </div>
-                )}
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium mb-2">Time Period</h3>
-                <div className="flex flex-wrap gap-2">
-                  {['Today', 'This Week', 'This Month'].map((period) => (
-                    <Badge 
-                      key={period} 
-                      variant="outline"
-                      className="cursor-pointer"
-                    >
-                      {period}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              
-              <Button variant="outline" className="w-full" onClick={() => {
-                setNewsFilter("");
-                setTwitterFilter("");
-                setSearchQuery("");
-              }}>
-                <Filter className="h-4 w-4 mr-2" />
-                Clear All Filters
-              </Button>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Top Stories</CardTitle>
-              <CardDescription>Most impactful Bitcoin news</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {isLoadingNews ? (
-                <div className="space-y-4">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="flex gap-3">
-                      <Skeleton className="h-12 w-12 rounded" />
-                      <div className="flex-1">
-                        <Skeleton className="h-4 w-full mb-2" />
-                        <Skeleton className="h-3 w-1/2" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                (newsItems as NewsItem[])?.slice(0, 3).map((item, index) => (
-                  <div key={item.id} className="flex gap-3">
-                    <div className="flex-shrink-0 font-bold text-2xl text-primary w-12 flex items-center justify-center">
-                      #{index + 1}
-                    </div>
-                    <div>
-                      <a 
-                        href={item.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium hover:text-primary"
-                      >
-                        {truncateText(item.title, 60)}
-                      </a>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {item.source} • {formatRelativeTime(item.publishedAt)}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-          
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">
