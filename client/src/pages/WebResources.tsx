@@ -267,7 +267,7 @@ const WebResources = () => {
                 variant="outline" 
                 size="sm" 
                 className="text-orange-700 border-orange-300 hover:bg-orange-100 dark:text-orange-300 dark:border-orange-700"
-                onClick={() => window.open('https://coinmarketcap.com/charts/fear-and-greed-index/', '_blank')}
+                onClick={() => window.open('https://alternative.me/crypto/fear-and-greed-index/', '_blank')}
               >
                 <ExternalLink className="h-3 w-3 mr-1" />
                 View Index
@@ -326,7 +326,7 @@ const WebResources = () => {
               )}
             </div>
             <div className="text-xs text-center text-orange-600 dark:text-orange-400 pt-2 border-t border-orange-200/50">
-              CoinMarketCap • Real-time market sentiment analysis
+              Alternative.me • Real-time market sentiment analysis
             </div>
           </CardContent>
         </Card>

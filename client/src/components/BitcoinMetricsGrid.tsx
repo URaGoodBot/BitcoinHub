@@ -84,13 +84,13 @@ const BitcoinMetricsGrid = () => {
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
   });
 
-  // Fetch Bitcoin dominance from CoinMarketCap API
+  // Fetch Bitcoin dominance from CoinGecko Global API
   const { data: dominanceData, isLoading: isLoadingDominance } = useQuery({
     queryKey: ["/api/bitcoin/dominance"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 
-  // Fetch Bitcoin volume data from CoinMarketCap API
+  // Fetch Bitcoin volume data from CoinGecko Multi-Exchange API
   const { data: volumeData, isLoading: isLoadingVolume } = useQuery({
     queryKey: ["/api/bitcoin/volume"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
@@ -111,7 +111,7 @@ const BitcoinMetricsGrid = () => {
   const marketCap = (bitcoinData as any)?.market_cap?.usd || 0;
   const marketCapChange = (bitcoinData as any)?.market_cap_change_percentage_24h || 0;
   
-  // Use CoinMarketCap volume data if available, otherwise fallback to CoinGecko
+  // Use CoinGecko multi-exchange volume data with real-time updates
   const volume24h = volumeData?.volume24h || (bitcoinData as any)?.total_volume?.usd || 125010000000;
   const volumeChange = volumeData?.volumeChange24h || (bitcoinData as any)?.total_volume_change_percentage_24h || 5.2;
   
@@ -177,10 +177,10 @@ const BitcoinMetricsGrid = () => {
       value: btcDominance.toFixed(1),
       suffix: "%",
       icon: <Shield className="h-4 w-4" />,
-      description: "Bitcoin's share of total crypto market cap",
+      description: `Bitcoin's share of total crypto market cap (${dominanceData?.source || 'CoinGecko Global'})`,
       isLoading: isLoadingBitcoin || isLoadingDominance,
       clickable: true,
-      onClick: () => window.open('https://coinmarketcap.com/charts/bitcoin-dominance/', '_blank'),
+      onClick: () => window.open('https://www.coingecko.com/en/global_charts', '_blank'),
     },
     {
       title: "Hash Rate",
@@ -229,6 +229,7 @@ const BitcoinMetricsGrid = () => {
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/market-data"] });
     queryClient.invalidateQueries({ queryKey: ["/api/web-resources/fear-greed"] });
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/dominance"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/crypto/global-metrics"] });
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/volume"] });
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/network-stats"] });
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/difficulty"] });

@@ -269,10 +269,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Bitcoin dominance route
+  // Bitcoin dominance route (CoinGecko Global API)
   app.get(`${apiPrefix}/bitcoin/dominance`, async (req, res) => {
     try {
-      const { getBitcoinDominance } = await import('./api/coinmarketcap');
+      const { getBitcoinDominance, clearDominanceCache } = await import('./api/dominance');
+      
+      // Clear cache if refresh parameter is present
+      if (req.query.refresh === 'true') {
+        clearDominanceCache();
+      }
+      
       const dominanceData = await getBitcoinDominance();
       res.json(dominanceData);
     } catch (error) {
@@ -281,10 +287,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Global crypto metrics route
+  // Global crypto metrics route (CoinGecko Global API)
   app.get(`${apiPrefix}/crypto/global-metrics`, async (req, res) => {
     try {
-      const { getGlobalCryptoMetrics } = await import('./api/coinmarketcap');
+      const { getGlobalCryptoMetrics } = await import('./api/dominance');
       const globalMetrics = await getGlobalCryptoMetrics();
       res.json(globalMetrics);
     } catch (error) {
