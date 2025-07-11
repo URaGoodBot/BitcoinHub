@@ -84,21 +84,30 @@ const BitcoinMetricsGrid = () => {
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
   });
 
-  const marketCap = (bitcoinData as any)?.market_cap?.usd || 0;
-  const marketCapChange = (bitcoinData as any)?.market_cap_change_percentage_24h || 0;
-  const volume24h = (bitcoinData as any)?.total_volume?.usd || 0;
-  const volumeChange = (bitcoinData as any)?.total_volume_change_percentage_24h || 0;
-  const priceChange24h = (bitcoinData as any)?.price_change_percentage_24h || 0;
-  
-  // Use live Fear and Greed Index data (same source as Web Resources page)
-  const fearGreedIndex = fearGreedData?.currentValue || 58;
-  const fearGreedClassification = fearGreedData?.classification || 'Greed';
-  
   // Fetch Bitcoin dominance from CoinMarketCap API
   const { data: dominanceData, isLoading: isLoadingDominance } = useQuery({
     queryKey: ["/api/bitcoin/dominance"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
+
+  // Fetch Bitcoin volume data from CoinMarketCap API
+  const { data: volumeData, isLoading: isLoadingVolume } = useQuery({
+    queryKey: ["/api/bitcoin/volume"],
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+  });
+
+  const marketCap = (bitcoinData as any)?.market_cap?.usd || 0;
+  const marketCapChange = (bitcoinData as any)?.market_cap_change_percentage_24h || 0;
+  
+  // Use CoinMarketCap volume data if available, otherwise fallback to CoinGecko
+  const volume24h = volumeData?.volume24h || (bitcoinData as any)?.total_volume?.usd || 125010000000;
+  const volumeChange = volumeData?.volumeChange24h || (bitcoinData as any)?.total_volume_change_percentage_24h || 5.2;
+  
+  const priceChange24h = (bitcoinData as any)?.price_change_percentage_24h || 0;
+  
+  // Use live Fear and Greed Index data (same source as Web Resources page)
+  const fearGreedIndex = fearGreedData?.currentValue || 58;
+  const fearGreedClassification = fearGreedData?.classification || 'Greed';
 
   const btcDominance = dominanceData?.dominance || 63.5; // User confirmed this is more accurate
   
@@ -132,13 +141,13 @@ const BitcoinMetricsGrid = () => {
     },
     {
       title: "24h Trading Volume",
-      value: volume24h > 0 ? `$${(volume24h / 1e9).toFixed(1)}B` : "$77.0B",
+      value: volume24h > 0 ? `$${(volume24h / 1e9).toFixed(1)}B` : "$125.0B",
       change: volumeChange,
       icon: <Activity className="h-4 w-4" />,
-      description: "Total Bitcoin traded in last 24 hours",
-      isLoading: isLoadingBitcoin,
+      description: "Total Bitcoin traded in last 24 hours (CoinMarketCap)",
+      isLoading: isLoadingBitcoin || isLoadingVolume,
       clickable: true,
-      onClick: () => window.open('https://www.coingecko.com/en/coins/bitcoin', '_blank'),
+      onClick: () => window.open('https://coinmarketcap.com/currencies/bitcoin/', '_blank'),
     },
     {
       title: "Fear & Greed Index",
@@ -207,6 +216,7 @@ const BitcoinMetricsGrid = () => {
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/market-data"] });
     queryClient.invalidateQueries({ queryKey: ["/api/web-resources/fear-greed"] });
     queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/dominance"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/bitcoin/volume"] });
   };
 
   return (

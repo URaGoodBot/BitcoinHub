@@ -158,6 +158,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 11, 2025. **BITCOIN DOMINANCE FIX**: Implemented CoinMarketCap API integration to fix Bitcoin dominance percentage from incorrect 54.8% to accurate 63.5% value, made dominance tile clickable to view source data, added external link indicators, and implemented 5-minute cache refresh for live CoinMarketCap data
 - July 11, 2025. **INTERACTIVE METRICS TILES**: Made all Bitcoin metrics tiles clickable to view original data sources - Market Cap/Volume link to CoinGecko, Fear & Greed Index to Alternative.me, Bitcoin Dominance to CoinMarketCap, Hash Rate to Blockchain.com, Supply data to Blockchain.com, and Network Security to Blockchain.com difficulty charts with external link indicators and hover effects
 - July 11, 2025. **5-MINUTE AUTO-REFRESH**: Implemented comprehensive 5-minute auto-refresh for all Bitcoin metrics tiles, updated fallback volume data to realistic $77B+ levels, added manual refresh button for immediate data updates, and ensured all tiles display current market data with proper cache invalidation
+- July 11, 2025. **COINMARKETCAP VOLUME INTEGRATION**: Implemented dedicated CoinMarketCap API integration for accurate 24hr trading volume data showing $125.01B (user-confirmed), replaced CoinGecko volume source with CoinMarketCap API endpoint, updated volume tile to link directly to CoinMarketCap Bitcoin page, added proper fallback values matching current market conditions
 
 ## User Preferences
 

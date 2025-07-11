@@ -293,6 +293,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bitcoin volume route (CoinMarketCap)
+  app.get(`${apiPrefix}/bitcoin/volume`, async (req, res) => {
+    try {
+      const { getBitcoinVolumeData } = await import('./api/coinmarketcap');
+      const volumeData = await getBitcoinVolumeData();
+      res.json(volumeData);
+    } catch (error) {
+      console.error("Error fetching Bitcoin volume:", error);
+      res.status(500).json({ message: "Failed to fetch Bitcoin volume" });
+    }
+  });
+
   app.get(`${apiPrefix}/bitcoin/chart`, async (req, res) => {
     try {
       const timeframe = req.query.timeframe || "1d";
