@@ -160,7 +160,7 @@ const BitcoinMetricsGrid = () => {
       description: `Total Bitcoin traded in last 24 hours (${volumeData?.source || 'Multi-Exchange'})`,
       isLoading: isLoadingBitcoin || isLoadingVolume,
       clickable: true,
-      onClick: () => window.open('https://coinmarketcap.com/currencies/bitcoin/', '_blank'),
+      onClick: () => window.open('https://www.coingecko.com/en/coins/bitcoin', '_blank'),
     },
     {
       title: "Fear & Greed Index",
