@@ -86,7 +86,7 @@ const TreasuryWidget = () => {
               {treasuryData?.yield.toFixed(3)}%
             </span>
             <div className={`flex items-center text-sm ${
-              isPositiveChange ? 'text-[hsl(var(--negative))]' : 'text-[hsl(var(--positive))]'
+              isPositiveChange ? 'text-[hsl(var(--positive))]' : 'text-[hsl(var(--negative))]'
             }`}>
               {isPositiveChange ? 
                 <TrendingUp className="h-3 w-3 mr-1" /> : 
@@ -105,7 +105,7 @@ const TreasuryWidget = () => {
           <div>
             <p className="text-xs text-muted-foreground mb-1">Daily Change</p>
             <p className={`text-lg font-mono font-bold ${
-              isPositiveChange ? 'text-[hsl(var(--negative))]' : 'text-[hsl(var(--positive))]'
+              isPositiveChange ? 'text-[hsl(var(--positive))]' : 'text-[hsl(var(--negative))]'
             }`}>
               {isPositiveChange ? '+' : ''}{treasuryData?.change.toFixed(3)}
             </p>
@@ -113,7 +113,7 @@ const TreasuryWidget = () => {
           <div>
             <p className="text-xs text-muted-foreground mb-1">% Change</p>
             <p className={`text-lg font-mono font-bold ${
-              isPositivePercentChange ? 'text-[hsl(var(--negative))]' : 'text-[hsl(var(--positive))]'
+              isPositivePercentChange ? 'text-[hsl(var(--positive))]' : 'text-[hsl(var(--negative))]'
             }`}>
               {isPositivePercentChange ? '+' : ''}{treasuryData?.percentChange.toFixed(2)}%
             </p>
