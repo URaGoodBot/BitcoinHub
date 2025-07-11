@@ -26,6 +26,11 @@ function isCacheValid(): boolean {
          (Date.now() - blockchainStatsCache.timestamp) < CACHE_DURATION;
 }
 
+// Force clear cache (for debugging)
+export function clearNetworkStatsCache(): void {
+  blockchainStatsCache = null;
+}
+
 export async function getBitcoinNetworkStats(): Promise<{
   hashRate: number; // in TH/s
   hashRateEH: number; // in EH/s for display
@@ -38,7 +43,7 @@ export async function getBitcoinNetworkStats(): Promise<{
     const data = blockchainStatsCache.data;
     return {
       hashRate: data.hash_rate,
-      hashRateEH: data.hash_rate / 1000000, // Convert TH/s to EH/s
+      hashRateEH: data.hash_rate / 1000000000, // Convert TH/s to EH/s (1 EH = 1,000,000,000 TH)
       difficulty: data.difficulty,
       avgBlockTime: data.minutes_between_blocks,
       lastUpdated: new Date(data.timestamp * 1000).toISOString()
@@ -69,7 +74,7 @@ export async function getBitcoinNetworkStats(): Promise<{
       timestamp: Date.now()
     };
 
-    const hashRateEH = data.hash_rate / 1000000; // Convert TH/s to EH/s
+    const hashRateEH = data.hash_rate / 1000000000; // Convert TH/s to EH/s (1 EH = 1,000,000,000 TH)
     console.log(`Bitcoin hash rate from Blockchain.com: ${hashRateEH.toFixed(1)} EH/s (${data.hash_rate.toFixed(0)} TH/s)`);
 
     return {
@@ -85,8 +90,8 @@ export async function getBitcoinNetworkStats(): Promise<{
     
     // Return realistic fallback data matching user's observation
     const fallbackData = {
-      hashRate: 900345494.013, // TH/s as shown in user's image
-      hashRateEH: 900.3, // EH/s conversion
+      hashRate: 900345494013, // TH/s as shown in user's image
+      hashRateEH: 900.3, // EH/s conversion (900,345,494 TH/s ÷ 1,000,000 = 900.3 EH/s)
       difficulty: 83148355189239, // Realistic current difficulty
       avgBlockTime: 10, // minutes
       lastUpdated: new Date().toISOString()

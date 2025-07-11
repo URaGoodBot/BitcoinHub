@@ -308,7 +308,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Bitcoin network stats route (Blockchain.com)
   app.get(`${apiPrefix}/bitcoin/network-stats`, async (req, res) => {
     try {
-      const { getBitcoinNetworkStats } = await import('./api/blockchain');
+      const { getBitcoinNetworkStats, clearNetworkStatsCache } = await import('./api/blockchain');
+      // Clear cache if refresh parameter is present
+      if (req.query.refresh === 'true') {
+        clearNetworkStatsCache();
+      }
       const networkStats = await getBitcoinNetworkStats();
       res.json(networkStats);
     } catch (error) {
