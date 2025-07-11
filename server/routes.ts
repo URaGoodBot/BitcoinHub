@@ -7,6 +7,7 @@ import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeer
 import { getRealTruflationData } from "./api/realTruflation";
 import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
+import { getMarketSentiment } from "./api/sentiment";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -276,6 +277,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching Bitcoin chart data:", error);
       res.status(500).json({ message: "Failed to fetch Bitcoin chart data" });
+    }
+  });
+
+  // Market sentiment analysis with real data sources
+  app.get(`${apiPrefix}/sentiment/analysis`, async (req, res) => {
+    try {
+      const data = await getMarketSentiment();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching market sentiment:", error);
+      res.status(500).json({ message: "Failed to fetch market sentiment analysis" });
     }
   });
 

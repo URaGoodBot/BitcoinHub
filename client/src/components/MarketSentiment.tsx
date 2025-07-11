@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { BitcoinMarketData } from '@/lib/types';
-import { RefreshCw, TrendingUp, TrendingDown, Newspaper, Twitter, MessageCircle, Users, Globe } from 'lucide-react';
+import { RefreshCw, TrendingUp, TrendingDown, Newspaper, Twitter, MessageCircle, Users, Globe, BarChart3 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 interface MarketSentimentProps {
   marketData: BitcoinMarketData | null;
@@ -18,7 +18,8 @@ interface SentimentScore {
   score: number;
   type: SentimentType;
   trend: 'increasing' | 'decreasing' | 'stable';
-  icon: React.ReactNode;
+  confidence: number;
+  lastUpdated: string;
 }
 
 interface SentimentKeyword {
@@ -27,116 +28,39 @@ interface SentimentKeyword {
   type: SentimentType;
 }
 
+interface SentimentData {
+  overall: SentimentType;
+  overallScore: number;
+  confidence: number;
+  sources: SentimentScore[];
+  keywords: SentimentKeyword[];
+  lastUpdated: string;
+}
+
 const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [overallSentiment, setOverallSentiment] = useState<SentimentType>('neutral');
-  const [sentimentScores, setSentimentScores] = useState<SentimentScore[]>([]);
-  const [keywords, setKeywords] = useState<SentimentKeyword[]>([]);
-  
-  // Generate sentiment analysis based on market data
-  useEffect(() => {
-    if (marketData) {
-      generateSentiment();
+  // Fetch real-time sentiment data from multiple authentic sources
+  const { data: sentimentData, isLoading: isLoadingSentiment, refetch } = useQuery<SentimentData>({
+    queryKey: ['/api/sentiment/analysis'],
+    refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes
+    staleTime: 5 * 60 * 1000, // Data is fresh for 5 minutes
+  });
+
+  // Get appropriate icon for each sentiment source
+  const getSourceIcon = (source: string) => {
+    switch (source) {
+      case 'News Articles':
+        return <Newspaper className="h-4 w-4 text-blue-400" />;
+      case 'Social Media':
+        return <Twitter className="h-4 w-4 text-sky-400" />;
+      case 'On-Chain Metrics':
+        return <BarChart3 className="h-4 w-4 text-green-400" />;
+      case 'Derivatives Market':
+        return <Users className="h-4 w-4 text-amber-400" />;
+      default:
+        return <Globe className="h-4 w-4 text-gray-400" />;
     }
-  }, [marketData?.price_change_percentage_24h]);
-  
-  const generateSentiment = () => {
-    if (!marketData) return;
-    
-    setIsGenerating(true);
-    
-    // Simulate AI sentiment analysis generation
-    setTimeout(() => {
-      // Calculate sentiment based on price change
-      const priceChange = marketData.price_change_percentage_24h;
-      const isPriceUp = priceChange > 0;
-      
-      // Generate overall sentiment type based on price change
-      const sentimentType: SentimentType = Math.abs(priceChange) < 1 
-        ? 'neutral' 
-        : isPriceUp ? 'bullish' : 'bearish';
-      
-      // Generate sentiment scores for different sources
-      const newSentimentScores: SentimentScore[] = [
-        {
-          source: 'News Articles',
-          score: isPriceUp ? 65 + Math.random() * 20 : 30 + Math.random() * 25,
-          type: isPriceUp ? 'bullish' : Math.random() > 0.7 ? 'neutral' : 'bearish',
-          trend: isPriceUp ? 'increasing' : 'decreasing',
-          icon: <Newspaper className="h-4 w-4 text-blue-400" />
-        },
-        {
-          source: 'Social Media',
-          score: isPriceUp ? 70 + Math.random() * 20 : 40 + Math.random() * 20,
-          type: isPriceUp ? 'bullish' : Math.random() > 0.6 ? 'neutral' : 'bearish',
-          trend: isPriceUp ? 'increasing' : Math.random() > 0.7 ? 'stable' : 'decreasing',
-          icon: <Twitter className="h-4 w-4 text-sky-400" />
-        },
-        {
-          source: 'Forum Discussions',
-          score: isPriceUp ? 60 + Math.random() * 25 : 45 + Math.random() * 15,
-          type: isPriceUp ? Math.random() > 0.8 ? 'neutral' : 'bullish' : 'bearish',
-          trend: Math.random() > 0.6 ? 'increasing' : 'stable',
-          icon: <MessageCircle className="h-4 w-4 text-purple-400" />
-        },
-        {
-          source: 'Market Analysts',
-          score: isPriceUp ? 55 + Math.random() * 30 : 35 + Math.random() * 25,
-          type: isPriceUp ? 'bullish' : Math.random() > 0.5 ? 'neutral' : 'bearish',
-          trend: Math.random() > 0.5 ? 'increasing' : 'decreasing',
-          icon: <Users className="h-4 w-4 text-amber-400" />
-        },
-      ];
-      
-      // Generate weighted sentiment keywords
-      const bullishKeywords = [
-        'breakout', 'accumulation', 'momentum', 'bullish', 'uptrend', 
-        'buying pressure', 'strong support', 'FOMO', 'recovery', 'all-time high'
-      ];
-      
-      const bearishKeywords = [
-        'correction', 'selloff', 'distribution', 'bearish', 'downtrend',
-        'resistance', 'weak support', 'profit-taking', 'liquidation', 'regulatory concerns'
-      ];
-      
-      const neutralKeywords = [
-        'consolidation', 'range-bound', 'volatility', 'indecision',
-        'equilibrium', 'accumulation', 'institutional interest', 'technical levels'
-      ];
-      
-      // Select keywords based on sentiment
-      const keywordPool = sentimentType === 'bullish' 
-        ? [...bullishKeywords, ...neutralKeywords.slice(0, 3)]
-        : sentimentType === 'bearish'
-          ? [...bearishKeywords, ...neutralKeywords.slice(0, 3)]
-          : [...neutralKeywords, ...(Math.random() > 0.5 ? bullishKeywords : bearishKeywords).slice(0, 2)];
-      
-      // Shuffle and pick 8 keywords
-      const shuffled = [...keywordPool].sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, 8);
-      
-      // Generate random weights for keywords
-      const newKeywords: SentimentKeyword[] = selected.map(text => ({
-        text,
-        weight: 1 + Math.floor(Math.random() * 9),
-        type: bullishKeywords.includes(text) 
-          ? 'bullish' 
-          : bearishKeywords.includes(text) 
-            ? 'bearish' 
-            : 'neutral'
-      }));
-      
-      // Sort keywords by weight
-      newKeywords.sort((a, b) => b.weight - a.weight);
-      
-      // Update state with new sentiment data
-      setOverallSentiment(sentimentType);
-      setSentimentScores(newSentimentScores);
-      setKeywords(newKeywords);
-      setIsGenerating(false);
-    }, 1000); // Simulate 1 second analysis time
   };
-  
+
   const getSentimentBadge = (type: SentimentType) => {
     switch (type) {
       case 'bullish':
@@ -159,7 +83,7 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
         );
     }
   };
-  
+
   const getProgressColor = (type: SentimentType) => {
     switch (type) {
       case 'bullish':
@@ -167,119 +91,191 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
       case 'bearish':
         return 'bg-red-500';
       case 'neutral':
-        return 'bg-yellow-500';
+        return 'bg-orange-500';
     }
   };
-  
-  return (
-    <Card className="mb-6 shadow-md">
-      <CardHeader className="pb-2 border-b border-muted/10">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <CardTitle className="text-lg font-semibold">Market Sentiment</CardTitle>
-            {!isLoading && !isGenerating && (
-              getSentimentBadge(overallSentiment)
-            )}
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="h-8 px-2"
-            disabled={isGenerating || isLoading}
-            onClick={generateSentiment}
-          >
-            {isGenerating ? 
-              <RefreshCw className="h-3.5 w-3.5 mr-1 animate-spin" /> : 
-              <RefreshCw className="h-3.5 w-3.5 mr-1" />}
-            Refresh
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        {isLoading || isGenerating ? (
-          <div className="h-[250px] flex flex-col items-center justify-center p-6 animate-pulse">
-            <RefreshCw className="h-10 w-10 text-primary/30 mb-4 animate-spin" />
-            <p className="text-muted-foreground text-center">
-              {isLoading ? 'Loading market data...' : 'Analyzing market sentiment...'}
-            </p>
-          </div>
-        ) : (
+
+  const getTrendIcon = (trend: string) => {
+    switch (trend) {
+      case 'increasing':
+        return <TrendingUp className="h-3 w-3 text-green-500" />;
+      case 'decreasing':
+        return <TrendingDown className="h-3 w-3 text-red-500" />;
+      default:
+        return <Globe className="h-3 w-3 text-gray-500" />;
+    }
+  };
+
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
+  if (isLoading || isLoadingSentiment) {
+    return (
+      <Card className="bg-card border-muted/20">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-primary" />
+            Market Sentiment Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="space-y-4">
-            {/* Sentiment Scores */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {sentimentScores.map((score, idx) => (
-                <div key={idx} className="bg-muted/20 p-3 rounded-lg border border-muted/30">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <div className="flex items-center">
-                      {score.icon}
-                      <span className="ml-1.5 text-sm font-medium">{score.source}</span>
-                    </div>
-                    <div className="flex items-center text-xs">
-                      {score.trend === 'increasing' ? (
-                        <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
-                      ) : score.trend === 'decreasing' ? (
-                        <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
-                      ) : (
-                        <span className="w-3 h-3 mr-1" />
-                      )}
-                      <span className={`font-mono ${
-                        score.trend === 'increasing' ? 'text-green-500' : 
-                        score.trend === 'decreasing' ? 'text-red-500' : 
-                        'text-muted-foreground'
-                      }`}>
-                        {score.trend === 'stable' ? 'Stable' : score.trend}
-                      </span>
+            {/* Loading skeleton */}
+            <div className="animate-pulse">
+              <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+              <div className="h-2 bg-muted rounded w-full mb-4"></div>
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-muted rounded"></div>
+                    <div className="flex-1">
+                      <div className="h-3 bg-muted rounded w-1/2 mb-1"></div>
+                      <div className="h-2 bg-muted rounded w-full"></div>
                     </div>
                   </div>
-                  <div className="flex items-center mb-1">
-                    <Progress 
-                      value={score.score} 
-                      max={100} 
-                      className={`h-2 ${getProgressColor(score.type)}`} 
-                    />
-                    <span className="ml-2 text-xs font-mono">{score.score.toFixed(1)}%</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {score.score > 65 
-                      ? 'Strong positive sentiment detected in recent content.' 
-                      : score.score > 50 
-                        ? 'Moderately positive sentiment in discussions.' 
-                        : score.score > 40 
-                          ? 'Mixed sentiment with some caution expressed.' 
-                          : 'Cautious or negative sentiment prevails.'}
-                  </p>
-                </div>
-              ))}
-            </div>
-            
-            {/* Trending Keywords */}
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">Trending Keywords</h3>
-              <div className="flex flex-wrap gap-2">
-                {keywords.map((keyword, idx) => (
-                  <Badge 
-                    key={idx}
-                    variant="outline"
-                    className={`
-                      border py-1 px-2 
-                      ${keyword.type === 'bullish' ? 'border-green-500/40 text-green-500' : 
-                        keyword.type === 'bearish' ? 'border-red-500/40 text-red-500' : 
-                        'border-yellow-500/40 text-yellow-500/90'}
-                      ${keyword.weight > 7 ? 'text-base' : 
-                        keyword.weight > 5 ? 'text-sm' : 'text-xs'}
-                    `}
-                  >
-                    {keyword.text}
-                  </Badge>
                 ))}
               </div>
             </div>
-            
-            <div className="pt-2 text-xs text-center text-muted-foreground">
-              <p className="mt-1 text-[10px]">Sentiment analysis is generated based on simulated data and should not be considered financial advice.</p>
-            </div>
           </div>
-        )}
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!sentimentData) {
+    return (
+      <Card className="bg-card border-muted/20">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-primary" />
+            Market Sentiment Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">
+              Unable to load sentiment data. Please try again.
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => refetch()}
+              className="mt-4"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="bg-card border-muted/20">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-primary" />
+            Market Sentiment Analysis
+            {getSentimentBadge(sentimentData.overall)}
+          </CardTitle>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => refetch()}
+            disabled={isLoadingSentiment}
+          >
+            <RefreshCw className={`h-4 w-4 ${isLoadingSentiment ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Overall Sentiment Score */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium">
+              Overall Score: {sentimentData.overallScore}/100
+            </p>
+            <span className="text-xs text-muted-foreground">
+              Confidence: {Math.round(sentimentData.confidence * 100)}%
+            </span>
+          </div>
+          <Progress 
+            value={sentimentData.overallScore} 
+            className="h-2"
+          />
+        </div>
+
+        {/* Source Breakdown */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            Source Analysis
+          </h4>
+          {sentimentData.sources.map((source, index) => (
+            <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+              <div className="flex items-center gap-2 flex-1">
+                {getSourceIcon(source.source)}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">{source.source}</span>
+                    <div className="flex items-center gap-2">
+                      {getTrendIcon(source.trend)}
+                      <span className="text-sm text-muted-foreground">
+                        {source.score}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <Progress 
+                      value={source.score} 
+                      className="h-1 flex-1 mr-2"
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      {Math.round(source.confidence * 100)}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Trending Keywords */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            Trending Keywords
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {sentimentData.keywords.map((keyword, index) => (
+              <Badge 
+                key={index}
+                variant={keyword.type === 'bullish' ? 'default' : keyword.type === 'bearish' ? 'destructive' : 'outline'}
+                className={`text-xs ${
+                  keyword.type === 'bullish' ? 'bg-green-500/20 text-green-500' :
+                  keyword.type === 'bearish' ? 'bg-red-500/20 text-red-500' :
+                  'bg-orange-500/20 text-orange-500'
+                }`}
+              >
+                {keyword.text}
+                <span className="ml-1 text-xs opacity-70">
+                  {keyword.weight}
+                </span>
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* Last Updated */}
+        <div className="text-xs text-muted-foreground text-center pt-2 border-t border-muted/20">
+          Last updated: {formatTime(sentimentData.lastUpdated)}
+          <span className="mx-2">•</span>
+          Real-time analysis from {sentimentData.sources.length} sources
+        </div>
       </CardContent>
     </Card>
   );
