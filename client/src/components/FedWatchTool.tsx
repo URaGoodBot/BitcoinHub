@@ -173,7 +173,7 @@ const FedWatchTool = () => {
         <div className="mt-4 p-3 bg-yellow-500/10 rounded-lg">
           <p className="text-xs text-muted-foreground">
             <TrendingUp className="h-3 w-3 inline mr-1" />
-            Data from CME FedWatch Tool. Fed rate changes significantly impact Bitcoin markets through liquidity and risk appetite.
+            Data from St. Louis FRED. Fed rate changes significantly impact Bitcoin markets through liquidity and risk appetite.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             Last updated: {new Date(fedData.lastUpdated).toLocaleTimeString()}
