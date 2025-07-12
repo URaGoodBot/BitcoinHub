@@ -31,6 +31,14 @@ export interface LegislationData {
 let legislationCache: { data: LegislationData; timestamp: number } | null = null;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
+// Admin uploaded data takes precedence over AI-generated or fallback data
+let adminUploadedData: LegislationData | null = null;
+
+export function setLegislationCache(data: LegislationData): void {
+  adminUploadedData = data;
+  console.log('Admin data cached successfully');
+}
+
 function isCacheValid(): boolean {
   return legislationCache !== null && Date.now() - legislationCache.timestamp < CACHE_DURATION;
 }
@@ -201,6 +209,11 @@ Ensure all information is current as of July 2025 and reflects actual congressio
 }
 
 export async function getLegislationData(): Promise<LegislationData> {
+  // Admin uploaded data takes priority
+  if (adminUploadedData) {
+    return adminUploadedData;
+  }
+
   // Return cached data if valid
   if (isCacheValid() && legislationCache?.data) {
     return legislationCache.data;

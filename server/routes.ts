@@ -891,6 +891,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin route for uploading legislation data
+  app.post(`${apiPrefix}/legislation/admin-upload`, async (req, res) => {
+    try {
+      const { password, data } = req.body;
+      
+      // Simple password protection - in production, use proper authentication
+      if (password !== 'HodlMyBeer21Admin') {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      // Validate required fields
+      if (!data || !data.bills || !Array.isArray(data.bills)) {
+        return res.status(400).json({ error: "Invalid data format: bills array required" });
+      }
+
+      // Validate each bill has required fields
+      const requiredFields = ['billName', 'billNumber', 'description', 'currentStatus', 'nextSteps', 'passageChance', 'whatsNext'];
+      for (const bill of data.bills) {
+        for (const field of requiredFields) {
+          if (!bill[field]) {
+            return res.status(400).json({ error: `Missing required field: ${field}` });
+          }
+        }
+      }
+
+      // Add timestamp and store data
+      const legislationData = {
+        ...data,
+        lastUpdated: new Date().toISOString()
+      };
+
+      // Store in cache to override Grok/fallback data
+      const { setLegislationCache } = await import('./api/legislation');
+      setLegislationCache(legislationData);
+
+      console.log(`Admin uploaded legislation data with ${data.bills.length} bills`);
+      res.json({ 
+        success: true, 
+        message: `Successfully uploaded ${data.bills.length} bills`,
+        data: legislationData 
+      });
+    } catch (error) {
+      console.error("Error uploading legislation data:", error);
+      res.status(500).json({ error: "Failed to upload legislation data" });
+    }
+  });
+
   // Last updated timestamp
   app.get(`${apiPrefix}/last-updated`, (req, res) => {
     res.json(new Date().toISOString());
