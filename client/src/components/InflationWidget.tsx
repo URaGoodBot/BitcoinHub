@@ -24,6 +24,17 @@ interface InflationData {
   source: string;
 }
 
+// Helper function to format FRED date strings correctly
+const formatDatePeriod = (dateString: string): string => {
+  // FRED dates are in YYYY-MM-DD format, we want to show "Month YYYY"
+  const [year, month] = dateString.split('-');
+  const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  return `${monthNames[parseInt(month) - 1]} ${year}`;
+};
+
 export function InflationWidget() {
   const [showSectors, setShowSectors] = useState(false);
   
@@ -135,7 +146,7 @@ export function InflationWidget() {
               {isPositiveChange ? '+' : ''}{inflation.overall.change.toFixed(3)}% monthly
             </div>
             <div className="text-xs text-muted-foreground mt-1">
-              Comparing {new Date(inflation.overall.lastUpdated).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} vs {new Date(inflation.overall.comparisonPeriod).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+              Comparing {formatDatePeriod(inflation.overall.lastUpdated)} vs {formatDatePeriod(inflation.overall.comparisonPeriod)}
             </div>
           </div>
           <div className="text-right">
