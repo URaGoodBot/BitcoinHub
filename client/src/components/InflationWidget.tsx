@@ -18,6 +18,7 @@ interface InflationData {
     rate: number;
     change: number;
     lastUpdated: string;
+    comparisonPeriod: string;
   };
   sectors: SectorInflation[];
   source: string;
@@ -132,6 +133,9 @@ export function InflationWidget() {
             <div className={`flex items-center text-sm ${changeColor}`}>
               <TrendIcon className="mr-1 h-3 w-3" />
               {isPositiveChange ? '+' : ''}{inflation.overall.change.toFixed(3)}% monthly
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              Comparing {new Date(inflation.overall.lastUpdated).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} vs {new Date(inflation.overall.comparisonPeriod).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
             </div>
           </div>
           <div className="text-right">

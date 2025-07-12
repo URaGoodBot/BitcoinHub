@@ -12,6 +12,7 @@ export interface InflationData {
     rate: number;
     change: number;
     lastUpdated: string;
+    comparisonPeriod: string;
   };
   sectors: SectorInflation[];
   source: string;
@@ -186,7 +187,8 @@ export async function getInflationData(): Promise<InflationData> {
       overall: {
         rate: Math.round(inflationRate * 100) / 100,
         change: Math.round(monthlyChange * 1000) / 1000,
-        lastUpdated: currentObs.date
+        lastUpdated: currentObs.date,
+        comparisonPeriod: yearAgoObs.date
       },
       sectors: validSectors,
       source: 'FRED API (Federal Reserve Economic Data)'
