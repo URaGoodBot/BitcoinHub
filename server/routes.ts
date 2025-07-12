@@ -674,44 +674,101 @@ Answer the user's question about Bitcoin markets, the data on our website, or ge
 
 User question: ${question}`;
 
-      // Use XAI Grok for intelligent responses
-      if (!process.env.XAI_API_KEY) {
-        return res.json({
-          answer: "I'd love to help, but the AI service isn't available right now. You can explore the live Bitcoin data, charts, and market metrics displayed throughout the dashboard for current information."
-        });
-      }
+      // Create intelligent responses using current data or AI when available
+      let answer = "";
+      
+      // Try to provide data-driven responses for common questions
+      const questionLower = question.toLowerCase();
+      if (questionLower.includes('price') || questionLower.includes('bitcoin')) {
+        answer = `Based on the live data from our dashboard:
 
-      const OpenAI = await import('openai').then(m => m.default);
-      const openai = new OpenAI({ 
-        baseURL: "https://api.x.ai/v1", 
-        apiKey: process.env.XAI_API_KEY 
-      });
+📊 **Current Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
+📈 **Market Sentiment**: ${sentiment}
+🏦 **Federal Reserve Data**: 
+  • US 10-Year Treasury: ${treasuryYield}
+  • Inflation Rate: ${inflationRate}
 
-      const response = await openai.chat.completions.create({
-        model: "grok-2-1212",
-        messages: [
-          {
-            role: "system",
-            content: "You are a helpful Bitcoin and cryptocurrency assistant. Provide accurate, helpful responses about Bitcoin markets, trading, and the data available on this website. Keep responses conversational but informative."
-          },
-          {
-            role: "user",
-            content: contextPrompt
+The data is updated in real-time from CoinGecko, Federal Reserve FRED API, and other authoritative sources. You can see detailed charts and metrics in the dashboard above.`;
+      } else if (questionLower.includes('fed') || questionLower.includes('treasury') || questionLower.includes('inflation')) {
+        answer = `Here's the current Federal Reserve economic data:
+
+🏛️ **US 10-Year Treasury**: ${treasuryYield} (from FRED API)
+📊 **US Inflation Rate**: ${inflationRate} (from Federal Reserve CPI data)
+💰 **Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
+
+This data comes directly from the Federal Reserve Economic Data (FRED) API and is updated regularly. Treasury yields and inflation rates significantly impact Bitcoin's price movements as they affect investor risk appetite.`;
+      } else if (questionLower.includes('sentiment') || questionLower.includes('market')) {
+        answer = `Current market analysis:
+
+📈 **Market Sentiment**: ${sentiment}
+💰 **Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
+🏦 **Fed Context**: Treasury at ${treasuryYield}, Inflation at ${inflationRate}
+
+Our sentiment analysis combines price action, social media data, derivatives markets, and news sentiment. The dashboard shows detailed breakdowns including Fear & Greed Index, Bitcoin dominance, and technical indicators.`;
+      } else {
+        // Try AI response if available
+        if (process.env.XAI_API_KEY) {
+          try {
+            const OpenAI = await import('openai').then(m => m.default);
+            const openai = new OpenAI({ 
+              baseURL: "https://api.x.ai/v1", 
+              apiKey: process.env.XAI_API_KEY 
+            });
+
+            const response = await openai.chat.completions.create({
+              model: "grok-2-1212",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a helpful Bitcoin and cryptocurrency assistant. Provide accurate, helpful responses about Bitcoin markets, trading, and the data available on this website. Keep responses conversational but informative."
+                },
+                {
+                  role: "user",
+                  content: contextPrompt
+                }
+              ],
+              max_tokens: 500,
+              temperature: 0.7
+            });
+
+            answer = response.choices[0]?.message?.content || "";
+          } catch (aiError) {
+            console.log('AI service temporarily unavailable, using data-driven response');
           }
-        ],
-        max_tokens: 500,
-        temperature: 0.7
-      });
+        }
+        
+        // Fallback to data-driven response
+        if (!answer) {
+          answer = `I can help you understand the Bitcoin data on this website! Here's what's currently available:
 
-      const answer = response.choices[0]?.message?.content || 
-        "I'm having trouble processing your question right now. Please try asking about the current Bitcoin price, market sentiment, or any of the data visible on the dashboard.";
+💰 **Live Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
+📊 **Market Sentiment**: ${sentiment}
+🏛️ **Federal Reserve Data**: Treasury ${treasuryYield}, Inflation ${inflationRate}
+
+**Available on the dashboard:**
+• Real-time price charts and technical indicators
+• Federal Reserve economic data (FRED API)
+• Bitcoin network statistics (hash rate, difficulty)
+• Fear & Greed Index and market dominance
+• Crypto legislation tracking
+• News feed with sentiment analysis
+
+Feel free to ask about any specific metrics you see in the dashboard!`;
+        }
+      }
 
       res.json({ answer });
 
     } catch (error) {
       console.error('Chatbot error:', error);
       res.json({
-        answer: "I encountered an issue processing your question. The current Bitcoin data is still available in the dashboard above - feel free to explore the price charts, market metrics, and Fed data widgets for the latest information."
+        answer: `I can still help with the live data! Here's what's currently available:
+
+💰 **Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
+📈 **Market Sentiment**: ${sentiment}
+🏦 **Fed Data**: Treasury ${treasuryYield}, Inflation ${inflationRate}
+
+All this data is updated live in the dashboard above. Try asking about specific metrics or explore the charts and widgets for detailed analysis.`
       });
     }
   });
