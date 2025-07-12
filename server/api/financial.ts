@@ -49,50 +49,53 @@ export interface FinancialMarketData {
 
 // FRED API for Treasury data (most reliable government source)
 export async function getTreasuryData(): Promise<TreasuryData> {
-  console.log('Fetching authentic Treasury data from FRED and Treasury Direct APIs...');
+  console.log('Fetching Treasury data from FRED API (Federal Reserve)...');
   
   try {
-    // Primary: FRED API (Federal Reserve Economic Data) - we already have this working
-    try {
-      console.log('Using existing FRED API connection for Treasury data...');
-      const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
-        params: {
-          series_id: 'DGS10', // 10-Year Treasury Constant Maturity Rate
-          api_key: process.env.FRED_API_KEY,
-          file_type: 'json',
-          limit: 5, // Get more observations to handle weekend gaps
-          sort_order: 'desc'
-        },
-        timeout: 10000
-      });
+    // Primary: FRED API (Federal Reserve Economic Data) - we already have this working  
+    console.log('Testing FRED API with key:', process.env.FRED_API_KEY ? 'KEY EXISTS' : 'NO KEY FOUND');
+    
+    const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
+      params: {
+        series_id: 'DGS10', // 10-Year Treasury Constant Maturity Rate
+        api_key: process.env.FRED_API_KEY,
+        file_type: 'json',
+        limit: 5, // Get more observations to handle weekend gaps
+        sort_order: 'desc'
+      },
+      timeout: 10000
+    });
 
-      if (fredResponse.data?.observations?.length >= 2) {
-        const observations = fredResponse.data.observations;
-        // Find the latest valid observations (skip weekends when value is '.')
-        const validObs = observations.filter((obs: any) => obs.value !== '.');
+    console.log('FRED API response status:', fredResponse.status);
+    console.log('FRED observations count:', fredResponse.data?.observations?.length || 0);
+
+    if (fredResponse.data?.observations?.length >= 2) {
+      const observations = fredResponse.data.observations;
+      console.log('Raw FRED observations:', observations.slice(0, 3).map(obs => ({ date: obs.date, value: obs.value })));
+      
+      // Find the latest valid observations (skip weekends when value is '.')
+      const validObs = observations.filter((obs: any) => obs.value !== '.');
+      console.log('Valid FRED observations:', validObs.length);
+      
+      if (validObs.length >= 2) {
+        const latest = parseFloat(validObs[0].value);
+        const previous = parseFloat(validObs[1].value);
         
-        if (validObs.length >= 2) {
-          const latest = parseFloat(validObs[0].value);
-          const previous = parseFloat(validObs[1].value);
-          
-          if (!isNaN(latest) && !isNaN(previous)) {
-            console.log(`✓ FRED Treasury data: ${latest}% (change: ${(latest - previous).toFixed(4)})`);
-            return {
-              yield: latest,
-              change: latest - previous,
-              percentChange: ((latest - previous) / previous) * 100,
-              keyLevels: {
-                low52Week: 3.15,
-                current: latest,
-                high52Week: 5.02
-              },
-              lastUpdated: new Date().toISOString()
-            };
-          }
+        if (!isNaN(latest) && !isNaN(previous)) {
+          console.log(`✓ SUCCESS - FRED Treasury data: ${latest}% (change: ${(latest - previous).toFixed(4)})`);
+          return {
+            yield: latest,
+            change: latest - previous,
+            percentChange: ((latest - previous) / previous) * 100,
+            keyLevels: {
+              low52Week: 3.15,
+              current: latest,
+              high52Week: 5.02
+            },
+            lastUpdated: new Date().toISOString()
+          };
         }
       }
-    } catch (fredError) {
-      console.log('FRED API error, trying Yahoo Finance...');
     }
 
     // Fallback: Yahoo Finance API (widely used, reliable)
