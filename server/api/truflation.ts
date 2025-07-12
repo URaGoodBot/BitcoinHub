@@ -30,32 +30,35 @@ export async function getTruflationData(): Promise<TruflationData> {
   console.log('Fetching live US inflation data from Federal Reserve and BLS APIs...');
 
   try {
-    // Primary: FRED API for CPI and inflation calculation
-    if (process.env.FRED_API_KEY) {
-      try {
-        console.log('Using FRED API for CPI data...');
-        const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
-          params: {
-            series_id: 'CPIAUCSL', // Consumer Price Index for All Urban Consumers
-            api_key: process.env.FRED_API_KEY,
-            file_type: 'json',
-            limit: 13, // Need 13 months to calculate year-over-year
-            sort_order: 'desc'
-          },
-          timeout: 10000
-        });
+    // Primary: FRED API for CPI and inflation calculation - using existing connection
+    try {
+      console.log('Using existing FRED API connection for CPI inflation data...');
+      const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
+        params: {
+          series_id: 'CPIAUCSL', // Consumer Price Index for All Urban Consumers
+          api_key: process.env.FRED_API_KEY,
+          file_type: 'json',
+          limit: 15, // Get more to handle missing data points
+          sort_order: 'desc'
+        },
+        timeout: 10000
+      });
 
-        if (fredResponse.data?.observations?.length >= 13) {
-          const observations = fredResponse.data.observations;
-          const latest = parseFloat(observations[0].value);
-          const yearAgo = parseFloat(observations[12].value);
-          const monthAgo = parseFloat(observations[1].value);
+      if (fredResponse.data?.observations?.length >= 13) {
+        const observations = fredResponse.data.observations;
+        // Filter out any missing values
+        const validObs = observations.filter((obs: any) => obs.value && obs.value !== '.' && !isNaN(parseFloat(obs.value)));
+        
+        if (validObs.length >= 13) {
+          const latest = parseFloat(validObs[0].value);
+          const yearAgo = parseFloat(validObs[12].value);
+          const monthAgo = parseFloat(validObs[1].value);
           
           if (!isNaN(latest) && !isNaN(yearAgo) && !isNaN(monthAgo)) {
             const inflationRate = ((latest - yearAgo) / yearAgo) * 100;
             const monthlyChange = ((latest - monthAgo) / monthAgo) * 100 * 12; // Annualized
             
-            console.log(`✓ FRED CPI data: ${inflationRate.toFixed(2)}% annual inflation`);
+            console.log(`✓ FRED CPI inflation data: ${inflationRate.toFixed(2)}% annual inflation (Latest CPI: ${latest})`);
             return {
               currentRate: parseFloat(inflationRate.toFixed(2)),
               dailyChange: (monthlyChange - inflationRate) / 30, // Estimated daily change
@@ -64,16 +67,16 @@ export async function getTruflationData(): Promise<TruflationData> {
               ytdHigh: Math.min(4.5, inflationRate + 0.9),
               yearOverYear: true,
               lastUpdated: new Date().toISOString(),
-              chartData: observations.slice(0, 12).reverse().map((obs: any) => ({
+              chartData: validObs.slice(0, 12).reverse().map((obs: any) => ({
                 date: obs.date,
                 value: parseFloat(obs.value)
               }))
             };
           }
         }
-      } catch (fredError) {
-        console.log('FRED API error, trying Alpha Vantage...');
       }
+    } catch (fredError) {
+      console.log('FRED API error, trying Alpha Vantage...');
     }
 
     // Fallback: Alpha Vantage Economic Indicators API

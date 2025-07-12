@@ -52,25 +52,28 @@ export async function getTreasuryData(): Promise<TreasuryData> {
   console.log('Fetching authentic Treasury data from FRED and Treasury Direct APIs...');
   
   try {
-    // Primary: FRED API (Federal Reserve Economic Data)
-    if (process.env.FRED_API_KEY) {
-      try {
-        console.log('Using FRED API for Treasury data...');
-        const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
-          params: {
-            series_id: 'DGS10', // 10-Year Treasury Constant Maturity Rate
-            api_key: process.env.FRED_API_KEY,
-            file_type: 'json',
-            limit: 2,
-            sort_order: 'desc'
-          },
-          timeout: 10000
-        });
+    // Primary: FRED API (Federal Reserve Economic Data) - we already have this working
+    try {
+      console.log('Using existing FRED API connection for Treasury data...');
+      const fredResponse = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
+        params: {
+          series_id: 'DGS10', // 10-Year Treasury Constant Maturity Rate
+          api_key: process.env.FRED_API_KEY,
+          file_type: 'json',
+          limit: 5, // Get more observations to handle weekend gaps
+          sort_order: 'desc'
+        },
+        timeout: 10000
+      });
 
-        if (fredResponse.data?.observations?.length >= 2) {
-          const observations = fredResponse.data.observations;
-          const latest = parseFloat(observations[0].value);
-          const previous = parseFloat(observations[1].value);
+      if (fredResponse.data?.observations?.length >= 2) {
+        const observations = fredResponse.data.observations;
+        // Find the latest valid observations (skip weekends when value is '.')
+        const validObs = observations.filter((obs: any) => obs.value !== '.');
+        
+        if (validObs.length >= 2) {
+          const latest = parseFloat(validObs[0].value);
+          const previous = parseFloat(validObs[1].value);
           
           if (!isNaN(latest) && !isNaN(previous)) {
             console.log(`✓ FRED Treasury data: ${latest}% (change: ${(latest - previous).toFixed(4)})`);
@@ -87,50 +90,12 @@ export async function getTreasuryData(): Promise<TreasuryData> {
             };
           }
         }
-      } catch (fredError) {
-        console.log('FRED API error, trying Treasury Direct...');
       }
+    } catch (fredError) {
+      console.log('FRED API error, trying Yahoo Finance...');
     }
 
-    // Fallback: Treasury Direct API (official government source)
-    try {
-      console.log('Using Treasury Direct API...');
-      const treasuryResponse = await axios.get('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/avg_interest_rates', {
-        params: {
-          filter: 'security_desc:eq:Treasury Notes,security_type_desc:eq:Marketable',
-          sort: '-record_date',
-          page_size: 10
-        },
-        timeout: 10000
-      });
-
-      if (treasuryResponse.data?.data?.length > 0) {
-        // Find 10-year note data
-        const tenYearData = treasuryResponse.data.data.find((item: any) => 
-          item.security_desc?.includes('10') || item.avg_interest_rate_amt
-        );
-        
-        if (tenYearData?.avg_interest_rate_amt) {
-          const latest = parseFloat(tenYearData.avg_interest_rate_amt);
-          console.log(`✓ Treasury Direct data: ${latest}%`);
-          return {
-            yield: latest,
-            change: 0.002, // Realistic daily change
-            percentChange: 0.05,
-            keyLevels: {
-              low52Week: 3.15,
-              current: latest,
-              high52Week: 5.02
-            },
-            lastUpdated: new Date().toISOString()
-          };
-        }
-      }
-    } catch (treasuryError) {
-      console.log('Treasury Direct API error, using Yahoo Finance...');
-    }
-
-    // Final fallback: Yahoo Finance API (widely used, reliable)
+    // Fallback: Yahoo Finance API (widely used, reliable)
     const yahooResponse = await axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX', {
       timeout: 10000
     });
@@ -158,183 +123,8 @@ export async function getTreasuryData(): Promise<TreasuryData> {
 
   } catch (error) {
     console.error('Treasury data fetch error:', error);
-    // Return error instead of fallback data to maintain data integrity
     throw new Error('Unable to fetch live Treasury data from any source');
   }
-}
-              };
-            }
-          }
-          return null;
-        }
-      },
-      // FRED Economic Data for 10-Year Treasury
-      {
-        url: 'https://api.stlouisfed.org/fred/series/observations',
-        params: {
-          series_id: 'DGS10',
-          api_key: process.env.FRED_API_KEY || 'demo',
-          file_type: 'json',
-          limit: 5,
-          sort_order: 'desc'
-        },
-        parser: (data: any) => {
-          if (data?.observations?.length >= 2) {
-            const validObs = data.observations.filter((obs: any) => obs.value !== '.');
-            if (validObs.length >= 2) {
-              const latest = parseFloat(validObs[0].value);
-              const previous = parseFloat(validObs[1].value);
-              if (!isNaN(latest) && !isNaN(previous)) {
-                return {
-                  yield: latest,
-                  change: latest - previous,
-                  percentChange: ((latest - previous) / previous) * 100
-                };
-              }
-            }
-          }
-          return null;
-        }
-      }
-    ];
-
-    // Try each data source for live Treasury data
-    for (const source of dataSources) {
-      try {
-        const response = await axios.get(source.url, {
-          params: source.params,
-          timeout: 8000
-        });
-
-        const parsed = source.parser(response.data);
-        if (parsed && parsed.yield > 0) {
-          console.log(`Successfully fetched Treasury data: ${parsed.yield}%`);
-          
-          return {
-            yield: parsed.yield,
-            change: parsed.change,
-            percentChange: parsed.percentChange,
-            keyLevels: {
-              low52Week: 3.65,
-              current: parsed.yield,
-              high52Week: 4.75,
-            },
-            lastUpdated: new Date().toISOString()
-          };
-        }
-      } catch (error) {
-        console.log(`Treasury data source unavailable: ${source.url}`);
-      }
-    }
-
-    // If all APIs fail, generate current market-realistic data with auto-updates
-    console.log('Generating updated Treasury estimates based on current market conditions...');
-    
-    const currentDate = new Date();
-    const hourOfDay = currentDate.getHours();
-    
-    // Create realistic variations to simulate actual market updates
-    const baseYield = 4.419; // Current market estimate
-    const timeVariation = Math.sin(hourOfDay * Math.PI / 12) * 0.008; // Small intraday variation
-    const randomVariation = (Math.random() - 0.5) * 0.006; // Market micro-movements
-    
-    const updatedYield = parseFloat((baseYield + timeVariation + randomVariation).toFixed(3));
-    const dailyChange = parseFloat((timeVariation + randomVariation).toFixed(3));
-    const percentChange = parseFloat(((dailyChange / baseYield) * 100).toFixed(2));
-    
-    // Ensure we always have some realistic change (prevent zero changes)
-    const adjustedDailyChange = dailyChange === 0 ? 0.004 : dailyChange;
-    const adjustedPercentChange = percentChange === 0 ? 0.09 : percentChange;
-    
-    console.log(`Auto-updated Treasury yield: ${updatedYield}% (${dailyChange > 0 ? '+' : ''}${dailyChange})`);
-    
-    return {
-      yield: updatedYield,
-      change: adjustedDailyChange,
-      percentChange: adjustedPercentChange,
-      keyLevels: {
-        low52Week: 3.65,
-        current: updatedYield,
-        high52Week: 4.75,
-      },
-      lastUpdated: new Date().toISOString()
-    };
-  } catch (error) {
-    console.error('Error in getTreasuryData:', error);
-    throw new Error('Treasury auto-update service temporarily unavailable');
-  }
-
-  // Try multiple live data sources for Treasury yields
-  const dataSources = [
-    // Yahoo Finance
-    {
-      url: 'https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX',
-      parser: (data: any) => {
-        const result = data?.chart?.result?.[0];
-        if (result?.meta?.regularMarketPrice) {
-          return {
-            yield: result.meta.regularMarketPrice,
-            change: result.meta.regularMarketChange || 0,
-            percentChange: result.meta.regularMarketChangePercent || 0
-          };
-        }
-        return null;
-      }
-    },
-    // FRED Economic Data
-    {
-      url: 'https://api.stlouisfed.org/fred/series/observations',
-      params: {
-        series_id: 'DGS10',
-        api_key: 'demo',
-        file_type: 'json',
-        limit: 2,
-        sort_order: 'desc'
-      },
-      parser: (data: any) => {
-        if (data?.observations?.length >= 2) {
-          const latest = parseFloat(data.observations[0].value);
-          const previous = parseFloat(data.observations[1].value);
-          if (!isNaN(latest) && !isNaN(previous)) {
-            return {
-              yield: latest,
-              change: latest - previous,
-              percentChange: ((latest - previous) / previous) * 100
-            };
-          }
-        }
-        return null;
-      }
-    }
-  ];
-
-  for (const source of dataSources) {
-    try {
-      const response = await axios.get(source.url, {
-        params: source.params,
-        timeout: 5000
-      });
-
-      const parsed = source.parser(response.data);
-      if (parsed && parsed.yield > 0) {
-        return {
-          yield: parsed.yield,
-          change: parsed.change,
-          percentChange: parsed.percentChange,
-          keyLevels: {
-            low52Week: 3.65,
-            current: parsed.yield,
-            high52Week: 4.756,
-          },
-          lastUpdated: new Date().toISOString()
-        };
-      }
-    } catch (error) {
-      console.log(`Treasury data source unavailable: ${source.url}`);
-    }
-  }
-
-  throw new Error('Treasury data unavailable - only live data sources allowed');
 }
 
 // Fed Watch Tool data - using live FRED API data
