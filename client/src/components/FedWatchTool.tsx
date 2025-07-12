@@ -79,7 +79,7 @@ const FedWatchTool = () => {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold flex items-center gap-2">
             <BarChart3 className="h-5 w-5 text-blue-500" />
-            CME Fed Watch Tool
+            Fed Watch Tool
           </h3>
           <div className="flex items-center gap-3">
             <div className="text-xs text-muted-foreground flex items-center gap-1">
