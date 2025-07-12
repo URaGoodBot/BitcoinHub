@@ -321,16 +321,20 @@ export async function getFedWatchData(): Promise<FedWatchData> {
 // Get current effective Federal Funds Rate from FRED API
 async function getCurrentFedRate(): Promise<number | null> {
   try {
+    console.log('Attempting to fetch current Fed rate from FRED API...');
+    
     const response = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
       params: {
         series_id: 'DFF', // Daily Federal Funds Rate
-        api_key: process.env.FRED_API_KEY || 'demo',
+        api_key: process.env.FRED_API_KEY,
         file_type: 'json',
         limit: 5,
         sort_order: 'desc'
       },
-      timeout: 8000
+      timeout: 5000 // Reduced timeout for faster fallback
     });
+
+    console.log(`FRED API response status: ${response.status}`);
 
     if (response.data?.observations) {
       // Find the most recent valid observation
@@ -340,14 +344,24 @@ async function getCurrentFedRate(): Promise<number | null> {
       
       if (validObs) {
         const rate = parseFloat(validObs.value);
-        console.log(`Current effective Fed rate from FRED: ${rate}%`);
+        console.log(`✓ Current effective Fed rate from FRED: ${rate}% (Date: ${validObs.date})`);
         return rate * 100; // Convert to basis points
+      } else {
+        console.log('No valid Fed rate observations found in FRED response');
       }
+    } else {
+      console.log('Invalid FRED API response structure');
     }
     
     return null;
-  } catch (error) {
-    console.log('FRED API unavailable, using market estimates');
+  } catch (error: any) {
+    if (error.code === 'ECONNABORTED') {
+      console.log('FRED API timeout - using market estimates');
+    } else if (error.response) {
+      console.log(`FRED API error (${error.response.status}): ${error.response.statusText}`);
+    } else {
+      console.log(`FRED API connection error: ${error.message}`);
+    }
     return null;
   }
 }
