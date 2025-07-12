@@ -624,6 +624,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Chatbot endpoint
+  app.post(`${apiPrefix}/chatbot/ask`, async (req, res) => {
+    try {
+      const { question } = req.body;
+      
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({ error: 'Question is required' });
+      }
+
+      // Get current website data for context
+      const [bitcoinData, treasuryData, inflationData, sentimentData] = await Promise.allSettled([
+        import('./api/coingecko.js').then(m => m.getBitcoinMarketData()).catch(() => null),
+        import('./api/realTreasury.js').then(m => m.getRealTreasuryData()).catch(() => null),
+        import('./api/realTruflation.js').then(m => m.getRealTruflationData()).catch(() => null),
+        import('./api/sentiment.js').then(m => m.getMarketSentiment()).catch(() => null)
+      ]);
+
+      // Create context from current website data
+      const currentPrice = bitcoinData.status === 'fulfilled' && bitcoinData.value ? 
+        `$${bitcoinData.value.current_price?.usd?.toLocaleString() || 'N/A'}` : 'N/A';
+      const priceChange24h = bitcoinData.status === 'fulfilled' && bitcoinData.value ?
+        `${bitcoinData.value.price_change_percentage_24h?.toFixed(2) || 'N/A'}%` : 'N/A';
+      const treasuryYield = treasuryData.status === 'fulfilled' && treasuryData.value ?
+        `${treasuryData.value.yield?.toFixed(2) || 'N/A'}%` : 'N/A';
+      const inflationRate = inflationData.status === 'fulfilled' && inflationData.value ?
+        `${inflationData.value.currentRate?.toFixed(2) || 'N/A'}%` : 'N/A';
+      const sentiment = sentimentData.status === 'fulfilled' && sentimentData.value ?
+        `${sentimentData.value.overall || 'N/A'} (${sentimentData.value.overallScore || 'N/A'}/100)` : 'N/A';
+
+      const contextPrompt = `You are a helpful Bitcoin and cryptocurrency assistant on BitcoinHub, a comprehensive Bitcoin information platform. 
+
+Current live data from our website:
+- Bitcoin Price: ${currentPrice} (24h change: ${priceChange24h})
+- US 10-Year Treasury: ${treasuryYield} (from Federal Reserve FRED API)
+- US Inflation Rate: ${inflationRate} (from Federal Reserve CPI data)
+- Market Sentiment: ${sentiment}
+
+Website features include:
+- Real-time Bitcoin price tracking and charts
+- Federal Reserve economic data (Treasury yields, inflation from FRED API)
+- Bitcoin network stats (hash rate, difficulty from Blockchain.com)
+- Fear & Greed Index and market dominance
+- Crypto legislation tracking with AI analysis
+- News feed and social sentiment analysis
+- Web resources section with trading tools
+
+Answer the user's question about Bitcoin markets, the data on our website, or general cryptocurrency topics. Be helpful, accurate, and reference the current data when relevant. Keep responses concise but informative.
+
+User question: ${question}`;
+
+      // Use XAI Grok for intelligent responses
+      if (!process.env.XAI_API_KEY) {
+        return res.json({
+          answer: "I'd love to help, but the AI service isn't available right now. You can explore the live Bitcoin data, charts, and market metrics displayed throughout the dashboard for current information."
+        });
+      }
+
+      const OpenAI = await import('openai').then(m => m.default);
+      const openai = new OpenAI({ 
+        baseURL: "https://api.x.ai/v1", 
+        apiKey: process.env.XAI_API_KEY 
+      });
+
+      const response = await openai.chat.completions.create({
+        model: "grok-2-1212",
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful Bitcoin and cryptocurrency assistant. Provide accurate, helpful responses about Bitcoin markets, trading, and the data available on this website. Keep responses conversational but informative."
+          },
+          {
+            role: "user",
+            content: contextPrompt
+          }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      });
+
+      const answer = response.choices[0]?.message?.content || 
+        "I'm having trouble processing your question right now. Please try asking about the current Bitcoin price, market sentiment, or any of the data visible on the dashboard.";
+
+      res.json({ answer });
+
+    } catch (error) {
+      console.error('Chatbot error:', error);
+      res.json({
+        answer: "I encountered an issue processing your question. The current Bitcoin data is still available in the dashboard above - feel free to explore the price charts, market metrics, and Fed data widgets for the latest information."
+      });
+    }
+  });
+
   // Forum
   app.get(`${apiPrefix}/forum/posts`, async (req, res) => {
     try {

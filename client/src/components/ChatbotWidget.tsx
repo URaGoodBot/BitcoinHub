@@ -13,7 +13,7 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-const MarketSummaryWidget = () => {
+const ChatbotWidget = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -190,4 +190,4 @@ const MarketSummaryWidget = () => {
   );
 };
 
-export default MarketSummaryWidget;
+export default ChatbotWidget;
