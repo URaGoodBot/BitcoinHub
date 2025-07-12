@@ -26,10 +26,8 @@ const MarketSummaryWidget = () => {
 
   const chatMutation = useMutation({
     mutationFn: async (question: string) => {
-      return await apiRequest('/api/chatbot/ask', {
-        method: 'POST',
-        body: { question }
-      });
+      const response = await apiRequest('POST', '/api/chatbot/ask', { question });
+      return await response.json();
     },
     onSuccess: (response) => {
       const assistantMessage: ChatMessage = {
