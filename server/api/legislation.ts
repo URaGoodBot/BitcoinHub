@@ -1,6 +1,9 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const grok = new OpenAI({ 
+  baseURL: "https://api.x.ai/v1", 
+  apiKey: process.env.XAI_API_KEY 
+});
 
 export interface LegislationBill {
   id: string;
@@ -36,10 +39,10 @@ export function clearLegislationCache(): void {
   legislationCache = null;
 }
 
-// Generate comprehensive crypto legislation analysis using OpenAI
+// Generate comprehensive crypto legislation analysis using Grok
 async function generateLegislationAnalysis(): Promise<LegislationData> {
   try {
-    console.log('Generating daily crypto legislation analysis with OpenAI...');
+    console.log('Generating daily crypto legislation analysis with Grok xAI...');
     
     const prompt = `Analyze the current status of ALL major cryptocurrency-related legislation in the US Congress as of July 2025. 
 
@@ -84,12 +87,12 @@ Base passage chances on realistic political analysis considering:
 
 Ensure all information is current as of July 2025 and reflects actual congressional activity.`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+    const response = await grok.chat.completions.create({
+      model: "grok-2-1212",
       messages: [
         {
           role: "system",
-          content: "You are a legislative analyst specializing in cryptocurrency regulation. Provide accurate, current information about US crypto legislation. Always respond with valid JSON."
+          content: "You are a legislative analyst with real-time access to current US Congressional data. Provide accurate, up-to-date information about crypto legislation as of July 2025. Focus on bills that are actually active and moving through Congress. Always respond with valid JSON."
         },
         {
           role: "user",
@@ -102,7 +105,7 @@ Ensure all information is current as of July 2025 and reflects actual congressio
 
     const content = response.choices[0].message.content;
     if (!content) {
-      throw new Error('No content received from OpenAI');
+      throw new Error('No content received from Grok');
     }
 
     const legislationData: LegislationData = JSON.parse(content);
