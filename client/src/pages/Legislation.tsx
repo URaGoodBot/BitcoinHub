@@ -243,7 +243,7 @@ const Legislation = () => {
         <div className="mt-6 p-4 bg-yellow-500/10 rounded-lg">
           <p className="text-xs text-muted-foreground">
             <AlertCircle className="h-3 w-3 inline mr-1" />
-            Legislative data is analyzed daily using AI and publicly available congressional records. 
+            Legislative data is analyzed daily using Grok AI and publicly available congressional records. 
             Passage probabilities are estimates based on current political climate and bill progress. 
             For official information, consult Congress.gov.
           </p>

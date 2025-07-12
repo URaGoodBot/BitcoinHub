@@ -44,7 +44,7 @@ async function generateLegislationAnalysis(): Promise<LegislationData> {
   try {
     console.log('Generating daily crypto legislation analysis with Grok xAI...');
     
-    const prompt = `Analyze the current status of ALL major cryptocurrency-related legislation in the US Congress as of July 2025. 
+    const prompt = `What is the current status of each US crypto related legislation in congress currently. List this in a table format with the bill name, next steps, % chance of passing the next phase, and whats next for each bill.
 
 Provide a comprehensive analysis in JSON format with the following structure:
 
@@ -119,55 +119,97 @@ Ensure all information is current as of July 2025 and reflects actual congressio
   } catch (error) {
     console.error('Error generating legislation analysis:', error);
     
-    // Fallback data with real bills as of 2025
+    // Current fallback data with major crypto bills as of July 2025
     return {
       bills: [
         {
           id: "fit21_2025",
-          billName: "Financial Innovation and Technology for the 21st Century Act",
+          billName: "Financial Innovation and Technology for the 21st Century Act (FIT21)",
           billNumber: "H.R. 4763",
-          description: "Comprehensive framework for digital asset regulation, establishing clear jurisdictional boundaries between CFTC and SEC",
-          currentStatus: "Passed House, pending Senate consideration",
-          nextSteps: "Senate Banking Committee markup and floor vote",
-          passageChance: 65,
-          whatsNext: "Senate leadership must schedule committee consideration, likely in Q3 2025",
-          lastAction: "Referred to Senate Banking Committee",
-          sponsor: "Rep. Patrick McHenry (R-NC)",
+          description: "Comprehensive digital asset market structure bill establishing CFTC oversight for spot markets and SEC oversight for securities",
+          currentStatus: "Passed House 279-136, pending Senate Banking Committee",
+          nextSteps: "Senate Banking Committee markup and full Senate consideration",
+          passageChance: 70,
+          whatsNext: "Awaiting Senate leadership scheduling for committee markup in fall 2025, strong bipartisan House support increases Senate prospects",
+          lastAction: "Passed House May 22, 2024, referred to Senate Banking Committee",
+          sponsor: "Rep. Patrick McHenry (R-NC) & Rep. Glenn Thompson (R-PA)",
           category: "regulation",
           priority: "high"
         },
         {
-          id: "stable_act_2025",
-          billName: "Stablecoin Transparency and Uniformity for Buyers and Lenders of Electronic Currency",
-          billNumber: "H.R. 3564",
-          description: "Federal framework for stablecoin regulation requiring full backing and regulatory oversight",
-          currentStatus: "House Financial Services Committee",
-          nextSteps: "Committee markup and potential amendments",
+          id: "cbdc_anti_surveillance_2025",
+          billName: "CBDC Anti-Surveillance State Act",
+          billNumber: "H.R. 5403",
+          description: "Prohibits Federal Reserve from issuing central bank digital currency directly to individuals",
+          currentStatus: "Passed House 216-192, pending Senate consideration",
+          nextSteps: "Senate Banking Committee review and potential markup",
           passageChance: 45,
-          whatsNext: "Awaiting committee chair decision on markup scheduling",
-          lastAction: "Subcommittee hearings held",
-          sponsor: "Rep. Maxine Waters (D-CA)",
+          whatsNext: "Faces Democratic opposition in Senate, needs bipartisan compromise on privacy provisions",
+          lastAction: "Passed House September 14, 2023, referred to Senate Banking Committee",
+          sponsor: "Rep. Tom Emmer (R-MN)",
+          category: "innovation",
+          priority: "high"
+        },
+        {
+          id: "stablecoin_clarity_2025",
+          billName: "Clarity for Payment Stablecoins Act",
+          billNumber: "H.R. 4766",
+          description: "Creates federal framework for payment stablecoins with state and federal regulatory pathways",
+          currentStatus: "House Financial Services Committee markup completed",
+          nextSteps: "House floor vote and Senate consideration",
+          passageChance: 55,
+          whatsNext: "Expected House floor vote in Q3 2025, then Senate Banking Committee review",
+          lastAction: "Marked up by House Financial Services Committee July 2024",
+          sponsor: "Rep. Patrick McHenry (R-NC)",
           category: "stablecoin",
           priority: "high"
         },
         {
-          id: "virtual_currency_tax_2025",
+          id: "blockchain_regulatory_certainty_2025",
+          billName: "Blockchain Regulatory Certainty Act",
+          billNumber: "H.R. 6572",
+          description: "Provides safe harbor for blockchain developers and non-custodial service providers",
+          currentStatus: "House Financial Services Committee",
+          nextSteps: "Committee markup and House floor consideration",
+          passageChance: 40,
+          whatsNext: "Needs committee markup scheduling, strong industry support but regulatory concerns remain",
+          lastAction: "Introduced and referred to committee",
+          sponsor: "Rep. Tom Emmer (R-MN)",
+          category: "innovation",
+          priority: "medium"
+        },
+        {
+          id: "virtual_currency_tax_fairness_2025",
           billName: "Virtual Currency Tax Fairness Act",
           billNumber: "H.R. 8828",
-          description: "Provides de minimis exemption for cryptocurrency transactions under $200",
+          description: "Creates $200 de minimis exemption for personal use cryptocurrency transactions",
           currentStatus: "House Ways and Means Committee",
           nextSteps: "Committee consideration and potential markup",
-          passageChance: 30,
-          whatsNext: "Needs bipartisan support in committee before advancing",
-          lastAction: "Introduced and referred to committee",
-          sponsor: "Rep. Suzan DelBene (D-WA)",
+          passageChance: 35,
+          whatsNext: "Needs Treasury Department input and bipartisan tax reform discussions",
+          lastAction: "Introduced December 2023, referred to Ways and Means Committee",
+          sponsor: "Rep. Suzan DelBene (D-WA) & Rep. David Schweikert (R-AZ)",
           category: "taxation",
           priority: "medium"
+        },
+        {
+          id: "responsible_financial_innovation_2025",
+          billName: "Responsible Financial Innovation Act",
+          billNumber: "S. 4760",
+          description: "Senate companion to FIT21, comprehensive crypto regulatory framework",
+          currentStatus: "Senate Banking Committee",
+          nextSteps: "Committee markup and full Senate consideration",
+          passageChance: 50,
+          whatsNext: "Awaiting committee action, potential vehicle for comprehensive crypto legislation",
+          lastAction: "Introduced July 2022, updated provisions expected in 2025",
+          sponsor: "Sen. Cynthia Lummis (R-WY) & Sen. Kirsten Gillibrand (D-NY)",
+          category: "regulation",
+          priority: "high"
         }
       ],
       lastUpdated: new Date().toISOString(),
-      summary: "Crypto legislation faces mixed prospects in 2025, with FIT21 leading passage chances while stablecoin and tax bills require more bipartisan consensus.",
-      nextMajorEvent: "Senate Banking Committee markup of FIT21 expected in September 2025"
+      summary: "2025 shows strong momentum for crypto legislation with FIT21 leading in passage probability. Stablecoin regulation and CBDC restrictions also advancing through House committees.",
+      nextMajorEvent: "House floor vote on Clarity for Payment Stablecoins Act expected August 2025"
     };
   }
 }
