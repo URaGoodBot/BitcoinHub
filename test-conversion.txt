@@ -1,0 +1,79 @@
+Here's your converted JSON from the attached text:
+
+{
+  "bills": [
+    {
+      "id": "genius_act_guiding_and_establis",
+      "billName": "GENIUS Act (Guiding and Establishing National Innovation for U.S. Stablecoins)",
+      "billNumber": "S. 2664",
+      "description": "Comprehensive stablecoin regulatory framework establishing clear federal oversight and compliance requirements",
+      "currentStatus": "Passed the Senate on June 17, 2025, with a 68-30 bipartisan vote.",
+      "nextSteps": "The bill has been sent to the House for consideration during \"Crypto Week\" (July 14-18, 2025). The House may vote on it as is, amend it, or reconcile it with its own stablecoin legislation.",
+      "passageChance": 75,
+      "whatsNext": "The House has shown strong crypto support, with a Republican majority and bipartisan backing for similar legislation",
+      "lastAction": "Passed chamber with bipartisan support",
+      "sponsor": "Sen. Bill Hagerty (R-TN) & Sen. Kirsten Gillibrand (D-NY)",
+      "category": "stablecoin",
+      "priority": "high"
+    },
+    {
+      "id": "clarity_act_digital_asset_mark",
+      "billName": "CLARITY Act (Digital Asset Market Clarity Act)",
+      "billNumber": "H.R. 4763",
+      "description": "Defines regulatory roles for SEC and CFTC over crypto assets, establishing clear jurisdictional boundaries",
+      "currentStatus": "Advanced through House Financial Services and Agriculture Committees with strong bipartisan votes on June 10, 2025. Scheduled for House floor vote during \"Crypto Week\" (July 14-18, 2025).",
+      "nextSteps": "Full House vote to pass the bill, which defines regulatory roles for the SEC and CFTC over crypto assets.",
+      "passageChance": 70,
+      "whatsNext": "The bill has momentum from committee approvals and bipartisan support, but the narrow Republican House majority and potential Democratic concerns about conflicts of interest could affect its passage.",
+      "lastAction": "Advanced through committee review",
+      "sponsor": "Rep. Patrick McHenry (R-NC) & Rep. Glenn Thompson (R-PA)",
+      "category": "regulation",
+      "priority": "high"
+    },
+    {
+      "id": "anti_cbdc_surveillance_state_a",
+      "billName": "Anti-CBDC Surveillance State Act",
+      "billNumber": "H.R. 5403",
+      "description": "Prohibits Federal Reserve from issuing central bank digital currency directly to individuals without Congressional authorization",
+      "currentStatus": "Announced for consideration during \"Crypto Week\" (July 14-18, 2025) in the House. No recent votes or committee actions reported.",
+      "nextSteps": "House committee review and markup, followed by a potential floor vote.",
+      "passageChance": 60,
+      "whatsNext": "The bill aligns with Republican opposition to a U.S. CBDC and Trump executive order halting CBDC work, but limited Democratic support and lack of prior legislative progress reduce its chances compared to other bills.",
+      "lastAction": "Legislative action pending",
+      "sponsor": "Rep. Tom Emmer (R-MN)",
+      "category": "innovation",
+      "priority": "medium"
+    },
+    {
+      "id": "bitcoin_act_of_2024",
+      "billName": "BITCOIN Act of 2024",
+      "billNumber": "S. 4912",
+      "description": "Establishes Strategic Bitcoin Reserve requiring federal government to purchase Bitcoin over five years",
+      "currentStatus": "Introduced in the Senate on July 30, 2024, to establish a Strategic Bitcoin Reserve. No recent votes or advancements reported.",
+      "nextSteps": "Senate Banking Committee review and potential markup to advance the bill.",
+      "passageChance": 40,
+      "whatsNext": "The bill lacks recent traction and faces skepticism due to its ambitious proposal (e.g., purchasing 1 million Bitcoins over five years). Bipartisan support is uncertain, and funding concerns may deter progress.",
+      "lastAction": "Introduced and referred to committee",
+      "sponsor": "Sen. Cynthia Lummis (R-WY)",
+      "category": "innovation",
+      "priority": "low"
+    },
+    {
+      "id": "hjres25_repeal_of_irs_defi_bro",
+      "billName": "H.J.Res.25 (Repeal of IRS DeFi Broker Rule)",
+      "billNumber": "H.J.Res. 25",
+      "description": "Congressional Review Act resolution to repeal Biden-era IRS DeFi Broker Rule requiring DeFi platforms to report transactions",
+      "currentStatus": "Passed the House on March 11, 2025, with a bipartisan 279-136 vote.",
+      "nextSteps": "Senate consideration and vote under the Congressional Review Act to repeal the Biden-era IRS DeFi Broker Rule.",
+      "passageChance": 65,
+      "whatsNext": "The strong House vote (including 76 Democrats) suggests moderate Senate support, but Democratic concerns about consumer protections and Senate Banking Committee dynamics could pose hurdles.",
+      "lastAction": "Passed chamber with bipartisan support",
+      "sponsor": "Rep. Mike Flood (R-NE)",
+      "category": "taxation",
+      "priority": "medium"
+    }
+  ],
+  "lastUpdated": "2025-07-12T11:05:47.000Z",
+  "summary": "Updated legislation data from text conversion. Crypto Week (July 14-18, 2025) continues with multiple House votes scheduled.",
+  "nextMajorEvent": "Crypto Week House votes (July 14-18, 2025) on multiple crypto bills"
+}
