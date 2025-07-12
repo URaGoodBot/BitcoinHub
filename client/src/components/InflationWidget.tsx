@@ -2,17 +2,30 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, TrendingUp, TrendingDown, RefreshCw, ExternalLink } from "lucide-react";
+import { Loader2, TrendingUp, TrendingDown, RefreshCw, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
+import { useState } from "react";
 
-interface InflationData {
+interface SectorInflation {
+  name: string;
   rate: number;
   change: number;
-  lastUpdated: string;
+  seriesId: string;
+}
+
+interface InflationData {
+  overall: {
+    rate: number;
+    change: number;
+    lastUpdated: string;
+  };
+  sectors: SectorInflation[];
   source: string;
 }
 
 export function InflationWidget() {
+  const [showSectors, setShowSectors] = useState(false);
+  
   const { data: inflation, isLoading, error } = useQuery<InflationData>({
     queryKey: ['/api/financial/inflation'],
     refetchInterval: 5 * 60 * 1000, // Auto-refresh every 5 minutes
@@ -25,6 +38,10 @@ export function InflationWidget() {
 
   const handleViewSource = () => {
     window.open('https://fred.stlouisfed.org/series/CPIAUCSL', '_blank');
+  };
+
+  const toggleSectors = () => {
+    setShowSectors(!showSectors);
   };
 
   if (isLoading) {
@@ -72,12 +89,12 @@ export function InflationWidget() {
     return null;
   }
 
-  const isPositiveChange = inflation.change >= 0;
+  const isPositiveChange = inflation.overall.change >= 0;
   const changeColor = isPositiveChange ? "text-red-600" : "text-green-600";
   const TrendIcon = isPositiveChange ? TrendingUp : TrendingDown;
 
   return (
-    <Card className="w-full cursor-pointer hover:shadow-lg transition-shadow duration-200">
+    <Card className="w-full hover:shadow-lg transition-shadow duration-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center space-x-2">
           <CardTitle className="text-sm font-medium">US Inflation Rate</CardTitle>
@@ -108,11 +125,11 @@ export function InflationWidget() {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-2xl font-bold">
-              {inflation.rate.toFixed(2)}%
+              {inflation.overall.rate.toFixed(2)}%
             </div>
             <div className={`flex items-center text-sm ${changeColor}`}>
               <TrendIcon className="mr-1 h-3 w-3" />
-              {isPositiveChange ? '+' : ''}{inflation.change.toFixed(3)}% monthly
+              {isPositiveChange ? '+' : ''}{inflation.overall.change.toFixed(3)}% monthly
             </div>
           </div>
           <div className="text-right">
@@ -121,6 +138,50 @@ export function InflationWidget() {
             </Badge>
           </div>
         </div>
+        
+        {/* Sectors Toggle Button */}
+        {inflation.sectors.length > 0 && (
+          <div className="mt-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSectors}
+              className="w-full justify-between text-xs"
+            >
+              <span>Sector Breakdown ({inflation.sectors.length} sectors)</span>
+              {showSectors ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            </Button>
+          </div>
+        )}
+        
+        {/* Sectors Details */}
+        {showSectors && inflation.sectors.length > 0 && (
+          <div className="mt-3 space-y-2">
+            {inflation.sectors.map((sector) => {
+              const sectorIsPositive = sector.change >= 0;
+              const sectorChangeColor = sectorIsPositive ? "text-red-600" : "text-green-600";
+              const SectorTrendIcon = sectorIsPositive ? TrendingUp : TrendingDown;
+              
+              return (
+                <div key={sector.seriesId} className="flex items-center justify-between p-2 bg-muted/20 rounded-md">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{sector.name}</div>
+                    <div className={`flex items-center text-xs ${sectorChangeColor}`}>
+                      <SectorTrendIcon className="mr-1 h-2 w-2" />
+                      {sectorIsPositive ? '+' : ''}{sector.change.toFixed(2)}% monthly
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-bold">
+                      {sector.rate.toFixed(1)}%
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        
         <CardDescription className="mt-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>Consumer Price Index (CPI)</span>
