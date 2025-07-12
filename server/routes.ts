@@ -624,10 +624,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get current website data for context
-      const [bitcoinData, treasuryData, sentimentData] = await Promise.allSettled([
-        import('./api/coingecko.js').then(m => m.getBitcoinMarketData()).catch(() => null),
-        import('./api/realTreasury.js').then(m => m.getRealTreasuryData()).catch(() => null),
-        import('./api/sentiment.js').then(m => m.getMarketSentiment()).catch(() => null)
+      const [bitcoinData, treasuryData, sentimentData, inflationData] = await Promise.allSettled([
+        import('./api/coingecko').then(m => m.getBitcoinMarketData()).catch(() => null),
+        import('./api/realTreasury').then(m => m.getRealTreasuryData()).catch(() => null),
+        import('./api/sentiment').then(m => m.getMarketSentiment()).catch(() => null),
+        import('./api/inflation').then(m => m.getInflationData()).catch(() => null)
       ]);
 
       // Create context from current website data
@@ -637,6 +638,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${bitcoinData.value.price_change_percentage_24h?.toFixed(2) || 'N/A'}%` : 'N/A';
       const treasuryYield = treasuryData.status === 'fulfilled' && treasuryData.value ?
         `${treasuryData.value.yield?.toFixed(2) || 'N/A'}%` : 'N/A';
+      const inflationRate = inflationData.status === 'fulfilled' && inflationData.value ?
+        `${inflationData.value.overall?.rate?.toFixed(2) || 'N/A'}%` : 'N/A';
 
       const sentiment = sentimentData.status === 'fulfilled' && sentimentData.value ?
         `${sentimentData.value.overall || 'N/A'} (${sentimentData.value.overallScore || 'N/A'}/100)` : 'N/A';
@@ -646,6 +649,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 Current live data from our website:
 - Bitcoin Price: ${currentPrice} (24h change: ${priceChange24h})
 - US 10-Year Treasury: ${treasuryYield} (from Federal Reserve FRED API)
+- US Inflation Rate: ${inflationRate} (from Federal Reserve FRED API)
 - Market Sentiment: ${sentiment}
 
 Website features include:
@@ -673,15 +677,17 @@ User question: ${question}`;
 📈 **Market Sentiment**: ${sentiment}
 🏦 **Federal Reserve Data**: 
   • US 10-Year Treasury: ${treasuryYield}
+  • US Inflation Rate: ${inflationRate}
 
 The data is updated in real-time from CoinGecko, Federal Reserve FRED API, and other authoritative sources. You can see detailed charts and metrics in the dashboard above.`;
       } else if (questionLower.includes('fed') || questionLower.includes('treasury')) {
         answer = `Here's the current Federal Reserve economic data:
 
 🏛️ **US 10-Year Treasury**: ${treasuryYield} (from FRED API)
+📊 **US Inflation Rate**: ${inflationRate} (from FRED API)
 💰 **Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
 
-This data comes directly from the Federal Reserve Economic Data (FRED) API and is updated regularly. Treasury yields significantly impact Bitcoin's price movements as they affect investor risk appetite.`;
+This data comes directly from the Federal Reserve Economic Data (FRED) API and is updated regularly. Treasury yields and inflation significantly impact Bitcoin's price movements as they affect investor risk appetite.`;
       } else if (questionLower.includes('sentiment') || questionLower.includes('market')) {
         answer = `Current market analysis:
 
