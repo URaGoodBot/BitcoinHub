@@ -41,6 +41,8 @@ export function InflationWidget() {
   };
 
   const toggleSectors = () => {
+    console.log('Toggling sectors, current state:', showSectors);
+    console.log('Sectors data:', inflation?.sectors);
     setShowSectors(!showSectors);
   };
 
@@ -140,30 +142,33 @@ export function InflationWidget() {
         </div>
         
         {/* Sectors Toggle Button */}
-        {inflation.sectors.length > 0 && (
+        {inflation.sectors && inflation.sectors.length > 0 && (
           <div className="mt-3">
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleSectors}
-              className="w-full justify-between text-xs"
+              className="w-full justify-between text-xs hover:bg-muted/30"
             >
-              <span>Sector Breakdown ({inflation.sectors.length} sectors)</span>
+              <span>Sector Breakdown ({inflation.sectors.length} sectors) {showSectors ? '[OPEN]' : '[CLOSED]'}</span>
               {showSectors ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </Button>
           </div>
         )}
         
         {/* Sectors Details */}
-        {showSectors && inflation.sectors.length > 0 && (
-          <div className="mt-3 space-y-2">
+        {showSectors && inflation.sectors && inflation.sectors.length > 0 && (
+          <div className="mt-3 space-y-2 border-t pt-3 animate-in slide-in-from-top-2 duration-200">
+            <div className="text-xs text-muted-foreground mb-2">
+              Showing {inflation.sectors.length} inflation sectors:
+            </div>
             {inflation.sectors.map((sector) => {
               const sectorIsPositive = sector.change >= 0;
               const sectorChangeColor = sectorIsPositive ? "text-red-600" : "text-green-600";
               const SectorTrendIcon = sectorIsPositive ? TrendingUp : TrendingDown;
               
               return (
-                <div key={sector.seriesId} className="flex items-center justify-between p-2 bg-muted/20 rounded-md">
+                <div key={sector.seriesId} className="flex items-center justify-between p-2 bg-muted/30 rounded-md hover:bg-muted/40 transition-colors">
                   <div className="flex-1">
                     <div className="text-sm font-medium">{sector.name}</div>
                     <div className={`flex items-center text-xs ${sectorChangeColor}`}>
@@ -179,6 +184,14 @@ export function InflationWidget() {
                 </div>
               );
             })}
+          </div>
+        )}
+        
+        {/* Debug Info */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-2 text-xs text-muted-foreground">
+            Debug: showSectors={showSectors ? 'true' : 'false'}, 
+            sectors={inflation?.sectors ? inflation.sectors.length : 'undefined'}
           </div>
         )}
         
