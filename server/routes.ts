@@ -9,6 +9,7 @@ import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { getMarketSentiment } from "./api/sentiment";
 import { getLegislationData, refreshLegislationData } from "./api/legislation";
+import { getInflationData } from "./api/inflation";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -378,6 +379,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching real Treasury data:", error);
       res.status(503).json({ 
         message: "Unable to fetch live data from MarketWatch.com. Please check if financial websites are accessible.",
+        error: error.message 
+      });
+    }
+  });
+
+  app.get(`${apiPrefix}/financial/inflation`, async (req, res) => {
+    try {
+      const data = await getInflationData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching inflation data:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch inflation data from FRED API",
         error: error.message 
       });
     }
