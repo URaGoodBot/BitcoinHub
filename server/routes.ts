@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cryptocompare";
 import { getLatestNews } from "./api/newsapi";
 import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeerFollowing } from "./api/twitter";
-import { getRealTruflationData } from "./api/realTruflation";
+
 import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { getMarketSentiment } from "./api/sentiment";
@@ -369,18 +369,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Financial data routes with REAL live data scraping
-  app.get(`${apiPrefix}/truflation`, async (req, res) => {
-    try {
-      const data = await getRealTruflationData();
-      res.json(data);
-    } catch (error) {
-      console.error("Error fetching real Truflation data:", error);
-      res.status(503).json({ 
-        message: "Unable to fetch live data from Truflation.com. Please check if the website is accessible.",
-        error: error.message 
-      });
-    }
-  });
 
   app.get(`${apiPrefix}/financial/treasury`, async (req, res) => {
     try {
@@ -496,19 +484,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get(`${apiPrefix}/financial/truflation`, async (_req, res) => {
-    try {
-      const { getTruflationData } = await import("./api/truflation");
-      const truflationData = await getTruflationData();
-      res.json(truflationData);
-    } catch (error) {
-      console.error("Error fetching Truflation data:", error);
-      res.status(503).json({ 
-        message: "Live Truflation data temporarily unavailable",
-        error: "Only authentic data sources are used - no fallback data provided"
-      });
-    }
-  });
+
 
   app.get(`${apiPrefix}/notifications`, async (_req, res) => {
     try {
@@ -634,10 +610,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get current website data for context
-      const [bitcoinData, treasuryData, inflationData, sentimentData] = await Promise.allSettled([
+      const [bitcoinData, treasuryData, sentimentData] = await Promise.allSettled([
         import('./api/coingecko.js').then(m => m.getBitcoinMarketData()).catch(() => null),
         import('./api/realTreasury.js').then(m => m.getRealTreasuryData()).catch(() => null),
-        import('./api/realTruflation.js').then(m => m.getRealTruflationData()).catch(() => null),
         import('./api/sentiment.js').then(m => m.getMarketSentiment()).catch(() => null)
       ]);
 
@@ -648,8 +623,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         `${bitcoinData.value.price_change_percentage_24h?.toFixed(2) || 'N/A'}%` : 'N/A';
       const treasuryYield = treasuryData.status === 'fulfilled' && treasuryData.value ?
         `${treasuryData.value.yield?.toFixed(2) || 'N/A'}%` : 'N/A';
-      const inflationRate = inflationData.status === 'fulfilled' && inflationData.value ?
-        `${inflationData.value.currentRate?.toFixed(2) || 'N/A'}%` : 'N/A';
+
       const sentiment = sentimentData.status === 'fulfilled' && sentimentData.value ?
         `${sentimentData.value.overall || 'N/A'} (${sentimentData.value.overallScore || 'N/A'}/100)` : 'N/A';
 
@@ -658,12 +632,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 Current live data from our website:
 - Bitcoin Price: ${currentPrice} (24h change: ${priceChange24h})
 - US 10-Year Treasury: ${treasuryYield} (from Federal Reserve FRED API)
-- US Inflation Rate: ${inflationRate} (from Federal Reserve CPI data)
 - Market Sentiment: ${sentiment}
 
 Website features include:
 - Real-time Bitcoin price tracking and charts
-- Federal Reserve economic data (Treasury yields, inflation from FRED API)
+- Federal Reserve economic data (Treasury yields from FRED API)
 - Bitcoin network stats (hash rate, difficulty from Blockchain.com)
 - Fear & Greed Index and market dominance
 - Crypto legislation tracking with AI analysis
@@ -686,17 +659,15 @@ User question: ${question}`;
 📈 **Market Sentiment**: ${sentiment}
 🏦 **Federal Reserve Data**: 
   • US 10-Year Treasury: ${treasuryYield}
-  • Inflation Rate: ${inflationRate}
 
 The data is updated in real-time from CoinGecko, Federal Reserve FRED API, and other authoritative sources. You can see detailed charts and metrics in the dashboard above.`;
-      } else if (questionLower.includes('fed') || questionLower.includes('treasury') || questionLower.includes('inflation')) {
+      } else if (questionLower.includes('fed') || questionLower.includes('treasury')) {
         answer = `Here's the current Federal Reserve economic data:
 
 🏛️ **US 10-Year Treasury**: ${treasuryYield} (from FRED API)
-📊 **US Inflation Rate**: ${inflationRate} (from Federal Reserve CPI data)
 💰 **Bitcoin Price**: ${currentPrice} (24h change: ${priceChange24h})
 
-This data comes directly from the Federal Reserve Economic Data (FRED) API and is updated regularly. Treasury yields and inflation rates significantly impact Bitcoin's price movements as they affect investor risk appetite.`;
+This data comes directly from the Federal Reserve Economic Data (FRED) API and is updated regularly. Treasury yields significantly impact Bitcoin's price movements as they affect investor risk appetite.`;
       } else if (questionLower.includes('sentiment') || questionLower.includes('market')) {
         answer = `Current market analysis:
 
