@@ -8,6 +8,7 @@ import { getRealTruflationData } from "./api/realTruflation";
 import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { getMarketSentiment } from "./api/sentiment";
+import { getLegislationData, refreshLegislationData } from "./api/legislation";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -866,6 +867,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching learning progress:", error);
       res.status(500).json({ message: "Failed to fetch learning progress" });
+    }
+  });
+
+  // Legislation API endpoints
+  app.get(`${apiPrefix}/legislation`, async (_req, res) => {
+    try {
+      const legislationData = await getLegislationData();
+      res.json(legislationData);
+    } catch (error) {
+      console.error("Error fetching legislation data:", error);
+      res.status(500).json({ message: "Failed to fetch legislation data" });
+    }
+  });
+
+  app.post(`${apiPrefix}/legislation/refresh`, async (_req, res) => {
+    try {
+      const freshData = await refreshLegislationData();
+      res.json(freshData);
+    } catch (error) {
+      console.error("Error refreshing legislation data:", error);
+      res.status(500).json({ message: "Failed to refresh legislation data" });
     }
   });
 

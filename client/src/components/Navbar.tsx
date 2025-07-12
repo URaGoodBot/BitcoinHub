@@ -110,6 +110,11 @@ const Navbar = () => {
                   Web Resources
                 </a>
               </Link>
+              <Link href="/legislation">
+                <a className={`${isActiveLink('/legislation') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Legislation
+                </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-3">
