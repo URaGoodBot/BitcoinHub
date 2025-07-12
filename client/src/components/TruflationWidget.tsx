@@ -56,8 +56,8 @@ const TruflationWidget = () => {
                 <span className="text-blue-600 text-xs font-bold">🇺🇸</span>
               </div>
               <div>
-                <h3 className="text-lg font-semibold">Truflation US Inflation Index</h3>
-                <p className="text-sm text-white/80">Live from Truflation.com</p>
+                <h3 className="text-lg font-semibold">FRED US Inflation Index</h3>
+                <p className="text-sm text-white/80">Live from Federal Reserve Economic Data</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -70,13 +70,13 @@ const TruflationWidget = () => {
                 Refresh
               </button>
               <a
-                href="https://truflation.com/marketplace/us-inflation-rate"
+                href="https://fred.stlouisfed.org/series/CPIAUCSL"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
               >
                 <ExternalLink className="h-3 w-3" />
-                View Source
+                View FRED Source
               </a>
             </div>
           </div>

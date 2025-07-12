@@ -68,13 +68,13 @@ const TreasuryWidget = () => {
               Live data auto-updating
             </div>
             <a
-              href="https://www.marketwatch.com/investing/bond/tmubmusd10y"
+              href="https://fred.stlouisfed.org/series/DGS10"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <ExternalLink className="h-3 w-3" />
-              View Source
+              View FRED Source
             </a>
           </div>
         </div>
@@ -156,12 +156,12 @@ const TreasuryWidget = () => {
               Last updated: {new Date().toLocaleTimeString()}
             </p>
             <a
-              href="https://www.marketwatch.com/investing/bond/tmubmusd10y"
+              href="https://fred.stlouisfed.org/series/DGS10"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
             >
-              View live updates →
+              View FRED data →
             </a>
           </div>
         </div>
