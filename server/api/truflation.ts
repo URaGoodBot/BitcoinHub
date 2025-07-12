@@ -189,40 +189,6 @@ export async function getTruflationData(): Promise<TruflationData> {
     throw new Error('Unable to fetch live inflation data from any government source');
   }
 }
-              };
-            }
-          }
-          return null;
-        }
-      }
-    ];
-
-    // Try each data source
-    for (const source of dataSources) {
-      try {
-        const response = await axios.get(source.url, {
-          params: source.params,
-          timeout: 8000
-        });
-
-        const parsed = source.parser(response.data);
-        if (parsed && parsed.currentRate > 0) {
-          console.log(`Successfully fetched Truflation data: ${parsed.currentRate}%`);
-          
-          const truflationData: TruflationData = {
-            currentRate: parsed.currentRate,
-            dailyChange: parsed.dailyChange,
-            blsReportedRate: parsed.blsReportedRate,
-            ytdLow: 1.22,
-            ytdHigh: 3.04,
-            yearOverYear: true,
-            lastUpdated: new Date().toISOString(),
-            chartData: generateCurrentChartData()
-          };
-
-          // Update cache with fresh data
-          truflationCache = {
-            data: { truflation: truflationData },
             timestamp: Date.now()
           };
 
