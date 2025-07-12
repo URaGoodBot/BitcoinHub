@@ -386,6 +386,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get(`${apiPrefix}/financial/inflation`, async (req, res) => {
     try {
+      const { getInflationData, clearInflationCache } = await import('./api/inflation');
+      
+      // Clear cache if refresh parameter is present
+      if (req.query.refresh === 'true') {
+        clearInflationCache();
+      }
+      
       const data = await getInflationData();
       res.json(data);
     } catch (error) {

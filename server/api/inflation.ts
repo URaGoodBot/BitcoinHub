@@ -65,12 +65,36 @@ async function fetchSectorData(seriesId: string, apiKey: string): Promise<{ rate
         obs.value && obs.value !== '.' && !isNaN(parseFloat(obs.value))
       );
       
-      // Find the observation from 12 months ago for YoY calculation
-      const yearAgoObs = observations.find((obs: any, index: number) => 
-        index >= 11 && obs.value && obs.value !== '.' && !isNaN(parseFloat(obs.value))
-      );
+      if (!currentObs) {
+        return { rate: 0, change: 0 };
+      }
+      
+      // Calculate the target date (same month, previous year)
+      const currentDate = new Date(currentObs.date);
+      const targetYear = currentDate.getFullYear() - 1;
+      const targetMonth = currentDate.getMonth();
+      
+      // Find the observation from exactly 12 months ago (same month, previous year)
+      let yearAgoObs = observations.find((obs: any) => {
+        if (!obs.value || obs.value === '.' || isNaN(parseFloat(obs.value))) {
+          return false;
+        }
+        const obsDate = new Date(obs.date);
+        return obsDate.getFullYear() === targetYear && obsDate.getMonth() === targetMonth;
+      });
+      
+      // If exact same month is not available, try to find the closest available month in the target year
+      if (!yearAgoObs) {
+        yearAgoObs = observations.find((obs: any) => {
+          if (!obs.value || obs.value === '.' || isNaN(parseFloat(obs.value))) {
+            return false;
+          }
+          const obsDate = new Date(obs.date);
+          return obsDate.getFullYear() === targetYear;
+        });
+      }
 
-      if (currentObs && yearAgoObs) {
+      if (yearAgoObs) {
         const currentCPI = parseFloat(currentObs.value);
         const yearAgoCPI = parseFloat(yearAgoObs.value);
         
@@ -142,10 +166,41 @@ export async function getInflationData(): Promise<InflationData> {
       obs.value && obs.value !== '.' && !isNaN(parseFloat(obs.value))
     );
     
-    // Find the observation from 12 months ago for YoY calculation
-    const yearAgoObs = observations.find((obs: any, index: number) => 
-      index >= 11 && obs.value && obs.value !== '.' && !isNaN(parseFloat(obs.value))
-    );
+    if (!currentObs) {
+      throw new Error('No valid current CPI data found');
+    }
+    
+    // Calculate the target date (same month, previous year)
+    const currentDate = new Date(currentObs.date);
+    const targetYear = currentDate.getFullYear() - 1;
+    const targetMonth = currentDate.getMonth();
+    
+    console.log(`Looking for YoY comparison: Current=${currentObs.date} (${targetMonth + 1}/${currentDate.getFullYear()}) -> Target=${targetMonth + 1}/${targetYear}`);
+    
+    // Find the observation from exactly 12 months ago (same month, previous year)
+    let yearAgoObs = observations.find((obs: any) => {
+      if (!obs.value || obs.value === '.' || isNaN(parseFloat(obs.value))) {
+        return false;
+      }
+      const obsDate = new Date(obs.date);
+      return obsDate.getFullYear() === targetYear && obsDate.getMonth() === targetMonth;
+    });
+    
+    // If exact same month is not available, try to find the closest available month in the target year
+    if (!yearAgoObs) {
+      console.log(`Exact match for ${targetYear}-${targetMonth + 1} not found, looking for closest month...`);
+      console.log('Available observations:', observations.filter(obs => obs.value && obs.value !== '.').slice(0, 15).map(obs => obs.date));
+      yearAgoObs = observations.find((obs: any) => {
+        if (!obs.value || obs.value === '.' || isNaN(parseFloat(obs.value))) {
+          return false;
+        }
+        const obsDate = new Date(obs.date);
+        return obsDate.getFullYear() === targetYear;
+      });
+      if (yearAgoObs) {
+        console.log(`Using fallback date: ${yearAgoObs.date} instead of exact month match`);
+      }
+    }
 
     if (!currentObs || !yearAgoObs) {
       throw new Error('Insufficient CPI data');
