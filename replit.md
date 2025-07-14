@@ -171,6 +171,7 @@ BitcoinHub is a comprehensive Bitcoin information platform designed to be the da
 - July 12, 2025. **FRED API INTEGRATION SUCCESS**: Fixed Treasury and inflation widgets to use existing FRED_API_KEY for authentic Federal Reserve data - Treasury now shows live 4.35% (from FRED DGS10 series), inflation shows live 2.38% annual rate (from FRED CPIAUCSL series), replaced static 1.66% values with real-time government economic data, enhanced weekend data filtering to handle market gaps
 - July 12, 2025. **CHATBOT INTEGRATION**: Transformed Market Summary section into interactive Bitcoin AI Assistant chatbot powered by Grok xAI, provides real-time answers about website data and cryptocurrency markets using live context from current Bitcoin price, Federal Reserve data, market sentiment, and platform features, includes quick question shortcuts and conversational interface
 - July 12, 2025. **TRUFLATION API REMOVAL**: Removed unused Truflation API system including server endpoints, frontend widgets, and all associated code per user request, simplified financial indicators dashboard to focus on Fed Watch Tool and Treasury data only
+- July 14, 2025. **DEPLOYMENT STRUCTURE FIX**: Fixed static deployment failure by creating automated build process that moves files from dist/public/ to dist/ directory. Build process now correctly outputs index.html directly in dist/ for deployment compatibility. Created build-for-deployment.sh script and DEPLOYMENT.md documentation for future deployments
 
 ## User Preferences
 
