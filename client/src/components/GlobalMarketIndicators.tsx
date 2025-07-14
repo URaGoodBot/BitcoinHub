@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown, DollarSign, Globe, Zap, RefreshCw } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { getFinancialMarkets } from "@/lib/api";
 
 interface FinancialMarketData {
   dxy: { value: number; change: number };
@@ -16,20 +16,15 @@ const GlobalMarketIndicators = () => {
   const queryClient = useQueryClient();
 
   const { data: marketData, isLoading, error } = useQuery<FinancialMarketData>({
-    queryKey: ['/api/financial/markets'],
+    queryKey: ['financial-markets'],
+    queryFn: getFinancialMarkets,
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 
   const refreshMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch('/api/financial/markets');
-      if (!response.ok) {
-        throw new Error('Failed to fetch market data');
-      }
-      return response.json();
-    },
+    mutationFn: getFinancialMarkets,
     onSuccess: (data) => {
-      queryClient.setQueryData(['/api/financial/markets'], data);
+      queryClient.setQueryData(['financial-markets'], data);
     },
   });
 

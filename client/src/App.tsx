@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
-import Dashboard from "@/pages/Dashboard";
+import StaticDashboard from "@/pages/StaticDashboard";
 import Learn from "@/pages/Learn";
 import NewsFeed from "@/pages/NewsFeed";
 import WebResources from "@/pages/WebResources";
@@ -16,7 +16,7 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/" component={StaticDashboard} />
         <Route path="/news" component={NewsFeed} />
         <Route path="/learn" component={Learn} />
         <Route path="/web-resources" component={WebResources} />

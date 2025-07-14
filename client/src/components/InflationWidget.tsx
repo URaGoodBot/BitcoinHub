@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, TrendingUp, TrendingDown, RefreshCw, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useState } from "react";
+import { getInflationData } from "@/lib/api";
 
 interface SectorInflation {
   name: string;
@@ -39,13 +40,14 @@ export function InflationWidget() {
   const [showSectors, setShowSectors] = useState(false);
   
   const { data: inflation, isLoading, error } = useQuery<InflationData>({
-    queryKey: ['/api/financial/inflation'],
+    queryKey: ['inflation-data'],
+    queryFn: getInflationData,
     refetchInterval: 5 * 60 * 1000, // Auto-refresh every 5 minutes
     staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
   });
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ['/api/financial/inflation'] });
+    queryClient.invalidateQueries({ queryKey: ['inflation-data'] });
   };
 
   const handleViewSource = () => {

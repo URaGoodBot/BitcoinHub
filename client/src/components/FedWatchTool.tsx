@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Calendar, TrendingUp, RefreshCw } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { getFedWatchData } from "@/lib/api";
 
 interface FedWatchData {
   currentRate: string;
@@ -23,20 +23,15 @@ const FedWatchTool = () => {
   const queryClient = useQueryClient();
 
   const { data: fedData, isLoading, error } = useQuery<FedWatchData>({
-    queryKey: ['/api/financial/fedwatch'],
+    queryKey: ['fed-watch-data'],
+    queryFn: getFedWatchData,
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 
   const refreshMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch('/api/financial/fedwatch');
-      if (!response.ok) {
-        throw new Error('Failed to fetch Fed Watch data');
-      }
-      return response.json();
-    },
+    mutationFn: getFedWatchData,
     onSuccess: (data) => {
-      queryClient.setQueryData(['/api/financial/fedwatch'], data);
+      queryClient.setQueryData(['fed-watch-data'], data);
     },
   });
 

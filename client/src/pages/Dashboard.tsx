@@ -16,6 +16,7 @@ import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
 import PriceAlertsWidget from "@/components/PriceAlertsWidget";
 import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 import AITrendPrediction from "@/components/AITrendPrediction";
+import { getBitcoinMarketData } from "@/lib/api";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -31,7 +32,8 @@ const Dashboard = () => {
 
   // Fetch Bitcoin market data
   const { data: bitcoinData, isLoading: isLoadingBitcoinData } = useQuery({
-    queryKey: ["/api/bitcoin/market-data"],
+    queryKey: ["bitcoin-market-data"],
+    queryFn: getBitcoinMarketData,
     refetchInterval: 60000, // Refetch every minute
   });
 
