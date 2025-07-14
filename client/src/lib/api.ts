@@ -303,28 +303,143 @@ export function getInflationData() {
   };
 }
 
+// Web Resources data for static website
+export function getWebResourcesData() {
+  return {
+    fearGreedIndex: {
+      currentValue: 74,
+      classification: "Greed",
+      historical: {
+        yearlyHigh: 88,
+        yearlyLow: 15
+      }
+    },
+    piCycleTop: {
+      ma111: 98375,
+      ma350x2: 172694,
+      currentPrice: 120154,
+      signal: "Neutral"
+    },
+    m2Chart: {
+      btcPrice: 120154,
+      m2Growth: 18.5,
+      correlation: 0.72
+    },
+    liquidationHeatmap: {
+      liquidationLevel: 0.85,
+      riskZones: {
+        high: 115000,
+        medium: 125000,
+        low: 135000
+      }
+    }
+  };
+}
+
+// AI Analysis data for static website
+export function getAIAnalysisData() {
+  const btcPrice = 120154;
+  const change24h = 2.34;
+  
+  return {
+    technicalAnalysis: {
+      rsi: 68,
+      macd: "Bullish",
+      movingAverages: {
+        ma20: 118500,
+        ma50: 115200,
+        ma200: 95800
+      },
+      supportResistance: {
+        support: [115000, 110000, 105000],
+        resistance: [125000, 130000, 135000]
+      }
+    },
+    marketSignals: {
+      trend: "Bullish",
+      momentum: "Strong",
+      volatility: "Moderate"
+    },
+    priceTargets: {
+      nextTarget: 125000,
+      confidence: 75,
+      timeframe: "7-14 days"
+    },
+    reasoning: "Bitcoin is showing strong bullish momentum with RSI at 68, indicating room for further upside. Price is trading above all major moving averages, confirming the uptrend. Next resistance at $125,000 presents a reasonable target within 7-14 days."
+  };
+}
+
+// AI Trend Prediction data
+export function getAITrendPrediction() {
+  return {
+    prediction: {
+      direction: "Bullish",
+      confidence: 78,
+      targetPrice: 125000,
+      timeframe: "24-48h"
+    },
+    factors: [
+      { name: "Technical Momentum", weight: 0.3, signal: "Bullish" },
+      { name: "Market Sentiment", weight: 0.25, signal: "Bullish" },
+      { name: "On-chain Metrics", weight: 0.25, signal: "Neutral" },
+      { name: "Macro Environment", weight: 0.2, signal: "Bullish" }
+    ],
+    reasoning: "Strong technical momentum combined with positive market sentiment suggests continued upward movement. Fed policy stability and institutional interest remain supportive factors."
+  };
+}
+
+// Market Summary Widget data
+export function getMarketSummaryData() {
+  return {
+    dailyRange: {
+      low: 118500,
+      high: 121200,
+      current: 120154
+    },
+    keyLevels: {
+      support: 115000,
+      resistance: 125000
+    },
+    volume: {
+      current: 67500000000,
+      average: 62000000000
+    },
+    marketCap: 2400000000000
+  };
+}
+
+// Daily tip data
 export function getDailyTip() {
   const tips = [
     {
-      id: "tip1",
       title: "Dollar Cost Averaging",
       content: "Consider dollar-cost averaging (DCA) to reduce the impact of volatility. Invest a fixed amount regularly regardless of price.",
       category: "Strategy"
     },
     {
-      id: "tip2", 
-      title: "Self-Custody",
-      content: "Not your keys, not your Bitcoin. Consider learning about hardware wallets for long-term storage.",
+      title: "Self-Custody Security",
+      content: "Not your keys, not your Bitcoin. Always store your Bitcoin in a wallet where you control the private keys.",
       category: "Security"
     },
     {
-      id: "tip3",
-      title: "Hash Rate Correlation",
-      content: "Bitcoin's hash rate often correlates with price over longer timeframes, indicating network security and miner confidence.",
+      title: "HODLing Mindset",
+      content: "Bitcoin's price can be volatile short-term, but historically it has trended upward over longer time periods. Think long-term.",
+      category: "Mindset"
+    },
+    {
+      title: "Network Fees",
+      content: "Bitcoin transaction fees vary based on network congestion. Use fee estimation tools and consider timing for non-urgent transactions.",
       category: "Technical"
+    },
+    {
+      title: "Backup Strategy",
+      content: "Always have multiple backups of your seed phrase stored in different secure locations. Test your backup recovery process.",
+      category: "Security"
     }
   ];
   
-  const today = new Date().getDate();
-  return tips[today % tips.length];
+  // Return a tip based on the current day
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+  return tips[dayOfYear % tips.length];
 }
+
