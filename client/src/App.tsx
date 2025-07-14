@@ -6,9 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import StaticDashboard from "@/pages/StaticDashboard";
 import Learn from "@/pages/Learn";
-import NewsFeed from "@/pages/NewsFeed";
+import StaticNewsFeed from "@/pages/StaticNewsFeed";
 import WebResources from "@/pages/WebResources";
-import Legislation from "@/pages/Legislation";
+import StaticLegislation from "@/pages/StaticLegislation";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
@@ -17,10 +17,10 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={StaticDashboard} />
-        <Route path="/news" component={NewsFeed} />
+        <Route path="/news" component={StaticNewsFeed} />
         <Route path="/learn" component={Learn} />
         <Route path="/web-resources" component={WebResources} />
-        <Route path="/legislation" component={Legislation} />
+        <Route path="/legislation" component={StaticLegislation} />
         <Route path="/admin" component={Admin} />
         <Route component={NotFound} />
       </Switch>
