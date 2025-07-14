@@ -1,20 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
 import { ArrowUp, ArrowDown, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getBitcoinMarketData } from "@/lib/api";
 
-import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
-import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
-import FedWatchTool from "@/components/FedWatchTool";
-import TreasuryWidget from "@/components/TreasuryWidget";
-import { InflationWidget } from "@/components/InflationWidget";
+import StaticBitcoinMetricsGrid from "@/components/StaticBitcoinMetricsGrid";
+import StaticGlobalMarketIndicators from "@/components/StaticGlobalMarketIndicators";
+import StaticFedWatchTool from "@/components/StaticFedWatchTool";
+import StaticTreasuryWidget from "@/components/StaticTreasuryWidget";
+import StaticInflationWidget from "@/components/StaticInflationWidget";
 import MarketSentimentStatic from "@/components/MarketSentimentStatic";
 import AIAnalysisStatic from "@/components/AIAnalysisStatic";
 import AITrendPredictionStatic from "@/components/AITrendPredictionStatic";
-import MarketSummaryWidget from "@/components/MarketSummaryWidget";
-import DailyTipWidget from "@/components/DailyTipWidget";
+import StaticMarketSummaryWidget from "@/components/StaticMarketSummaryWidget";
+import StaticDailyTipWidget from "@/components/StaticDailyTipWidget";
 import { BitcoinMarketData } from "@/lib/types";
 
 const StaticDashboard = () => {
@@ -90,21 +88,21 @@ const StaticDashboard = () => {
       </header>
       
       {/* Bitcoin Metrics Grid */}
-      <BitcoinMetricsGrid />
+      <StaticBitcoinMetricsGrid />
       
       {/* Global Market Context */}
-      <GlobalMarketIndicators />
+      <StaticGlobalMarketIndicators />
       
       {/* Financial Indicators Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <FedWatchTool />
-        <TreasuryWidget />
-        <InflationWidget />
+        <StaticFedWatchTool />
+        <StaticTreasuryWidget />
+        <StaticInflationWidget />
       </div>
       
       {/* Market Summary, AI Prediction */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <MarketSummaryWidget />
+        <StaticMarketSummaryWidget />
         <AITrendPredictionStatic />
       </div>
       
@@ -122,7 +120,7 @@ const StaticDashboard = () => {
       />
       
       {/* Daily Bitcoin Tip */}
-      <DailyTipWidget />
+      <StaticDailyTipWidget />
     </div>
   );
 };

@@ -24,6 +24,7 @@ interface CryptoEvent {
 
 const StaticNewsFeed = () => {
   // Static news data for the static website
+  // Static news data that loads immediately
   const newsData: NewsItem[] = [
     {
       id: "1",

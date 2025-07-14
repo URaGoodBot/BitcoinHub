@@ -19,7 +19,7 @@ interface LegislationBill {
 }
 
 const StaticLegislation = () => {
-  // Static legislation data based on current Congressional activity
+  // Static legislation data - loads immediately without server calls
   const legislationData = {
     bills: [
       {
