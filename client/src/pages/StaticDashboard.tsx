@@ -29,32 +29,23 @@ const StaticDashboard = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch Bitcoin market data
-  const { data: bitcoinData, isLoading: isLoadingBitcoinData } = useQuery({
-    queryKey: ["bitcoin-market-data"],
-    queryFn: getBitcoinMarketData,
-    refetchInterval: 60000, // Refetch every minute
-  });
-
-
+  // Static Bitcoin market data for immediate loading
+  const bitcoinData = {
+    current_price: { usd: 120154 },
+    price_change_percentage_24h: 2.34,
+    market_cap: { usd: 2400000000000 },
+    total_volume: { usd: 67500000000 }
+  };
 
   const handleRefresh = () => {
     window.location.reload();
   };
 
-  if (isLoadingBitcoinData) {
-    return (
-      <div className="flex flex-col min-h-screen bg-background">
-        <div className="flex items-center justify-center min-h-screen">
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  // Remove loading state - dashboard loads immediately with static data
 
   const marketData = bitcoinData as BitcoinMarketData;
-  const currentPrice = marketData?.current_price?.usd || 120000;
-  const priceChangePercentage = marketData?.price_change_percentage_24h || 2.5;
+  const currentPrice = bitcoinData.current_price.usd;
+  const priceChangePercentage = bitcoinData.price_change_percentage_24h;
   const isPositiveChange = priceChangePercentage >= 0;
 
   return (
@@ -120,13 +111,13 @@ const StaticDashboard = () => {
       {/* Market Sentiment Analysis */}
       <MarketSentimentStatic 
         marketData={marketData}
-        isLoading={isLoadingBitcoinData}
+        isLoading={false}
       />
       
       {/* AI-powered Technical Analysis */}
       <AIAnalysisStatic 
         marketData={marketData} 
-        isLoading={isLoadingBitcoinData}
+        isLoading={false}
         timeframe="1D"
       />
       
