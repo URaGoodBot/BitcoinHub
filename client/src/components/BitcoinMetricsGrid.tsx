@@ -2,7 +2,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
 import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, Activity, Shield, Users, Zap, ExternalLink } from "lucide-react";
-import { getBitcoinMarketData, getBitcoinDominance, getBitcoinVolume, getFearGreedIndex, getBitcoinNetworkStats, getBitcoinDifficulty } from "@/lib/api";
 
 interface MetricCardProps {
   title: string;
@@ -75,43 +74,37 @@ const BitcoinMetricsGrid = () => {
   const queryClient = useQueryClient();
   // Fetch Bitcoin market data with 5-minute refresh
   const { data: bitcoinData, isLoading: isLoadingBitcoin } = useQuery({
-    queryKey: ["bitcoin-market-data"],
-    queryFn: getBitcoinMarketData,
+    queryKey: ["/api/bitcoin/market-data"],
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes for live data
   });
 
   // Fetch live Fear and Greed Index data with 5-minute refresh
   const { data: fearGreedData, isLoading: isLoadingFearGreed } = useQuery({
-    queryKey: ["fear-greed-index"],
-    queryFn: getFearGreedIndex,
+    queryKey: ["/api/web-resources/fear-greed"],
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
   });
 
   // Fetch Bitcoin dominance from CoinGecko Global API
   const { data: dominanceData, isLoading: isLoadingDominance } = useQuery({
-    queryKey: ["bitcoin-dominance"],
-    queryFn: getBitcoinDominance,
+    queryKey: ["/api/bitcoin/dominance"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 
   // Fetch Bitcoin volume data from CoinGecko Multi-Exchange API
   const { data: volumeData, isLoading: isLoadingVolume } = useQuery({
-    queryKey: ["bitcoin-volume"],
-    queryFn: getBitcoinVolume,
+    queryKey: ["/api/bitcoin/volume"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 
   // Fetch Bitcoin network stats from Blockchain.com API
   const { data: networkStatsData, isLoading: isLoadingNetworkStats } = useQuery({
-    queryKey: ["bitcoin-network-stats"],
-    queryFn: getBitcoinNetworkStats,
+    queryKey: ["/api/bitcoin/network-stats"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 
   // Fetch Bitcoin difficulty data from Blockchain.com API
   const { data: difficultyData, isLoading: isLoadingDifficulty } = useQuery({
-    queryKey: ["bitcoin-difficulty"],
-    queryFn: getBitcoinDifficulty,
+    queryKey: ["/api/bitcoin/difficulty"],
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
   });
 

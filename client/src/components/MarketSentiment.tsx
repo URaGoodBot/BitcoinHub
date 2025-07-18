@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { BitcoinMarketData } from '@/lib/types';
-import { TrendingUp, TrendingDown, Newspaper, Users, Globe, BarChart3 } from 'lucide-react';
+import { RefreshCw, TrendingUp, TrendingDown, Newspaper, Twitter, MessageCircle, Users, Globe, BarChart3 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 interface MarketSentimentProps {
-  marketData?: BitcoinMarketData;
-  isLoading?: boolean;
+  marketData: BitcoinMarketData | null;
+  isLoading: boolean;
 }
 
 type SentimentType = 'bullish' | 'bearish' | 'neutral';
@@ -35,30 +37,13 @@ interface SentimentData {
   lastUpdated: string;
 }
 
-// Static sentiment data for the static website
-function getStaticSentimentData() {
-  return {
-    overall: "bullish" as const,
-    overallScore: 68,
-    confidence: 75,
-    sources: [
-      { source: "Social Media", score: 72, type: "bullish" as const, confidence: 80 },
-      { source: "News Analysis", score: 65, type: "bullish" as const, confidence: 70 },
-      { source: "Technical Signals", score: 78, type: "bullish" as const, confidence: 85 },
-      { source: "On-chain Metrics", score: 60, type: "neutral" as const, confidence: 75 }
-    ],
-    keywords: [
-      { text: "adoption", weight: 85, type: "bullish" as const },
-      { text: "institutional", weight: 78, type: "bullish" as const },
-      { text: "hodl", weight: 72, type: "bullish" as const },
-      { text: "resistance", weight: 45, type: "neutral" as const }
-    ],
-    lastUpdated: new Date().toISOString()
-  };
-}
-
 const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
-  const sentimentData = getStaticSentimentData();
+  // Fetch real-time sentiment data from multiple authentic sources
+  const { data: sentimentData, isLoading: isLoadingSentiment, refetch } = useQuery<SentimentData>({
+    queryKey: ['/api/sentiment/analysis'],
+    refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes
+    staleTime: 5 * 60 * 1000, // Data is fresh for 5 minutes
+  });
 
   // Get appropriate icon for each sentiment source
   const getSourceIcon = (source: string) => {
@@ -148,7 +133,7 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
     });
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingSentiment) {
     return (
       <Card className="bg-card border-muted/20">
         <CardHeader>
@@ -181,7 +166,7 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
     );
   }
 
-  if (!sentimentData && !isLoading) {
+  if (!sentimentData) {
     return (
       <Card className="bg-card border-muted/20">
         <CardHeader>

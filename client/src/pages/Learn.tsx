@@ -1,5 +1,5 @@
 import { useState } from "react";
-// Static Learn page - no server dependencies needed
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -125,8 +125,10 @@ const Learn = () => {
   const [activeCourse, setActiveCourse] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('courses');
   
-  // Static learning page - no server dependencies
-  const isLoading = false;
+  const { isLoading } = useQuery({
+    queryKey: ["/api/learning/courses"],
+    refetchOnWindowFocus: false,
+  });
   
   const handleCourseSelect = (courseId: string) => {
     const course = coursesData.find(c => c.id === courseId);

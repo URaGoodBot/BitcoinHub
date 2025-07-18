@@ -4,11 +4,11 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
-import StaticDashboard from "@/pages/StaticDashboard";
+import Dashboard from "@/pages/Dashboard";
 import Learn from "@/pages/Learn";
-import StaticNewsFeed from "@/pages/StaticNewsFeed";
-import StaticWebResources from "@/pages/StaticWebResources";
-import StaticLegislation from "@/pages/StaticLegislation";
+import NewsFeed from "@/pages/NewsFeed";
+import WebResources from "@/pages/WebResources";
+import Legislation from "@/pages/Legislation";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
@@ -16,11 +16,11 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={StaticDashboard} />
-        <Route path="/news" component={StaticNewsFeed} />
+        <Route path="/" component={Dashboard} />
+        <Route path="/news" component={NewsFeed} />
         <Route path="/learn" component={Learn} />
-        <Route path="/web-resources" component={StaticWebResources} />
-        <Route path="/legislation" component={StaticLegislation} />
+        <Route path="/web-resources" component={WebResources} />
+        <Route path="/legislation" component={Legislation} />
         <Route path="/admin" component={Admin} />
         <Route component={NotFound} />
       </Switch>

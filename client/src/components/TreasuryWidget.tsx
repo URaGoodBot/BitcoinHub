@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { DollarSign, ExternalLink, TrendingUp, TrendingDown, RefreshCw } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { getTreasuryData } from "@/lib/api";
 
 interface TreasuryData {
   yield: number;
@@ -20,8 +19,7 @@ const TreasuryWidget = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { data: treasuryData, isLoading, refetch } = useQuery<TreasuryData>({
-    queryKey: ['treasury-data'],
-    queryFn: getTreasuryData,
+    queryKey: ['/api/financial/treasury'],
     refetchInterval: 60000, // Auto-refresh every minute
     refetchOnWindowFocus: true,
   });
