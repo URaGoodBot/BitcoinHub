@@ -1038,6 +1038,18 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
 
+  // Crypto catalysts endpoint
+  app.get(`${apiPrefix}/legislation/catalysts`, async (_req, res) => {
+    try {
+      const { getCryptoCatalysts } = await import('./api/legislation.js');
+      const catalystsData = getCryptoCatalysts();
+      res.json(catalystsData);
+    } catch (error) {
+      console.error("Error fetching crypto catalysts:", error);
+      res.status(500).json({ message: "Failed to fetch crypto catalysts" });
+    }
+  });
+
   // Admin route for uploading legislation data
   app.post(`${apiPrefix}/legislation/admin-upload`, async (req, res) => {
     try {

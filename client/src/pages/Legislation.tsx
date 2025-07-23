@@ -20,6 +20,24 @@ interface LegislationBill {
   priority: 'high' | 'medium' | 'low';
 }
 
+interface CryptoCatalyst {
+  id: string;
+  event: string;
+  description: string;
+  probability: number;
+  nextSteps: string[];
+  category: 'policy' | 'regulatory' | 'market' | 'legal' | 'defi' | 'etf';
+  impact: 'high' | 'medium' | 'low';
+  dueDate?: string;
+}
+
+interface CatalystsData {
+  catalysts: CryptoCatalyst[];
+  lastUpdated: string;
+  marketImpact: string;
+  riskFactors: string;
+}
+
 interface LegislationData {
   bills: LegislationBill[];
   lastUpdated: string;
@@ -34,6 +52,11 @@ const Legislation = () => {
   const { data: legislationData, isLoading, error } = useQuery<LegislationData>({
     queryKey: ['/api/legislation'],
     refetchInterval: 24 * 60 * 60 * 1000, // Refetch every 24 hours
+  });
+
+  const { data: catalystsData } = useQuery<CatalystsData>({
+    queryKey: ['/api/legislation/catalysts'],
+    refetchInterval: 60 * 60 * 1000, // Refetch every hour
   });
 
   const refreshMutation = useMutation({
@@ -73,6 +96,15 @@ const Legislation = () => {
       case 'medium': return 'bg-yellow-500 text-white';
       case 'low': return 'bg-green-500 text-white';
       default: return 'bg-gray-500 text-white';
+    }
+  };
+
+  const getImpactColor = (impact: string) => {
+    switch (impact) {
+      case 'high': return 'bg-red-500/10 text-red-600 border-red-500/20';
+      case 'medium': return 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20';
+      case 'low': return 'bg-green-500/10 text-green-600 border-green-500/20';
+      default: return 'bg-gray-500/10 text-gray-600 border-gray-500/20';
     }
   };
 
@@ -248,6 +280,112 @@ const Legislation = () => {
             For official information, consult Congress.gov.
           </p>
         </div>
+
+        {/* Crypto Catalysts Tracker Section */}
+        {catalystsData && (
+          <div className="space-y-6">
+            <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <AlertCircle className="h-6 w-6 text-purple-500" />
+                  Crypto Catalysts Tracker - July 2025
+                </CardTitle>
+                <p className="text-muted-foreground">
+                  Key cryptocurrency-related events monitored for their probability of occurrence and market impact.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {catalystsData.catalysts.map((catalyst) => (
+                    <Card key={catalyst.id} className="border-muted/20">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg mb-1">{catalyst.event}</h3>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge className={getCategoryColor(catalyst.category)}>
+                                {catalyst.category.toUpperCase()}
+                              </Badge>
+                              <Badge className={getImpactColor(catalyst.impact)}>
+                                {catalyst.impact.toUpperCase()} IMPACT
+                              </Badge>
+                              {catalyst.dueDate && (
+                                <Badge variant="outline" className="text-xs">
+                                  <Calendar className="h-3 w-3 mr-1" />
+                                  {new Date(catalyst.dueDate).toLocaleDateString()}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-primary mb-1">
+                              {catalyst.probability}%
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Probability
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p className="text-muted-foreground mb-3 text-sm leading-relaxed">
+                          {catalyst.description}
+                        </p>
+                        
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm">Next Steps:</h4>
+                          <ul className="space-y-1">
+                            {catalyst.nextSteps.map((step, index) => (
+                              <li key={index} className="text-xs text-muted-foreground flex items-start gap-2">
+                                <span className="text-primary mt-1">•</span>
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                
+                {/* Market Impact and Risk Factors */}
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="border-green-500/20 bg-green-500/5">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-green-500" />
+                        Market Impact
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {catalystsData.marketImpact}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="border-yellow-500/20 bg-yellow-500/5">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4 text-yellow-500" />
+                        Risk Factors
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {catalystsData.riskFactors}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                <div className="mt-4 text-xs text-muted-foreground text-center">
+                  Probabilities estimated based on web sources and X sentiment as of July 23, 2025 • 
+                  Last updated: {new Date(catalystsData.lastUpdated).toLocaleString()}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
