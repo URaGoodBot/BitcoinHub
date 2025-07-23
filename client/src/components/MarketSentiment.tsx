@@ -62,22 +62,24 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
   };
 
   const getSourceDescription = (source: string, score: number, type: SentimentType) => {
-    const scoreText = score >= 70 ? 'very positive' : 
-                      score >= 60 ? 'positive' :
+    const scoreText = score >= 80 ? 'extremely bullish' : 
+                      score >= 70 ? 'bullish' :
+                      score >= 60 ? 'moderately bullish' :
                       score >= 40 ? 'neutral' :
-                      score >= 30 ? 'negative' : 'very negative';
+                      score >= 30 ? 'moderately bearish' :
+                      score >= 20 ? 'bearish' : 'extremely bearish';
     
     switch (source) {
       case 'News & Media':
-        return `Live Bitcoin news from NewsAPI shows ${scoreText} sentiment (${Math.round(score)}/100)`;
+        return `Real-time Bitcoin news analysis using Grok AI shows ${scoreText} sentiment`;
       case 'Social Sentiment':
-        return `Reddit & Twitter analysis shows ${scoreText} Bitcoin sentiment (${Math.round(score)}/100)`;
+        return `Reddit r/Bitcoin community sentiment analysis shows ${scoreText} mood`;
       case 'Market Data':
-        return `CoinPaprika on-chain metrics show ${scoreText} market conditions (${Math.round(score)}/100)`;
+        return `CoinPaprika on-chain network metrics indicate ${scoreText} fundamentals`;
       case 'Trading Activity':
-        return `Fear & Greed Index shows ${scoreText} trading sentiment (${Math.round(score)}/100)`;
+        return `Fear & Greed Index and derivatives data shows ${scoreText} trading sentiment`;
       default:
-        return `Multi-source analysis shows ${scoreText} market outlook (${Math.round(score)}/100)`;
+        return `Comprehensive market analysis indicates ${scoreText} sentiment`;
     }
   };
 
@@ -230,20 +232,30 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Overall Sentiment Score */}
-        <div className="space-y-2">
+        {/* Enhanced Sentiment Score with Actionable Context */}
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">
-              Overall Score: {sentimentData.overallScore}/100
-            </p>
-            <span className="text-xs text-muted-foreground">
-              Based on real-time news & market data
-            </span>
+            <div>
+              <p className="text-sm font-medium">
+                Market Sentiment: {sentimentData.overallScore}/100
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Confidence: {Math.round(sentimentData.confidence * 100)}% • Updated {formatTime(sentimentData.lastUpdated)}
+              </p>
+            </div>
+            <div className="text-right">
+              {getSentimentBadge(sentimentData.overall)}
+            </div>
           </div>
           <Progress 
             value={sentimentData.overallScore} 
-            className="h-3"
+            className="h-4"
           />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Very Bearish (0-20)</span>
+            <span>Neutral (40-60)</span>
+            <span>Very Bullish (80-100)</span>
+          </div>
         </div>
 
         {/* Clickable Source Cards with Data Sources */}
@@ -277,42 +289,90 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
               <div className="text-xs text-muted-foreground leading-tight">
                 {getSourceDescription(source.source, source.score, source.type)}
               </div>
-              <div className="text-xs text-blue-400/70 group-hover:text-blue-400 transition-colors">
-                Click to view source data →
+              <div className="text-xs text-blue-400/70 group-hover:text-blue-400 transition-colors flex items-center gap-1">
+                <span>View live data</span>
+                <Globe className="h-3 w-3" />
               </div>
             </button>
           ))}
         </div>
 
-        {/* Key Market Indicators */}
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-muted-foreground">
-            Key Market Signals
+        {/* Actionable Market Signals */}
+        <div className="space-y-3">
+          <h4 className="text-sm font-medium text-foreground">
+            Key Market Signals & Trading Context
           </h4>
-          <div className="flex flex-wrap gap-2">
-            {sentimentData.keywords.slice(0, 6).map((keyword, index) => (
-              <Badge 
-                key={index}
-                variant={keyword.type === 'bullish' ? 'default' : keyword.type === 'bearish' ? 'destructive' : 'outline'}
-                className={`text-xs ${
-                  keyword.type === 'bullish' ? 'bg-green-500/20 text-green-500' :
-                  keyword.type === 'bearish' ? 'bg-red-500/20 text-red-500' :
-                  'bg-orange-500/20 text-orange-500'
-                }`}
-              >
-                {keyword.text}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* Current Market Context */}
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <h5 className="text-xs font-medium text-muted-foreground mb-2">CURRENT CONTEXT</h5>
+              <div className="space-y-1">
+                <p className="text-xs text-foreground">
+                  Market sentiment: <span className="font-medium">{sentimentData.overall.charAt(0).toUpperCase() + sentimentData.overall.slice(1)}</span>
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {sentimentData.overallScore >= 70 ? "Strong bullish momentum with institutional backing" :
+                   sentimentData.overallScore >= 60 ? "Moderately positive sentiment, watch for continuation" :
+                   sentimentData.overallScore >= 40 ? "Neutral market, awaiting directional catalyst" :
+                   sentimentData.overallScore >= 30 ? "Bearish sentiment, look for support levels" :
+                   "Extreme bearish conditions, high volatility expected"}
+                </p>
+              </div>
+            </div>
+            
+            {/* Trading Signals */}
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <h5 className="text-xs font-medium text-muted-foreground mb-2">TRADING SIGNALS</h5>
+              <div className="space-y-1">
+                <p className="text-xs text-foreground">
+                  {sentimentData.overallScore >= 70 ? "🟢 Consider long positions" :
+                   sentimentData.overallScore >= 60 ? "🟡 Cautious optimism" :
+                   sentimentData.overallScore >= 40 ? "⚪ Range-bound trading" :
+                   sentimentData.overallScore >= 30 ? "🟡 Risk management critical" :
+                   "🔴 High caution advised"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Confidence: {Math.round(sentimentData.confidence * 100)}% • 
+                  Sources: {sentimentData.sources.length} live feeds
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Trending Keywords */}
+          <div className="space-y-2">
+            <h5 className="text-xs font-medium text-muted-foreground">TRENDING MARKET THEMES</h5>
+            <div className="flex flex-wrap gap-2">
+              {sentimentData.keywords.slice(0, 8).map((keyword, index) => (
+                <Badge 
+                  key={index}
+                  variant={keyword.type === 'bullish' ? 'default' : keyword.type === 'bearish' ? 'destructive' : 'outline'}
+                  className={`text-xs ${
+                    keyword.type === 'bullish' ? 'bg-green-500/20 text-green-500 border-green-500/30' :
+                    keyword.type === 'bearish' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
+                    'bg-orange-500/20 text-orange-500 border-orange-500/30'
+                  }`}
+                >
+                  {keyword.text}
               </Badge>
             ))}
+            </div>
           </div>
         </div>
 
-        {/* Data Sources Footer */}
-        <div className="text-xs text-muted-foreground text-center pt-2 border-t border-muted/20">
-          <div className="mb-1">
-            Live data from: NewsAPI, Reddit r/Bitcoin, CoinPaprika, Fear & Greed Index
+        {/* Live Data Attribution with Disclaimers */}
+        <div className="pt-3 border-t border-muted/20 space-y-2">
+          <div className="text-xs text-muted-foreground text-center">
+            <p className="font-medium">Live Data Sources</p>
+            <p>NewsAPI • Reddit r/Bitcoin • CoinPaprika • Fear & Greed Index</p>
           </div>
-          <div>
-            Updated {formatTime(sentimentData.lastUpdated)} • Click cards for source data
+          <div className="text-xs text-muted-foreground text-center">
+            Updated {formatTime(sentimentData.lastUpdated)} • 
+            Analysis powered by Grok AI • 
+            Click source cards for live data
+          </div>
+          <div className="text-xs text-amber-600/80 text-center bg-amber-500/10 rounded p-2">
+            ⚠️ For informational purposes only. Not financial advice. Always DYOR.
           </div>
         </div>
       </CardContent>

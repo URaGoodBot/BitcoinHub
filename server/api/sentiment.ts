@@ -36,10 +36,11 @@ let sentimentCache: SentimentData | null = null;
 let lastSentimentUpdate = 0;
 const SENTIMENT_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-// Initialize OpenAI client
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-}) : null;
+// Initialize Grok AI client with xAI
+const grok = new OpenAI({
+  baseURL: "https://api.x.ai/v1",
+  apiKey: process.env.XAI_API_KEY
+});
 
 // Fetch news articles for sentiment analysis
 async function fetchBitcoinNews(): Promise<NewsArticle[]> {
@@ -109,43 +110,55 @@ async function fetchAlternativeNews(): Promise<NewsArticle[]> {
   return [];
 }
 
-// Analyze news sentiment using OpenAI
+// Enhanced news sentiment analysis using Grok AI with comprehensive market context
 async function analyzeNewsSentiment(articles: NewsArticle[]): Promise<{score: number, type: 'bullish' | 'bearish' | 'neutral', confidence: number}> {
-  if (!openai) {
-    // Fallback sentiment analysis based on keywords
-    return analyzeSentimentByKeywords(articles);
+  if (articles.length === 0) {
+    console.log('No news articles available for sentiment analysis');
+    return { score: 50, type: 'neutral', confidence: 0.3 };
   }
 
   try {
-    const newsText = articles.slice(0, 10).map(article => 
-      `${article.title} - ${article.description}`
+    const newsText = articles.slice(0, 15).map(article => 
+      `${article.title} - ${article.description || 'No description'}`
     ).join('\n\n');
 
-    const prompt = `Analyze the sentiment of these Bitcoin-related news articles and provide a JSON response with:
-- score: number between 0-100 (0=very bearish, 50=neutral, 100=very bullish)
-- type: "bullish", "bearish", or "neutral" 
-- confidence: number between 0-1 representing analysis confidence
+    const prompt = `You are a professional Bitcoin market analyst. Analyze these recent Bitcoin news headlines and descriptions for market sentiment.
 
-News articles:
+Consider these factors:
+- Regulatory developments (positive/negative for adoption)
+- Institutional activity (ETFs, corporate purchases, etc.)
+- Technical developments (network upgrades, adoption)
+- Market structure changes (derivatives, liquidity)
+- Macroeconomic factors affecting Bitcoin
+
+Provide JSON response with:
+- score: number 0-100 (0=extremely bearish, 30=bearish, 50=neutral, 70=bullish, 100=extremely bullish)
+- type: "bullish", "bearish", or "neutral"
+- confidence: 0-1 (how confident you are in this analysis)
+- reasoning: brief explanation of key factors driving sentiment
+
+Recent Bitcoin news:
 ${newsText}
 
 Respond with JSON only:`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+    const response = await grok.chat.completions.create({
+      model: "grok-2-1212",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
-      max_tokens: 200
+      max_tokens: 300
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
+    console.log(`🤖 Grok AI news sentiment: ${result.score}/100 (${result.type}) - ${result.reasoning}`);
+    
     return {
       score: Math.max(0, Math.min(100, result.score || 50)),
       type: result.type || 'neutral',
-      confidence: Math.max(0, Math.min(1, result.confidence || 0.5))
+      confidence: Math.max(0, Math.min(1, result.confidence || 0.7))
     };
   } catch (error) {
-    console.error('Error in OpenAI sentiment analysis:', error);
+    console.error('Error in Grok AI sentiment analysis:', error);
     return analyzeSentimentByKeywords(articles);
   }
 }
