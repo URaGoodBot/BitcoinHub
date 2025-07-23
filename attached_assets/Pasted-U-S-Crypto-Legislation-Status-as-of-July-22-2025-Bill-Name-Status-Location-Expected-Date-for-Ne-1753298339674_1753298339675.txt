@@ -1,0 +1,43 @@
+U.S. Crypto Legislation Status as of July 22, 2025
+
+
+
+Bill Name
+Status/Location
+Expected Date for Next Phase
+
+
+
+GENIUS Act
+Signed into law, implementation underway
+Ongoing (initial regulations expected by Q4 2025)
+
+
+CLARITY Act (Crypto Market Structure)
+Passed House, in Senate for consideration
+September 9, 2025 (Senate Banking Committee hearing)
+
+
+Anti-CBDC Surveillance State Act
+Passed House, in Senate for consideration
+September 9, 2025 (Senate Banking Committee hearing)
+
+
+STABLE Act
+House committee stage, conferencing with GENIUS Act
+Post-August 2025 (reconciliation with GENIUS Act)
+
+
+H.J.Res.25 (DeFi Broker Rule Repeal)
+Passed House, stalled in Senate
+Unclear (no specific date reported)
+
+
+Notes:
+
+GENIUS Act: Passed the Senate on June 17, 2025, with a 68-30 bipartisan vote and the House on July 16, 2025, with a 308-122 vote, establishing a regulatory framework for stablecoins with 1:1 reserve backing and Federal Reserve/OCC oversight. Signed into law by President Trump on July 18, 2025, during a White House ceremony, marking the first major U.S. crypto legislation. Implementation began on July 21, 2025, with the Federal Reserve and OCC issuing initial guidance. Trump hailed it as a “21st-century upgrade” for the financial system, enabling banks and nonbanks to issue stablecoins. A procedural vote failure on July 15, 2025, led by 12 hardline Republicans was overcome after Trump’s negotiations, with a procedural vote passing on July 16. Critics, including Sen. Elizabeth Warren, argue it lacks sufficient consumer protections and fails to address conflicts of interest tied to Trump’s crypto ventures, like World Liberty Financial’s USD1 stablecoin.
+CLARITY Act: Defines SEC and CFTC jurisdictions for digital assets, building on the FIT21 framework. Passed the House on July 16, 2025, with a 294-134 bipartisan vote after a procedural vote succeeded on July 16 following a July 15 failure. Industry advocates like Stand With Crypto and Coinbase praise it for regulatory clarity, but Senate progress is stalled due to the August recess and Democratic concerns over Trump’s crypto empire, including $TRUMP and $MELANIA meme coins. A Senate Banking Committee hearing is scheduled for September 9, 2025, to review the bill, though negotiations may alter its language.
+Anti-CBDC Surveillance State Act: Aims to block a U.S. central bank digital currency (CBDC) to protect financial privacy. Passed the House on July 16, 2025, with a 219-210 vote after a procedural vote succeeded on July 16. Attached to the National Defense Authorization Act (NDAA) to improve Senate prospects, but its fate remains unclear due to no counterpart bill. Rep. Tom Emmer emphasized it ensures financial privacy against government overreach. A Senate Banking Committee hearing is set for September 9, 2025, to discuss its future.
+STABLE Act: House bill for stablecoin regulation, overlapping with GENIUS Act. Remains in committee stage, with conferencing ongoing to reconcile with the now-enacted GENIUS Act. No clear timeline beyond August 2025 due to ongoing negotiations.
+H.J.Res.25: Passed House to repeal IRS’s DeFi Broker Rule, which imposed burdensome reporting requirements. Senate action remains stalled, with posts on X indicating low priority due to competing legislative focuses.
+General Context: The House’s "Crypto Week" (July 14–18, 2025) marked a historic milestone with the passage of the GENIUS Act (308-122), CLARITY Act (294-134), and Anti-CBDC Surveillance State Act (219-210) after a procedural vote failure on July 15 was resolved through Trump’s intervention on July 16. The GENIUS Act, signed into law on July 18, 2025, began implementation on July 21, 2025, with initial regulations expected by Q4 2025. The CLARITY and Anti-CBDC Acts await Senate action, with a hearing scheduled for September 9, 2025, delayed by the August recess. Rep. Maxine Waters continues to criticize the bills, calling “Crypto Week” a “sham” that weakens consumer protections and benefits Trump’s crypto ventures like World Liberty Financial, a view echoed in her recent posts on X and statements to NPR. Industry optimism persists, with Bitcoin stabilizing above $4 trillion post-vote.

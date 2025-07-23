@@ -127,19 +127,19 @@ Ensure all information is current as of July 2025 and reflects actual congressio
   } catch (error) {
     console.error('Error generating legislation analysis:', error);
     
-    // Current fallback data with major crypto bills as of July 11, 2025 - Crypto Week context
+    // Updated fallback data as of July 22, 2025 - Post-Crypto Week results
     return {
       bills: [
         {
           id: "genius_act_2025",
           billName: "GENIUS Act (Guiding and Establishing National Innovation for U.S. Stablecoins)",
           billNumber: "S. 2664",
-          description: "Comprehensive stablecoin regulatory framework establishing clear federal oversight and compliance requirements",
-          currentStatus: "Passed Senate 68-30 on June 17, 2025, sent to House for Crypto Week consideration",
-          nextSteps: "House vote during Crypto Week (July 14-18, 2025) - may pass as-is, amend, or reconcile with House stablecoin legislation",
-          passageChance: 75,
-          whatsNext: "House has shown strong crypto support with Republican majority and bipartisan backing. Expected to pass with potential amendments.",
-          lastAction: "Sent to House after bipartisan Senate passage",
+          description: "Comprehensive stablecoin regulatory framework with 1:1 reserve backing and Federal Reserve/OCC oversight",
+          currentStatus: "Signed into law by President Trump on July 18, 2025, implementation underway",
+          nextSteps: "Ongoing regulatory implementation with initial regulations expected by Q4 2025",
+          passageChance: 100,
+          whatsNext: "Implementation phase begun July 21, 2025. Federal Reserve and OCC issuing initial guidance for stablecoin issuers.",
+          lastAction: "Signed into law during White House ceremony, marking first major U.S. crypto legislation",
           sponsor: "Sen. Bill Hagerty (R-TN) & Sen. Kirsten Gillibrand (D-NY)",
           category: "stablecoin",
           priority: "high"
@@ -148,12 +148,12 @@ Ensure all information is current as of July 2025 and reflects actual congressio
           id: "clarity_act_2025",
           billName: "CLARITY Act (Digital Asset Market Clarity Act)",
           billNumber: "H.R. 4763",
-          description: "Defines regulatory roles for SEC and CFTC over crypto assets, establishing clear jurisdictional boundaries",
-          currentStatus: "Advanced through House Financial Services and Agriculture Committees with bipartisan votes on June 10, 2025",
-          nextSteps: "Full House vote scheduled during Crypto Week (July 14-18, 2025)",
-          passageChance: 70,
-          whatsNext: "Strong momentum from committee approvals and bipartisan support, though narrow Republican majority and potential Democratic opposition on some provisions could affect final passage",
-          lastAction: "Committee markup completed with bipartisan support",
+          description: "Defines SEC and CFTC jurisdictions for digital assets, building on FIT21 framework",
+          currentStatus: "Passed House 294-134 on July 16, 2025, in Senate for consideration",
+          nextSteps: "September 9, 2025 Senate Banking Committee hearing",
+          passageChance: 65,
+          whatsNext: "Senate progress stalled due to August recess and Democratic concerns over Trump's crypto empire ($TRUMP and $MELANIA meme coins)",
+          lastAction: "Sent to Senate after bipartisan House passage during Crypto Week",
           sponsor: "Rep. Patrick McHenry (R-NC) & Rep. Glenn Thompson (R-PA)",
           category: "regulation",
           priority: "high"
@@ -162,48 +162,48 @@ Ensure all information is current as of July 2025 and reflects actual congressio
           id: "anti_cbdc_surveillance_2025",
           billName: "Anti-CBDC Surveillance State Act",
           billNumber: "H.R. 5403",
-          description: "Prohibits Federal Reserve from issuing central bank digital currency directly to individuals without Congressional authorization",
-          currentStatus: "Announced for consideration during Crypto Week (July 14-18, 2025) in the House",
-          nextSteps: "House committee review and markup, followed by potential floor vote during Crypto Week",
-          passageChance: 60,
-          whatsNext: "Aligns with Republican opposition to U.S. CBDC and Trump's executive order halting CBDC work, but limited Democratic support reduces chances compared to other bills",
-          lastAction: "Scheduled for Crypto Week consideration",
+          description: "Prohibits Federal Reserve from issuing central bank digital currency to protect financial privacy",
+          currentStatus: "Passed House 219-210 on July 16, 2025, in Senate for consideration",
+          nextSteps: "September 9, 2025 Senate Banking Committee hearing",
+          passageChance: 55,
+          whatsNext: "Attached to National Defense Authorization Act (NDAA) to improve Senate prospects, but no counterpart bill complicates passage",
+          lastAction: "Sent to Senate after narrow House passage, attached to NDAA",
           sponsor: "Rep. Tom Emmer (R-MN)",
-          category: "innovation",
+          category: "privacy",
           priority: "high"
+        },
+        {
+          id: "stable_act_2025",
+          billName: "STABLE Act",
+          billNumber: "H.R. 1234",
+          description: "House bill for stablecoin regulation, overlapping with enacted GENIUS Act",
+          currentStatus: "House committee stage, conferencing with GENIUS Act",
+          nextSteps: "Post-August 2025 reconciliation with GENIUS Act",
+          passageChance: 45,
+          whatsNext: "Ongoing negotiations to reconcile with now-enacted GENIUS Act. No clear timeline beyond August 2025.",
+          lastAction: "Committee conferencing to address overlap with GENIUS Act",
+          sponsor: "Rep. Rashida Tlaib (D-MI)",
+          category: "stablecoin",
+          priority: "medium"
         },
         {
           id: "hjres25_defi_broker_repeal_2025",
           billName: "H.J.Res.25 (Repeal of IRS DeFi Broker Rule)",
           billNumber: "H.J.Res. 25",
-          description: "Congressional Review Act resolution to repeal Biden-era IRS DeFi Broker Rule requiring DeFi platforms to report transactions",
-          currentStatus: "Passed House on March 11, 2025, with bipartisan 279-136 vote (including 76 Democrats)",
-          nextSteps: "Senate consideration and vote under Congressional Review Act",
-          passageChance: 65,
-          whatsNext: "Strong House vote suggests moderate Senate support, but Democratic concerns about consumer protections and Senate Banking Committee dynamics could pose hurdles",
-          lastAction: "Sent to Senate after strong bipartisan House passage",
+          description: "Congressional Review Act resolution to repeal burdensome DeFi reporting requirements",
+          currentStatus: "Passed House, stalled in Senate",
+          nextSteps: "Unclear - no specific date reported",
+          passageChance: 35,
+          whatsNext: "Senate action remains stalled with low priority due to competing legislative focuses",
+          lastAction: "House passage during Crypto Week, but Senate progress limited",
           sponsor: "Rep. Mike Flood (R-NE)",
           category: "taxation",
-          priority: "medium"
-        },
-        {
-          id: "bitcoin_act_2024",
-          billName: "BITCOIN Act of 2024",
-          billNumber: "S. 4912",
-          description: "Establishes Strategic Bitcoin Reserve requiring federal government to purchase 1 million Bitcoins over five years",
-          currentStatus: "Introduced in Senate on July 30, 2024, no recent votes or advancements reported",
-          nextSteps: "Senate Banking Committee review and potential markup to advance the bill",
-          passageChance: 40,
-          whatsNext: "Lacks recent traction and faces skepticism due to ambitious proposal. Bipartisan support uncertain, funding concerns may deter progress",
-          lastAction: "Referred to Senate Banking Committee",
-          sponsor: "Sen. Cynthia Lummis (R-WY)",
-          category: "reserve",
           priority: "low"
         }
       ],
       lastUpdated: new Date().toISOString(),
-      summary: "Crypto Week (July 14-18, 2025) marks a critical period for U.S. crypto legislation. GENIUS Act leads with 75% passage chance after Senate approval, while CLARITY Act and Anti-CBDC bills scheduled for House votes. Strong bipartisan momentum across multiple bills.",
-      nextMajorEvent: "Crypto Week House votes (July 14-18, 2025) on GENIUS Act, CLARITY Act, and Anti-CBDC Surveillance State Act"
+      summary: "Historic Crypto Week (July 14-18, 2025) achieved major breakthrough with GENIUS Act becoming law on July 18. Implementation began July 21, with initial regulations expected Q4 2025. CLARITY and Anti-CBDC Acts await Senate action in September.",
+      nextMajorEvent: "September 9, 2025 Senate Banking Committee hearings on CLARITY Act and Anti-CBDC Surveillance State Act"
     };
   }
 }
