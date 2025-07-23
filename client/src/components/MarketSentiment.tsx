@@ -69,15 +69,30 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
     
     switch (source) {
       case 'News & Media':
-        return `Bitcoin news articles show ${scoreText} sentiment (${Math.round(score)}/100)`;
+        return `Live Bitcoin news from NewsAPI shows ${scoreText} sentiment (${Math.round(score)}/100)`;
       case 'Social Sentiment':
-        return `Social media discussions are ${scoreText} about Bitcoin (${Math.round(score)}/100)`;
+        return `Reddit & Twitter analysis shows ${scoreText} Bitcoin sentiment (${Math.round(score)}/100)`;
       case 'Market Data':
-        return `On-chain metrics and market indicators are ${scoreText} (${Math.round(score)}/100)`;
+        return `CoinPaprika on-chain metrics show ${scoreText} market conditions (${Math.round(score)}/100)`;
       case 'Trading Activity':
-        return `Derivatives and trading patterns show ${scoreText} sentiment (${Math.round(score)}/100)`;
+        return `Fear & Greed Index shows ${scoreText} trading sentiment (${Math.round(score)}/100)`;
       default:
-        return `Sentiment analysis shows ${scoreText} outlook (${Math.round(score)}/100)`;
+        return `Multi-source analysis shows ${scoreText} market outlook (${Math.round(score)}/100)`;
+    }
+  };
+
+  const getSourceUrl = (source: string) => {
+    switch (source) {
+      case 'News & Media':
+        return 'https://newsapi.org/';
+      case 'Social Sentiment':
+        return 'https://www.reddit.com/r/Bitcoin/';
+      case 'Market Data':
+        return 'https://coinpaprika.com/coin/btc-bitcoin/';
+      case 'Trading Activity':
+        return 'https://alternative.me/crypto/fear-and-greed-index/';
+      default:
+        return 'https://coinmarketcap.com/currencies/bitcoin/';
     }
   };
 
@@ -231,15 +246,21 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
           />
         </div>
 
-        {/* Simplified Source Cards */}
+        {/* Clickable Source Cards with Data Sources */}
         <div className="grid grid-cols-2 gap-3">
           {sentimentData.sources.map((source, index) => (
-            <div key={index} className="flex flex-col gap-2 p-3 rounded-lg bg-muted/30">
+            <button
+              key={index}
+              onClick={() => window.open(getSourceUrl(source.source), '_blank')}
+              className="flex flex-col gap-2 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer text-left group"
+            >
               <div className="flex items-center gap-2">
                 {getSourceIcon(source.source)}
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium">{source.source}</span>
+                    <span className="text-xs font-medium group-hover:text-blue-400 transition-colors">
+                      {source.source}
+                    </span>
                     <div className="flex items-center gap-1">
                       {getTrendIcon(source.trend)}
                       <span className="text-xs font-semibold text-muted-foreground">
@@ -256,7 +277,10 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
               <div className="text-xs text-muted-foreground leading-tight">
                 {getSourceDescription(source.source, source.score, source.type)}
               </div>
-            </div>
+              <div className="text-xs text-blue-400/70 group-hover:text-blue-400 transition-colors">
+                Click to view source data →
+              </div>
+            </button>
           ))}
         </div>
 
@@ -282,9 +306,14 @@ const MarketSentiment = ({ marketData, isLoading }: MarketSentimentProps) => {
           </div>
         </div>
 
-        {/* Simplified Footer */}
+        {/* Data Sources Footer */}
         <div className="text-xs text-muted-foreground text-center pt-2 border-t border-muted/20">
-          Live data from news, social media, and market analysis • Updated {formatTime(sentimentData.lastUpdated)}
+          <div className="mb-1">
+            Live data from: NewsAPI, Reddit r/Bitcoin, CoinPaprika, Fear & Greed Index
+          </div>
+          <div>
+            Updated {formatTime(sentimentData.lastUpdated)} • Click cards for source data
+          </div>
         </div>
       </CardContent>
     </Card>

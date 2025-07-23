@@ -46,8 +46,8 @@ async function fetchBitcoinNews(): Promise<NewsArticle[]> {
   try {
     const apiKey = process.env.NEWS_API_KEY;
     if (!apiKey) {
-      console.log('NEWS_API_KEY not available, using sample news data');
-      return generateSampleNews();
+      console.log('NEWS_API_KEY not available, trying alternative news sources');
+      return await fetchAlternativeNews();
     }
 
     const response = await fetch(
@@ -55,8 +55,8 @@ async function fetchBitcoinNews(): Promise<NewsArticle[]> {
     );
     
     if (!response.ok) {
-      console.log('NewsAPI request failed, using sample news data');
-      return generateSampleNews();
+      console.log('NewsAPI request failed, trying alternative news sources');
+      return await fetchAlternativeNews();
     }
 
     const data = await response.json();
@@ -69,38 +69,44 @@ async function fetchBitcoinNews(): Promise<NewsArticle[]> {
     }));
   } catch (error) {
     console.error('Error fetching news:', error);
-    return generateSampleNews();
+    return await fetchAlternativeNews();
   }
 }
 
-// Generate sample news for fallback
-function generateSampleNews(): NewsArticle[] {
-  const currentTime = new Date().toISOString();
-  const recent = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(); // 2 hours ago
-  
-  return [
-    {
-      title: "Bitcoin Shows Resilience Amid Market Volatility",
-      description: "Bitcoin maintains strong support levels as institutional adoption continues to grow across major financial institutions.",
-      publishedAt: currentTime,
-      source: "CoinDesk",
-      url: "https://coindesk.com"
-    },
-    {
-      title: "Major Corporation Adds Bitcoin to Treasury Holdings",
-      description: "Another Fortune 500 company announces significant Bitcoin allocation as corporate treasury strategy evolves.",
-      publishedAt: recent,
-      source: "Bitcoin Magazine",
-      url: "https://bitcoinmagazine.com"
-    },
-    {
-      title: "Technical Analysis: Bitcoin Tests Key Resistance Level",
-      description: "Market analysts observe Bitcoin approaching critical technical levels with increased trading volume.",
-      publishedAt: recent,
-      source: "The Block",
-      url: "https://theblock.co"
+// Fetch alternative news sources when NewsAPI is unavailable
+async function fetchAlternativeNews(): Promise<NewsArticle[]> {
+  try {
+    // Try CoinDesk RSS feed as alternative
+    const response = await fetch('https://feeds.coindesk.com/rss');
+    if (response.ok) {
+      const rssText = await response.text();
+      // Simple RSS parsing - in production, use a proper RSS parser
+      const titleMatches = rssText.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/g) || [];
+      const linkMatches = rssText.match(/<link>(.*?)<\/link>/g) || [];
+      const dateMatches = rssText.match(/<pubDate>(.*?)<\/pubDate>/g) || [];
+      
+      const articles: NewsArticle[] = [];
+      for (let i = 0; i < Math.min(10, titleMatches.length); i++) {
+        if (titleMatches[i] && linkMatches[i] && dateMatches[i]) {
+          articles.push({
+            title: titleMatches[i].replace(/<title><!\[CDATA\[/, '').replace(/\]\]><\/title>/, ''),
+            description: 'Bitcoin news from CoinDesk',
+            publishedAt: dateMatches[i].replace(/<pubDate>/, '').replace(/<\/pubDate>/, ''),
+            source: 'CoinDesk',
+            url: linkMatches[i].replace(/<link>/, '').replace(/<\/link>/, '')
+          });
+        }
+      }
+      
+      if (articles.length > 0) return articles;
     }
-  ];
+  } catch (error) {
+    console.error('Error fetching alternative news:', error);
+  }
+  
+  // If all news sources fail, return empty array - no fake data
+  console.warn('All news sources unavailable, sentiment analysis will use market data only');
+  return [];
 }
 
 // Analyze news sentiment using OpenAI
@@ -189,44 +195,133 @@ function analyzeSentimentByKeywords(articles: NewsArticle[]): {score: number, ty
   return { score, type, confidence };
 }
 
-// Analyze social media sentiment (Reddit Bitcoin sentiment proxy)
+// Analyze social media sentiment using real Reddit data
 async function analyzeSocialMediaSentiment(): Promise<{score: number, type: 'bullish' | 'bearish' | 'neutral', confidence: number}> {
   try {
-    // Use Reddit API or alternative social sentiment
-    // For now, we'll simulate based on current market conditions
-    const response = await fetch('https://api.coinpaprika.com/v1/coins/btc-bitcoin');
+    // Use Reddit API to get Bitcoin subreddit sentiment
+    const response = await fetch('https://www.reddit.com/r/Bitcoin/hot.json?limit=25');
     if (response.ok) {
       const data = await response.json();
-      const rank = data.rank || 1;
-      const score = Math.max(30, Math.min(85, 75 + Math.random() * 20 - 10)); // Base around 75 with variation
+      const posts = data.data.children;
+      
+      let totalScore = 0;
+      let validPosts = 0;
+      
+      // Analyze post titles and content for sentiment
+      for (const post of posts) {
+        const title = post.data.title.toLowerCase();
+        const score = post.data.score;
+        const ratio = post.data.upvote_ratio;
+        
+        // Basic sentiment analysis based on keywords and engagement
+        let sentimentScore = 50; // neutral baseline
+        
+        // Positive keywords
+        if (title.includes('bullish') || title.includes('moon') || title.includes('hodl') || 
+            title.includes('buying') || title.includes('pump') || title.includes('rally') ||
+            title.includes('adoption') || title.includes('institutional')) {
+          sentimentScore += 20;
+        }
+        
+        // Negative keywords
+        if (title.includes('bearish') || title.includes('crash') || title.includes('dump') ||
+            title.includes('sell') || title.includes('fear') || title.includes('regulation')) {
+          sentimentScore -= 20;
+        }
+        
+        // Factor in engagement metrics
+        if (score > 100 && ratio > 0.8) sentimentScore += 10;
+        if (score < 50 || ratio < 0.6) sentimentScore -= 10;
+        
+        totalScore += Math.max(0, Math.min(100, sentimentScore));
+        validPosts++;
+      }
+      
+      const avgScore = validPosts > 0 ? totalScore / validPosts : 50;
       return {
-        score,
-        type: score > 60 ? 'bullish' : score < 45 ? 'bearish' : 'neutral',
-        confidence: 0.7
+        score: avgScore,
+        type: avgScore > 60 ? 'bullish' : avgScore < 40 ? 'bearish' : 'neutral',
+        confidence: 0.75
       };
     }
   } catch (error) {
-    console.error('Error fetching social sentiment:', error);
+    console.error('Error fetching Reddit sentiment:', error);
   }
 
-  return { score: 50, type: 'neutral', confidence: 0.5 };
+  // Fallback to CoinPaprika market data if Reddit fails
+  try {
+    const response = await fetch('https://api.coinpaprika.com/v1/coins/btc-bitcoin');
+    if (response.ok) {
+      const data = await response.json();
+      // Use price change as sentiment proxy
+      const price_change_24h = data.quotes?.USD?.percent_change_24h || 0;
+      const baseScore = 50 + (price_change_24h * 2); // Convert % to sentiment score
+      const score = Math.max(20, Math.min(80, baseScore));
+      
+      return {
+        score,
+        type: score > 60 ? 'bullish' : score < 40 ? 'bearish' : 'neutral',
+        confidence: 0.6
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching CoinPaprika data:', error);
+  }
+
+  return { score: 50, type: 'neutral', confidence: 0.3 };
 }
 
-// Analyze on-chain metrics sentiment
+// Analyze on-chain metrics sentiment using CoinPaprika data
 async function analyzeOnChainSentiment(): Promise<{score: number, type: 'bullish' | 'bearish' | 'neutral', confidence: number}> {
   try {
-    // Use Glassnode or similar API for on-chain metrics
-    // For demonstration, we'll use a combination of factors
-    const baseScore = 45 + Math.random() * 20; // 45-65 range
-    return {
-      score: baseScore,
-      type: baseScore > 55 ? 'bullish' : baseScore < 45 ? 'bearish' : 'neutral',
-      confidence: 0.8
-    };
+    // Fetch comprehensive Bitcoin data from CoinPaprika
+    const [marketResponse, ohlcResponse] = await Promise.all([
+      fetch('https://api.coinpaprika.com/v1/coins/btc-bitcoin'),
+      fetch('https://api.coinpaprika.com/v1/coins/btc-bitcoin/ohlcv/latest')
+    ]);
+    
+    if (marketResponse.ok && ohlcResponse.ok) {
+      const marketData = await marketResponse.json();
+      const ohlcData = await ohlcResponse.json();
+      
+      let sentimentScore = 50; // neutral baseline
+      
+      // Analyze market cap changes
+      const marketCapChange = marketData.quotes?.USD?.market_cap_change_24h || 0;
+      if (marketCapChange > 2) sentimentScore += 15;
+      else if (marketCapChange < -2) sentimentScore -= 15;
+      
+      // Analyze volume trends
+      const volumeChange = marketData.quotes?.USD?.volume_24h_change_24h || 0;
+      if (volumeChange > 10) sentimentScore += 10;
+      else if (volumeChange < -10) sentimentScore -= 10;
+      
+      // Analyze price position vs highs/lows
+      if (ohlcData && ohlcData.length > 0) {
+        const latest = ohlcData[0];
+        const pricePosition = (latest.close - latest.low) / (latest.high - latest.low);
+        
+        if (pricePosition > 0.8) sentimentScore += 10; // Near highs
+        else if (pricePosition < 0.2) sentimentScore -= 10; // Near lows
+      }
+      
+      // Analyze ranking stability (Bitcoin should be #1)
+      if (marketData.rank === 1) sentimentScore += 5;
+      
+      const finalScore = Math.max(20, Math.min(80, sentimentScore));
+      
+      return {
+        score: finalScore,
+        type: finalScore > 55 ? 'bullish' : finalScore < 45 ? 'bearish' : 'neutral',
+        confidence: 0.8
+      };
+    }
   } catch (error) {
-    console.error('Error fetching on-chain sentiment:', error);
-    return { score: 50, type: 'neutral', confidence: 0.5 };
+    console.error('Error fetching CoinPaprika on-chain sentiment:', error);
   }
+
+  // Fallback with minimal confidence
+  return { score: 50, type: 'neutral', confidence: 0.3 };
 }
 
 // Analyze derivatives market sentiment
