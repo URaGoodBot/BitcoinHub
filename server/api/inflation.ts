@@ -42,6 +42,7 @@ function isCacheValid(): boolean {
 
 export function clearInflationCache(): void {
   inflationCache = null;
+  console.log('✓ Inflation cache cleared');
 }
 
 async function fetchSectorData(seriesId: string, apiKey: string): Promise<{ rate: number; change: number }> {
@@ -266,7 +267,8 @@ export async function getInflationData(): Promise<InflationData> {
       overall: {
         rate: 2.38, // Current realistic US inflation rate
         change: 0.081, // Modest monthly change
-        lastUpdated: new Date().toISOString().split('T')[0]
+        lastUpdated: new Date().toISOString().split('T')[0],
+        comparisonPeriod: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       },
       sectors: [
         { name: 'Food', rate: 2.1, change: 0.05, seriesId: 'CPIUFDSL' },

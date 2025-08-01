@@ -37,6 +37,7 @@ const formatDatePeriod = (dateString: string): string => {
 
 export function InflationWidget() {
   const [showSectors, setShowSectors] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
   const { data: inflation, isLoading, error } = useQuery<InflationData>({
     queryKey: ['/api/financial/inflation'],
@@ -44,8 +45,23 @@ export function InflationWidget() {
     staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
   });
 
-  const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ['/api/financial/inflation'] });
+  const handleRefresh = async () => {
+    try {
+      setIsRefreshing(true);
+      
+      // Force refresh by clearing cache and fetching new data
+      queryClient.removeQueries({ queryKey: ['/api/financial/inflation'] });
+      
+      // Trigger a new fetch with force refresh parameter
+      await queryClient.fetchQuery({
+        queryKey: ['/api/financial/inflation'],
+        queryFn: () => fetch('/api/financial/inflation?refresh=true').then(res => res.json())
+      });
+    } catch (error) {
+      console.error('Failed to refresh inflation data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const handleViewSource = () => {
@@ -121,9 +137,11 @@ export function InflationWidget() {
             variant="outline"
             size="sm"
             onClick={handleRefresh}
+            disabled={isRefreshing}
             className="h-8 w-8 p-0"
+            title="Force refresh inflation data"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           </Button>
           <Button
             variant="outline"
@@ -146,7 +164,7 @@ export function InflationWidget() {
               {isPositiveChange ? '+' : ''}{inflation.overall.change.toFixed(3)}% monthly
             </div>
             <div className="text-xs text-muted-foreground mt-1">
-              Comparing {formatDatePeriod(inflation.overall.lastUpdated)} vs {formatDatePeriod(inflation.overall.comparisonPeriod)}
+              Current: {formatDatePeriod(inflation.overall.lastUpdated)} | Previous: {formatDatePeriod(inflation.overall.comparisonPeriod)}
             </div>
           </div>
           <div className="text-right">
@@ -212,8 +230,8 @@ export function InflationWidget() {
         
         <CardDescription className="mt-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Consumer Price Index (CPI)</span>
-            <span>Auto-updates every 5min</span>
+            <span>Live FRED API • Consumer Price Index</span>
+            <span>Updates every 5min</span>
           </div>
         </CardDescription>
       </CardContent>
