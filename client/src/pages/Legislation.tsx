@@ -288,7 +288,7 @@ const Legislation = () => {
               <CardHeader>
                 <CardTitle className="text-xl flex items-center gap-2">
                   <AlertCircle className="h-6 w-6 text-purple-500" />
-                  Crypto Catalysts Tracker - July 2025
+                  Crypto Catalysts Tracker - August 2025
                 </CardTitle>
                 <p className="text-muted-foreground">
                   Key cryptocurrency-related events monitored for their probability of occurrence and market impact.

@@ -260,142 +260,147 @@ export async function refreshLegislationData(): Promise<LegislationData> {
   return await getLegislationData();
 }
 
-// Crypto Catalysts Data - July 2025
+// Crypto Catalysts Data - August 2025
 export function getCryptoCatalysts(): CatalystsData {
   return {
     catalysts: [
       {
-        id: "white_house_crypto_report",
-        event: "White House Crypto Policy Report Release",
-        description: "The White House is set to unveil its first comprehensive crypto policy report, mandated by Executive Order 14178, addressing regulatory clarity, consumer protections, and a potential Bitcoin strategic reserve. Due July 22, 2025, but may be released by month-end.",
-        probability: 90,
+        id: "white_house_crypto_policy_impact",
+        event: "White House Crypto Policy Report Impact",
+        description: "The White House released its comprehensive crypto policy report on July 30, 2025, per Executive Order 14178, addressing regulatory clarity, consumer protections, stablecoin reforms, a potential CBDC ban, and DeFi integration. It omitted new Bitcoin reserve details. August may see regulatory actions or market reactions based on the report.",
+        probability: 100,
         nextSteps: [
-          "Check whitehouse.gov daily for report release under 'Briefing Room' or 'Executive Actions'",
-          "Review report for stances on stablecoins, DeFi, and ETFs",
-          "Search X for 'White House crypto report' for real-time sentiment",
-          "Ask Grok for updates every 2–3 days"
+          "Monitor whitehouse.gov and sec.gov for regulatory follow-ups",
+          "Check CoinDesk and Bloomberg for market reactions to the report",
+          "Search X for 'White House crypto report' for ongoing sentiment",
+          "Ask Grok for updates (e.g., 'Any regulatory actions from the White House crypto report?')"
         ],
         category: 'policy',
         impact: 'high',
-        dueDate: "July 31, 2025"
+        dueDate: "August 15, 2025"
       },
       {
-        id: "solana_etf_approval",
+        id: "solana_spot_etf_approval",
         event: "Solana Spot ETF Approval",
-        description: "The SEC is reviewing Solana ETF filings, with potential decisions in July/August 2025. Grayscale's Solana ETF decision is due by October 11, 2025, but accelerated SEC reviews suggest earlier action.",
-        probability: 70,
+        description: "The SEC is reviewing Solana ETF filings, with decisions likely in August 2025 after July's progress (e.g., Invesco Galaxy Solana ETF filing). Grayscale's Solana ETF decision is due by October 11, 2025, but accelerated reviews suggest earlier action.",
+        probability: 85,
         nextSteps: [
           "Monitor sec.gov for S-1 filing updates or press releases",
-          "Check CoinDesk and Bloomberg for ETF news",
+          "Check CoinDesk and Bloomberg for ETF approval news",
           "Search X for 'Solana ETF' for community insights",
-          "Ask Grok for updates on Solana ETF approval news"
+          "Ask Grok for updates (e.g., 'Any Solana ETF approval news?')"
         ],
         category: 'etf',
         impact: 'high',
-        dueDate: "October 11, 2025"
+        dueDate: "August 20, 2025"
       },
       {
         id: "genius_act_implementation",
         event: "GENIUS Act Implementation",
-        description: "Signed into law on July 18, 2025, the GENIUS Act establishes a regulatory framework for stablecoins, requiring full reserves and federal licenses. Implementation details or issuer announcements may emerge in July.",
+        description: "Signed into law on July 18, 2025, the GENIUS Act regulates stablecoins, requiring full reserves and federal licenses. August may see further issuer announcements or corporate stablecoin launches.",
         probability: 100,
         nextSteps: [
-          "Track announcements from stablecoin issuers (Tether, Circle) on CoinDesk or Reuters",
-          "Monitor corporate stablecoin launches (Walmart, Amazon) on Bloomberg",
-          "Check X for 'GENIUS Act' updates on implementation progress"
+          "Track announcements from stablecoin issuers (e.g., Tether, Circle) on CoinDesk or Reuters",
+          "Monitor corporate stablecoin launches (e.g., Walmart, Amazon) on Bloomberg",
+          "Check X for 'GENIUS Act' updates on progress"
         ],
         category: 'regulatory',
-        impact: 'high'
+        impact: 'medium',
+        dueDate: "August 31, 2025"
       },
       {
-        id: "clarity_act_senate",
+        id: "clarity_act_senate_progress",
         event: "CLARITY Act Senate Progress",
-        description: "The CLARITY Act, passed by the House on July 17, 2025, defines crypto as securities or commodities and shifts oversight to the CFTC. It awaits Senate action, with potential updates in July.",
+        description: "The CLARITY Act, passed by the House on July 17, 2025, defines crypto as securities or commodities and shifts oversight to the CFTC. Senate action remains pending, with potential updates in August during congressional sessions.",
         probability: 60,
         nextSteps: [
           "Check Reuters or CNBC for Senate vote updates",
           "Monitor X for 'CLARITY Act' to gauge sentiment",
           "Review Senate Banking Committee statements on sec.gov",
-          "Ask Grok for CLARITY Act Senate progress updates"
+          "Ask Grok for progress (e.g., 'Any CLARITY Act Senate updates?')"
         ],
         category: 'regulatory',
         impact: 'high',
-        dueDate: "September 9, 2025"
+        dueDate: "August 25, 2025"
       },
       {
-        id: "sec_meeting_july24",
-        event: "SEC Meeting (July 24, 2025)",
-        description: "The SEC meeting may address Solana ETF approvals or withdrawals of lawsuit appeals (e.g., Ripple's XRP case). Outcomes could clarify regulatory stances.",
-        probability: 80,
-        nextSteps: [
-          "Check sec.gov post-July 24 for meeting outcomes or press releases",
-          "Monitor CoinDesk for ETF or lawsuit updates",
-          "Search X for 'SEC crypto July 24' for real-time reactions",
-          "Ask Grok for post-meeting updates"
-        ],
-        category: 'regulatory',
-        impact: 'medium',
-        dueDate: "July 24, 2025"
-      },
-      {
-        id: "fomc_meeting_july",
-        event: "FOMC Meeting (Late July 2025)",
-        description: "The FOMC meeting will address interest rates, with a dovish outlook potentially boosting crypto markets.",
+        id: "sec_meeting_outcomes_july",
+        event: "SEC Meeting Outcomes (July 24, 2025)",
+        description: "The July 24 SEC meeting addressed Solana ETF approvals and lawsuit appeal withdrawals (e.g., Ripple's XRP case). August may see follow-up actions or additional ETF filings.",
         probability: 100,
         nextSteps: [
-          "Check federalreserve.gov for meeting statements (late July)",
-          "Monitor Bloomberg for crypto market reactions post-meeting",
-          "Search X for 'FOMC crypto' for sentiment",
-          "Assess crypto stock movements (COIN, MSTR) on Yahoo Finance"
+          "Check sec.gov for new ETF filings or press releases",
+          "Monitor CoinDesk for ETF or lawsuit updates",
+          "Search X for 'SEC crypto' for reactions",
+          "Ask Grok for updates (e.g., 'Any SEC crypto updates post-July 24?')"
         ],
-        category: 'market',
-        impact: 'medium'
+        category: 'regulatory',
+        impact: 'high',
+        dueDate: "August 10, 2025"
       },
       {
-        id: "defi_launches_unlocks",
+        id: "fomc_meeting_july_impact",
+        event: "FOMC Meeting (July 29–30, 2025)",
+        description: "The FOMC meeting addressed interest rates, with a dovish outlook boosting crypto markets. August may see sustained market reactions or new economic data influencing crypto.",
+        probability: 100,
+        nextSteps: [
+          "Monitor Bloomberg for crypto market reactions post-meeting",
+          "Check federalreserve.gov for new economic statements",
+          "Search X for 'FOMC crypto' for sentiment",
+          "Assess crypto stock movements (e.g., COIN, MSTR) on Yahoo Finance"
+        ],
+        category: 'market',
+        impact: 'medium',
+        dueDate: "August 5, 2025"
+      },
+      {
+        id: "defi_protocol_launches_august",
         event: "DeFi Protocol Launches & Token Unlocks",
-        description: "New DeFi protocols (e.g., Hyperliquid, Ethena) and token unlocks (e.g., $ENA $11M unlock on July 2) may drive market interest.",
+        description: "New DeFi protocols (e.g., Hyperliquid, Ethena) and token unlocks (e.g., $ENA $11M unlock on July 2) drove interest in July. August may see additional launches or unlocks.",
         probability: 85,
         nextSteps: [
           "Track CoinMarketCap for new protocol listings or price movements",
           "Check X for 'Hyperliquid' or 'Ethena' for launch announcements",
           "Monitor unlock schedules on CoinGecko",
-          "Ask Grok for DeFi updates"
+          "Ask Grok for DeFi updates (e.g., 'Any new DeFi launches in August 2025?')"
         ],
         category: 'defi',
-        impact: 'medium'
+        impact: 'medium',
+        dueDate: "August 15, 2025"
       },
       {
-        id: "wlfi_token_launch",
+        id: "world_liberty_financial_wlfi",
         event: "World Liberty Financial ($WLFI) Token Launch",
-        description: "The Trump-backed $WLFI token may become tradable in July 2025, potentially drawing retail and institutional interest.",
+        description: "The Trump-backed $WLFI token was expected to become tradable in July 2025 but saw no confirmed launch. August may bring trading status updates.",
         probability: 65,
         nextSteps: [
           "Monitor CoinGecko or CoinMarketCap for $WLFI trading status",
           "Search X for '$WLFI' for launch updates",
           "Check Reuters for Trump-related crypto news",
-          "Ask Grok for $WLFI status updates"
+          "Ask Grok for $WLFI status (e.g., 'Is $WLFI tradable yet?')"
         ],
         category: 'market',
-        impact: 'medium'
+        impact: 'medium',
+        dueDate: "August 20, 2025"
       },
       {
-        id: "bitcoin_strategic_reserve",
+        id: "bitcoin_strategic_reserve_developments",
         event: "Bitcoin Strategic Reserve Developments",
-        description: "The Trump administration's March 6, 2025, EO proposed a Bitcoin strategic reserve. July may bring updates on Treasury holdings or reserve expansion.",
-        probability: 50,
+        description: "The March 6, 2025, EO established a Strategic Bitcoin Reserve using seized assets (approx. 198,012 BTC, per BitcoinTreasuries). The July 30 report omitted new details, but August may bring Treasury updates or reserve expansion strategies.",
+        probability: 55,
         nextSteps: [
           "Check whitehouse.gov and treasury.gov for reserve announcements",
           "Monitor X for 'Bitcoin strategic reserve' sentiment",
           "Review CoinDesk for policy updates",
-          "Ask Grok for Bitcoin reserve news updates"
+          "Ask Grok for reserve news (e.g., 'Any Bitcoin reserve updates?')"
         ],
         category: 'policy',
-        impact: 'high'
+        impact: 'high',
+        dueDate: "August 31, 2025"
       }
     ],
-    lastUpdated: new Date().toISOString(),
-    marketImpact: "Positive outcomes (e.g., report release, ETF approval, dovish FOMC) could drive 5-20% crypto market rallies and 5-15% gains in crypto stocks (e.g., COIN, MSTR). Restrictive policies may cause 5-10% dips.",
+    lastUpdated: "August 1, 2025",
+    marketImpact: "Positive outcomes (e.g., ETF approvals, dovish FOMC follow-ups) could drive 5-20% crypto market rallies and 5-15% gains in crypto stocks (e.g., COIN, MSTR). Restrictive policies may cause 5-10% dips.",
     riskFactors: "Verify X posts against primary sources (whitehouse.gov, sec.gov) to avoid misinformation. Regulatory delays or lawsuits (e.g., SEC vs. Coinbase) may impact ETF approvals."
   };
 }
