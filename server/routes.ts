@@ -1050,6 +1050,28 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
 
+  // Live indicators analysis endpoint
+  app.get(`${apiPrefix}/indicators/live-analysis`, async (req, res) => {
+    try {
+      const { getLiveIndicatorsAnalysis, clearAnalysisCache } = await import('./api/indicators-analysis.js');
+      
+      // Force refresh if requested
+      if (req.query.refresh === 'true') {
+        console.log('🔄 Force refreshing indicators analysis...');
+        clearAnalysisCache();
+      }
+      
+      const analysis = await getLiveIndicatorsAnalysis();
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error fetching live indicators analysis:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch live indicators analysis",
+        error: error.message 
+      });
+    }
+  });
+
   // Admin route for uploading legislation data
   app.post(`${apiPrefix}/legislation/admin-upload`, async (req, res) => {
     try {

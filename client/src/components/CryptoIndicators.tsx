@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TrendingUp, TrendingDown, BarChart3, Search, ExternalLink, Activity, Zap, Target, Gauge } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { TrendingUp, TrendingDown, BarChart3, Search, ExternalLink, Activity, Zap, Target, Gauge, RefreshCw, AlertTriangle, Brain, DollarSign } from "lucide-react";
 
 interface TradingIndicator {
   id: string;
@@ -21,6 +23,57 @@ interface TradingIndicator {
     bearish: string;
     neutral: string;
   };
+}
+
+interface IndicatorAnalysis {
+  indicator: string;
+  currentValue: number | string;
+  signal: 'bullish' | 'bearish' | 'neutral';
+  strength: number;
+  interpretation: string;
+  priceTarget?: number;
+  timeframe: string;
+}
+
+interface PricePrediction {
+  target: number;
+  probability: number;
+  timeframe: string;
+  reasoning: string;
+}
+
+interface ToppingAnalysis {
+  predicted: boolean;
+  confidence: number;
+  priceLevel?: number;
+  timeframe: string;
+  indicators: string[];
+  reasoning: string;
+}
+
+interface LiveAnalysisData {
+  currentPrice: number;
+  timestamp: string;
+  indicators: IndicatorAnalysis[];
+  overallSignal: 'bullish' | 'bearish' | 'neutral';
+  confidenceScore: number;
+  pricePredictions: {
+    shortTerm: PricePrediction;
+    mediumTerm: PricePrediction;
+    longTerm: PricePrediction;
+  };
+  toppingAnalysis: {
+    nearTermTop: ToppingAnalysis;
+    cyclicalTop: ToppingAnalysis;
+  };
+  marketConditions: {
+    trend: string;
+    volatility: string;
+    momentum: string;
+    volume: string;
+  };
+  aiInsights: string[];
+  riskFactors: string[];
 }
 
 const tradingIndicators: TradingIndicator[] = [
@@ -560,6 +613,15 @@ export function CryptoIndicators() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Fetch live AI analysis
+  const { data: liveAnalysis, isLoading: isLoadingAnalysis } = useQuery<LiveAnalysisData>({
+    queryKey: ['/api/indicators/live-analysis'],
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+    staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
+  });
 
   const categories = ["all", "trend", "momentum", "volume", "volatility", "support_resistance"];
 
@@ -570,8 +632,231 @@ export function CryptoIndicators() {
     return matchesSearch && matchesCategory;
   });
 
+  const handleRefreshAnalysis = async () => {
+    try {
+      setIsRefreshing(true);
+      
+      // Force refresh by clearing cache and fetching new data
+      queryClient.removeQueries({ queryKey: ['/api/indicators/live-analysis'] });
+      
+      // Trigger a new fetch with force refresh parameter
+      await queryClient.fetchQuery({
+        queryKey: ['/api/indicators/live-analysis'],
+        queryFn: () => fetch('/api/indicators/live-analysis?refresh=true').then(res => res.json())
+      });
+    } catch (error) {
+      console.error('Failed to refresh analysis:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const getSignalColor = (signal: string) => {
+    switch (signal) {
+      case 'bullish':
+        return 'text-green-500';
+      case 'bearish':
+        return 'text-red-500';
+      default:
+        return 'text-yellow-500';
+    }
+  };
+
+  const getSignalBadgeColor = (signal: string) => {
+    switch (signal) {
+      case 'bullish':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'bearish':
+        return 'bg-red-500/10 text-red-500 border-red-500/20';
+      default:
+        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* AI Live Analysis Section */}
+      {liveAnalysis && (
+        <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Brain className="h-6 w-6 text-blue-500" />
+                AI Live Bitcoin Analysis & Price Predictions
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefreshAnalysis}
+                disabled={isRefreshing}
+                className="h-8 w-8 p-0"
+                title="Refresh AI analysis"
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span>Current BTC: ${liveAnalysis.currentPrice.toLocaleString()}</span>
+              <span>•</span>
+              <span>Updated: {new Date(liveAnalysis.timestamp).toLocaleTimeString()}</span>
+              <span>•</span>
+              <Badge className={getSignalBadgeColor(liveAnalysis.overallSignal)}>
+                {liveAnalysis.overallSignal.toUpperCase()}
+              </Badge>
+              <span>Confidence: {liveAnalysis.confidenceScore}%</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {/* Price Predictions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <Card className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="h-4 w-4 text-green-500" />
+                  <h4 className="font-semibold">Short Term (24-48h)</h4>
+                </div>
+                <div className="text-2xl font-bold text-green-500">
+                  ${liveAnalysis.pricePredictions.shortTerm.target.toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {liveAnalysis.pricePredictions.shortTerm.probability}% confidence
+                </div>
+                <p className="text-xs mt-2">{liveAnalysis.pricePredictions.shortTerm.reasoning}</p>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="h-4 w-4 text-blue-500" />
+                  <h4 className="font-semibold">Medium Term (1-2w)</h4>
+                </div>
+                <div className="text-2xl font-bold text-blue-500">
+                  ${liveAnalysis.pricePredictions.mediumTerm.target.toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {liveAnalysis.pricePredictions.mediumTerm.probability}% confidence
+                </div>
+                <p className="text-xs mt-2">{liveAnalysis.pricePredictions.mediumTerm.reasoning}</p>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="h-4 w-4 text-purple-500" />
+                  <h4 className="font-semibold">Long Term (1m)</h4>
+                </div>
+                <div className="text-2xl font-bold text-purple-500">
+                  ${liveAnalysis.pricePredictions.longTerm.target.toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {liveAnalysis.pricePredictions.longTerm.probability}% confidence
+                </div>
+                <p className="text-xs mt-2">{liveAnalysis.pricePredictions.longTerm.reasoning}</p>
+              </Card>
+            </div>
+
+            {/* Topping Analysis */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <Card className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="h-4 w-4 text-orange-500" />
+                  <h4 className="font-semibold">Near-Term Top Analysis</h4>
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className={liveAnalysis.toppingAnalysis.nearTermTop.predicted ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'}>
+                    {liveAnalysis.toppingAnalysis.nearTermTop.predicted ? 'TOP PREDICTED' : 'NO TOP PREDICTED'}
+                  </Badge>
+                  <span className="text-sm">{liveAnalysis.toppingAnalysis.nearTermTop.confidence}% confidence</span>
+                </div>
+                {liveAnalysis.toppingAnalysis.nearTermTop.priceLevel && (
+                  <div className="text-lg font-semibold text-orange-500 mb-2">
+                    Target: ${liveAnalysis.toppingAnalysis.nearTermTop.priceLevel.toLocaleString()}
+                  </div>
+                )}
+                <p className="text-xs">{liveAnalysis.toppingAnalysis.nearTermTop.reasoning}</p>
+              </Card>
+              
+              <Card className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                  <h4 className="font-semibold">Cyclical Top Analysis</h4>
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className={liveAnalysis.toppingAnalysis.cyclicalTop.predicted ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'}>
+                    {liveAnalysis.toppingAnalysis.cyclicalTop.predicted ? 'CYCLE TOP PREDICTED' : 'NO CYCLE TOP'}
+                  </Badge>
+                  <span className="text-sm">{liveAnalysis.toppingAnalysis.cyclicalTop.confidence}% confidence</span>
+                </div>
+                {liveAnalysis.toppingAnalysis.cyclicalTop.priceLevel && (
+                  <div className="text-lg font-semibold text-red-500 mb-2">
+                    Target: ${liveAnalysis.toppingAnalysis.cyclicalTop.priceLevel.toLocaleString()}
+                  </div>
+                )}
+                <p className="text-xs">{liveAnalysis.toppingAnalysis.cyclicalTop.reasoning}</p>
+              </Card>
+            </div>
+
+            {/* AI Analyzed Indicators */}
+            {liveAnalysis.indicators && liveAnalysis.indicators.length > 0 && (
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">Live Indicator Signals (AI Analyzed)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {liveAnalysis.indicators.map((indicator, index) => (
+                    <Card key={index} className="p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <h5 className="font-medium text-sm">{indicator.indicator}</h5>
+                        <Badge className={getSignalBadgeColor(indicator.signal)}>
+                          {indicator.signal.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground mb-2">
+                        Value: {indicator.currentValue} | Strength: {indicator.strength}/10
+                      </div>
+                      <p className="text-xs">{indicator.interpretation}</p>
+                      {indicator.priceTarget && (
+                        <div className="text-xs font-medium mt-1 text-primary">
+                          Target: ${indicator.priceTarget.toLocaleString()}
+                        </div>
+                      )}
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AI Insights and Risk Factors */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <Brain className="h-4 w-4 text-blue-500" />
+                  AI Insights
+                </h4>
+                <ul className="space-y-1">
+                  {liveAnalysis.aiInsights.map((insight, index) => (
+                    <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-blue-500 mt-1">•</span>
+                      {insight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                  Risk Factors
+                </h4>
+                <ul className="space-y-1">
+                  {liveAnalysis.riskFactors.map((risk, index) => (
+                    <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-red-500 mt-1">•</span>
+                      {risk}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="bg-gradient-to-r from-orange-500/10 to-yellow-500/10 border-orange-500/20">
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2">
