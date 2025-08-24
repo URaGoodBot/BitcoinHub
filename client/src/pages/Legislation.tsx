@@ -59,6 +59,26 @@ const Legislation = () => {
     refetchInterval: 60 * 60 * 1000, // Refetch every hour
   });
 
+  const refreshCatalystsMutation = useMutation({
+    mutationFn: async () => {
+      setIsRefreshing(true);
+      queryClient.removeQueries({ queryKey: ['/api/legislation/catalysts'] });
+      const response = await fetch('/api/legislation/catalysts?refresh=true');
+      if (!response.ok) {
+        throw new Error('Failed to refresh catalysts data');
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['/api/legislation/catalysts'], data);
+      setIsRefreshing(false);
+    },
+    onError: (error) => {
+      console.error('Error refreshing catalysts:', error);
+      setIsRefreshing(false);
+    },
+  });
+
   const refreshMutation = useMutation({
     mutationFn: async () => {
       setIsRefreshing(true);
@@ -161,8 +181,8 @@ const Legislation = () => {
             <div className="flex items-center gap-3">
               <Scale className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation</h1>
-                <p className="text-muted-foreground">Track congressional bills affecting cryptocurrency</p>
+                <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation - August 2025</h1>
+                <p className="text-muted-foreground">Track congressional bills affecting cryptocurrency with AI-powered updates</p>
               </div>
             </div>
             <Button 
@@ -172,7 +192,7 @@ const Legislation = () => {
               variant="outline"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Refresh
+              {isRefreshing ? 'Updating with AI...' : 'Refresh with AI'}
             </Button>
           </div>
 
@@ -286,13 +306,27 @@ const Legislation = () => {
           <div className="space-y-6">
             <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20">
               <CardHeader>
-                <CardTitle className="text-xl flex items-center gap-2">
-                  <AlertCircle className="h-6 w-6 text-purple-500" />
-                  Crypto Catalysts Tracker - August 2025
-                </CardTitle>
-                <p className="text-muted-foreground">
-                  Key cryptocurrency-related events monitored for their probability of occurrence and market impact.
-                </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      <AlertCircle className="h-6 w-6 text-purple-500" />
+                      Crypto Catalysts Tracker - August 2025
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      Key cryptocurrency-related events monitored for their probability of occurrence and market impact.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => refreshCatalystsMutation.mutate()}
+                    disabled={isRefreshing}
+                    className="flex items-center gap-2"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    {isRefreshing ? 'Updating...' : 'Refresh Events'}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">

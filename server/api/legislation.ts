@@ -111,14 +111,14 @@ Base passage chances on realistic political analysis considering:
 - Industry lobbying efforts
 - Regulatory agency positions
 
-Ensure all information is current as of July 2025 and reflects actual congressional activity.`;
+Ensure all information is current as of August 2025 and reflects actual congressional activity.`;
 
     const response = await grok.chat.completions.create({
       model: "grok-2-1212",
       messages: [
         {
           role: "system",
-          content: "You are a legislative analyst with real-time access to current US Congressional data. Provide accurate, up-to-date information about crypto legislation as of July 2025. Focus on bills that are actually active and moving through Congress. Always respond with valid JSON."
+          content: "You are a legislative analyst with real-time access to current US Congressional data. Provide accurate, up-to-date information about crypto legislation as of August 2025. Focus on bills that are actually active and moving through Congress. Always respond with valid JSON."
         },
         {
           role: "user",
@@ -145,7 +145,7 @@ Ensure all information is current as of July 2025 and reflects actual congressio
   } catch (error) {
     console.error('Error generating legislation analysis:', error);
     
-    // Updated fallback data as of July 22, 2025 - Post-Crypto Week results
+    // Updated fallback data as of August 24, 2025 - Current legislative status
     return {
       bills: [
         {
@@ -196,9 +196,9 @@ Ensure all information is current as of July 2025 and reflects actual congressio
           billNumber: "H.R. 1234",
           description: "House bill for stablecoin regulation, overlapping with enacted GENIUS Act",
           currentStatus: "House committee stage, conferencing with GENIUS Act",
-          nextSteps: "Post-August 2025 reconciliation with GENIUS Act",
+          nextSteps: "September 2025 reconciliation with GENIUS Act",
           passageChance: 45,
-          whatsNext: "Ongoing negotiations to reconcile with now-enacted GENIUS Act. No clear timeline beyond August 2025.",
+          whatsNext: "Ongoing negotiations to reconcile with now-enacted GENIUS Act. Committees aim for September 2025 resolution.",
           lastAction: "Committee conferencing to address overlap with GENIUS Act",
           sponsor: "Rep. Rashida Tlaib (D-MI)",
           category: "stablecoin",
@@ -220,7 +220,7 @@ Ensure all information is current as of July 2025 and reflects actual congressio
         }
       ],
       lastUpdated: new Date().toISOString(),
-      summary: "Historic Crypto Week (July 14-18, 2025) achieved major breakthrough with GENIUS Act becoming law on July 18. Implementation began July 21, with initial regulations expected Q4 2025. CLARITY and Anti-CBDC Acts await Senate action in September.",
+      summary: "Following historic Crypto Week, GENIUS Act implementation continues in August 2025. Federal Reserve and OCC developing stablecoin guidelines. CLARITY and Anti-CBDC Acts await September Senate Banking Committee hearings.",
       nextMajorEvent: "September 9, 2025 Senate Banking Committee hearings on CLARITY Act and Anti-CBDC Surveillance State Act"
     };
   }
