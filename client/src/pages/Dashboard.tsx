@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BitcoinMarketData } from "@/lib/types";
 import AIAnalysis from "@/components/AIAnalysis";
-import MarketSentiment from "@/components/MarketSentiment";
+import { CryptoIndicators } from "@/components/CryptoIndicators";
 import FedWatchTool from "@/components/FedWatchTool";
 import TreasuryWidget from "@/components/TreasuryWidget";
 import { InflationWidget } from "@/components/InflationWidget";
@@ -132,11 +132,8 @@ const Dashboard = () => {
         <AITrendPrediction />
       </div>
       
-      {/* Market Sentiment Analysis */}
-      <MarketSentiment 
-        marketData={marketData}
-        isLoading={isLoadingBitcoinData}
-      />
+      {/* Cryptocurrency Trading Indicators */}
+      <CryptoIndicators />
       
       {/* AI-powered Technical Analysis */}
       <AIAnalysis 
