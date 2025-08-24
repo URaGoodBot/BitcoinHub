@@ -37,6 +37,8 @@ Preferred communication style: Simple, everyday language.
 - **Crypto Catalysts Tracker**: Monitors key crypto events with probability scoring and market impact analysis.
 - **Admin System**: Password-protected admin panel for legislation data updates.
 - **Meme Section**: Image-centric platform with file uploads and user interaction.
+- **AI-Powered Trading Indicators**: Comprehensive analysis of 30+ technical indicators with live Bitcoin data, price predictions, and topping analysis using Grok AI.
+- **Live Market Analysis**: Real-time AI interpretation of technical indicators with specific price targets and market condition analysis.
 
 ### Core Architectural Decisions
 - Full-stack React/TypeScript with Node.js Express.
@@ -69,8 +71,16 @@ Preferred communication style: Simple, everyday language.
 - **NewsAPI**: Bitcoin news aggregation
 - **Twitter API**: Social media content (mock data fallback)
 - **FRED API**: Federal Reserve economic data (Fed Watch, Treasury, CPI)
-- **CoinGecko**: Global crypto metrics, Bitcoin dominance, historical data
+- **CoinGecko**: Global crypto metrics, Bitcoin dominance, historical data, technical indicator calculations
 - **Blockchain.com**: Bitcoin network statistics (hash rate, difficulty)
 - **alternative.me**: Fear & Greed Index
-- **Grok xAI**: AI-powered analysis and chatbot
+- **Grok xAI**: AI-powered analysis, chatbot, trading indicators analysis, price predictions, and legislative updates
 - **CoinPaprika**: On-chain metrics
+
+## Recent Updates (August 2025)
+- Replaced Market Sentiment Analysis with comprehensive AI-powered Cryptocurrency Trading Indicators section
+- Implemented 30+ technical indicators with live data sources and AI analysis
+- Added real-time price predictions (24h, 1-2 weeks, 1 month) using Grok AI
+- Created advanced topping analysis for near-term and cyclical market peaks
+- Enhanced legislation tracking with August 2025 updates and manual refresh functionality
+- Added AI-powered refresh buttons for both legislation data and crypto catalysts
