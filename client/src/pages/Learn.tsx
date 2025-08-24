@@ -9,24 +9,104 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import LearningModule from "@/components/LearningModule";
 import { BookOpen, FileText, Code, PlayCircle, Search, BookmarkPlus, TrendingUp } from 'lucide-react';
 
-// Expanded course data with lesson information
+// Comprehensive Bitcoin learning program for Baby Boomers and Millennials
 const coursesData = [
   {
+    id: "bitcoin-for-boomers-and-millennials",
+    title: "Bitcoin for Baby Boomers & Millennials",
+    description: "A comprehensive, accessible Bitcoin learning program designed for both Baby Boomers (clear, step-by-step guidance) and Millennials (interactive, engaging content). Learn from basics to practical applications.",
+    lessons: [
+      // Section 1: Introduction to Bitcoin and Cryptocurrency
+      { id: "intro-1", title: "What is Bitcoin? Explained Like I'm Five", type: 'video', duration: "5 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=6jG7u4M3bEs", 
+        content: "Bitcoin explained using simple analogies (e.g., Bitcoin as digital gold). Perfect for Baby Boomers who prefer clear, jargon-free explanations that relate to familiar concepts like gold and traditional banking." },
+      
+      { id: "intro-2", title: "Bitcoin for Beginners (2024)", type: 'video', duration: "7 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=LyE8oJ3fBys", 
+        content: "Fast-paced, visually engaging overview covering Bitcoin's history and use cases. Designed for Millennials who appreciate quick, comprehensive introductions with modern presentation styles." },
+      
+      { id: "intro-3", title: "Cryptocurrency: The Future of Finance and Money", type: 'video', duration: "4 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=G4NsFAzJ7H4", 
+        content: "Highlights real-world applications and the future potential of cryptocurrency, bridging generational interests by focusing on practical benefits both groups can appreciate." },
+      
+      { id: "intro-4", title: "Introduction to Bitcoin Quiz", type: 'quiz', duration: "10 min", completed: false, 
+        content: "Interactive quiz testing basic Bitcoin knowledge: What is Bitcoin used for? Who created it? What technology powers it? Includes immediate feedback and explanations for wrong answers." },
+      
+      { id: "intro-5", title: "Bitcoin Fun Facts Activity", type: 'code', duration: "5 min", completed: false, 
+        content: "Simple hands-on activity displaying interesting Bitcoin facts (e.g., '21 million Bitcoin limit'). Low-stakes coding introduction that appeals to Millennials while demystifying technology for Boomers." },
+      
+      // Section 2: How Blockchain Works
+      { id: "blockchain-1", title: "Blockchain Explained in 7 Minutes", type: 'video', duration: "7 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=SSo_EIwHSd4", 
+        content: "Uses animations and simple language to explain blockchain technology. Ideal for Baby Boomers with clear, visual explanations that avoid technical overload." },
+      
+      { id: "blockchain-2", title: "How Does a Blockchain Work? (TED-Ed)", type: 'video', duration: "6 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=3xGLc-zz9cA", 
+        content: "Engaging and educational blockchain explanation appealing to Millennials' visual learning style. Uses modern presentation techniques and comprehensive coverage." },
+      
+      { id: "blockchain-3", title: "Bitcoin's Blockchain: A Deep Dive", type: 'video', duration: "10 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=bBC-nXj3Ng4", 
+        content: "Slightly more technical content for Millennials who want deeper insights, but still accessible to those new to blockchain technology." },
+      
+      { id: "blockchain-4", title: "Blockchain Knowledge Quiz", type: 'quiz', duration: "10 min", completed: false, 
+        content: "Tests core blockchain concepts: What is a blockchain? What ensures security? Who can view Bitcoin's blockchain? Provides clear feedback suitable for both generations." },
+      
+      { id: "blockchain-5", title: "Blockchain Transaction Simulator", type: 'code', duration: "10 min", completed: false, 
+        content: "Interactive simulation of recording Bitcoin transactions in a blockchain log. Shows how transactions are recorded, engaging for Millennials and educational for Boomers." },
+      
+      // Section 3: Setting Up a Bitcoin Wallet
+      { id: "wallet-1", title: "How to Set Up a Bitcoin Wallet", type: 'video', duration: "9 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=3x7bW6vV3iA", 
+        content: "Step-by-step wallet setup guide perfect for Baby Boomers. Covers the process clearly without technical jargon, focusing on practical implementation." },
+      
+      { id: "wallet-2", title: "Best Bitcoin Wallets for Beginners", type: 'video', duration: "7 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=0vV7C7W3u0U", 
+        content: "Compares different wallet types (hardware, software, custodial vs non-custodial) appealing to Millennials who want to understand their options and make informed decisions." },
+      
+      { id: "wallet-3", title: "Securing Your Bitcoin Wallet", type: 'video', duration: "5 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=4lQeS2h6k0I", 
+        content: "Focuses on security best practices relevant for both generations. Covers private key management, backup procedures, and common security mistakes to avoid." },
+      
+      { id: "wallet-4", title: "Bitcoin Wallet Knowledge Check", type: 'quiz', duration: "10 min", completed: false, 
+        content: "Tests wallet concepts: What are wallets used for? What is a private key? What are different wallet types? Reinforces security and setup knowledge." },
+      
+      { id: "wallet-5", title: "Mock Bitcoin Address Generator", type: 'code', duration: "5 min", completed: false, 
+        content: "Generate a simulated Bitcoin address using code. Demonstrates address creation process, engaging for Millennials and demystifying wallet technology for Boomers." },
+        
+      // Section 4: Buying and Trading Bitcoin
+      { id: "trading-1", title: "How to Buy Bitcoin for Beginners", type: 'video', duration: "9 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=jdW6o1lW0kQ", 
+        content: "Step-by-step Bitcoin purchase process ideal for Baby Boomers. Covers trusted platforms, account setup, and safe buying practices with clear instructions." },
+      
+      { id: "trading-2", title: "Crypto Trading for Beginners", type: 'video', duration: "8 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=7gG5b6Y2j0U", 
+        content: "Covers trading basics appealing to Millennials. Includes market analysis fundamentals, trading strategies, and platform navigation for modern investors." },
+      
+      { id: "trading-3", title: "Avoiding Crypto Scams", type: 'video', duration: "7 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=3f4lG4K1lYc", 
+        content: "Practical safety tips for both generations. Covers common scam tactics, how to identify fraudulent platforms, and best practices for secure trading." },
+      
+      { id: "trading-4", title: "Trading and Safety Quiz", type: 'quiz', duration: "10 min", completed: false, 
+        content: "Tests practical trading knowledge: Where to buy Bitcoin? What is dollar-cost averaging? Common scam tactics? Reinforces safe trading practices." },
+      
+      { id: "trading-5", title: "Bitcoin Purchase Calculator", type: 'code', duration: "5 min", completed: false, 
+        content: "Simulate Bitcoin purchase calculations. Users input USD amount and BTC price to see how much Bitcoin they can buy. Practical for both generations." },
+        
+      // Section 5: Bitcoin Mining
+      { id: "mining-1", title: "What is Bitcoin Mining?", type: 'video', duration: "6 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=GmOzih6I1zs", 
+        content: "Simple explanation of Bitcoin mining perfect for Baby Boomers. Uses clear analogies and avoids technical complexity while explaining the mining concept." },
+      
+      { id: "mining-2", title: "Bitcoin Mining Explained (Technical)", type: 'video', duration: "8 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=e1vOIA3YZ6M", 
+        content: "More technical mining details for Millennials who want to understand the mechanics, including hash functions, difficulty adjustment, and network security." },
+      
+      { id: "mining-3", title: "The Environmental Impact of Bitcoin Mining", type: 'video', duration: "6 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=4lQeS2h6k0I", 
+        content: "Addresses modern environmental concerns about Bitcoin mining, engaging for Millennials interested in sustainability and energy usage topics." },
+      
+      { id: "mining-4", title: "Bitcoin Mining Knowledge Test", type: 'quiz', duration: "10 min", completed: false, 
+        content: "Tests mining understanding: What is Bitcoin mining? What do miners receive? What are mining challenges? Covers both basic concepts and practical considerations." },
+      
+      { id: "mining-5", title: "Mining Reward Calculator", type: 'code', duration: "5 min", completed: false, 
+        content: "Simulate mining reward calculations including block rewards and transaction fees. Helps both generations understand mining economics and incentives." }
+    ],
+    completed: 0,
+    level: "Beginner to Intermediate",
+    duration: "3-4 hours",
+    coverImage: "https://images.unsplash.com/photo-1516245834210-c4c142787335?ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80"
+  },
+  {
     id: "hodling-like-a-pro",
-    title: "HODLing Like a Pro",
+    title: "HODLing Like a Pro (Original Millennial Course)",
     description: "Your millennial-friendly guide to Bitcoin - from crypto-curious to Bitcoin-savvy with zero corporate jargon.",
     lessons: [
-      // Section 1: Introduction to Bitcoin
-      { id: "hodl-1", title: "What Is Bitcoin, and Why Should I Care?", type: 'video', duration: "30 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=41JCpzvnn_0", 
-        content: "Bitcoin's like digital gold, created by some mysterious dude (or crew) named Satoshi Nakamoto. It's money without banks, middlemen, or your nosy government tracking your late-night Taco Bell runs. We'll cover why Bitcoin's a big deal (spoiler: it's anti-establishment AF), how it's decentralized (no CEO to cancel you), and the vibe of 'number go up' and why people HODL." },
       
-      { id: "hodl-2", title: "Blockchain 101: The Tech That Makes Bitcoin Go Brrr", type: 'video', duration: "40 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=SSo_EIwHSd4",
-        content: "Blockchain's the backbone of Bitcoin, and it's not as nerdy as it sounds. Think of it like a Google Doc that nobody can edit unless everyone agrees—except it's for money. We'll dive into how blocks and chains keep Bitcoin secure, why 'trustless' is a flex (no need to trust sketchy institutions), and mining, but not the pickaxe kind—how computers get paid to keep the network honest." },
-      
-      { id: "hodl-3", title: "Bitcoin's Origin Story: From Cypherpunks to Moon Lambos", type: 'video', duration: "30 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=W15A7Lf0_fI",
-        content: "Bitcoin didn't just pop off in 2009—it's got roots in the '90s cypherpunk movement, where OGs dreamed of private, free money. We'll talk about Satoshi's glow-up from forum posts to legend status, the 2010 pizza that cost $500 million (F in the chat), and how Bitcoin went from nerd money to Elon tweeting about it." },
-        
-      // Section 2: Bitcoin Transactions
       { id: "hodl-4", title: "Sending and Receiving Bitcoin: Yeet Those Sats", type: 'reading', duration: "45 min", completed: false,
         content: "Time to get hands-on. Sending Bitcoin's easier than Venmo, but you gotta know the rules so you don't yeet your BTC into the void. We'll cover setting up a wallet (hot vs. cold, like your ex's mood swings), public and private keys (don't share your private key, ever), and how to send BTC without screwing it up (double-check that address, fam)." },
         
@@ -36,7 +116,6 @@ const coursesData = [
       { id: "hodl-6", title: "Staying Safe: Don't Get Rekt by Scams", type: 'video', duration: "40 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=bBC-nXj3Ng4",
         content: "Crypto's the Wild West, and scammers are out here DMing you like fake Tinder matches. We'll teach you how to spot phishing sites and fake wallets, why 'send me BTC, I'll double it' is a lie (sorry, Elon imposters), and best practices for securing your stack (seed phrases, 2FA, don't flex on X)." },
         
-      // Section 3: Advanced Bitcoin Concepts
       { id: "hodl-7", title: "Mining Deep Dive: How to Stack Sats the Hard Way", type: 'video', duration: "50 min", completed: false, videoUrl: "https://www.youtube.com/watch?v=XfcvX0P1b5g",
         content: "Mining's not just for nerds with GPU rigs anymore, but it's still a flex to understand it. We'll dig into Proof-of-Work and why it's Bitcoin's security sauce, how miners compete (it's like a math Hunger Games), and why mining at home is probably a losing bet unless you've got free electricity." },
         
