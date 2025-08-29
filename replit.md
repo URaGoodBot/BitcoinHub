@@ -87,6 +87,11 @@ Preferred communication style: Simple, everyday language.
   - Interactive quizzes with scoring system and detailed explanations
   - Real historical data about Marshall Plan, trade deficits, middle-class decline, and asset bubbles
   - Connects economic history to Bitcoin as a potential solution for fairer money system
+- **Bitcoin Time Machine**: Created second interactive game with enhanced visual design
+  - 6-level journey through Bitcoin history from 2008 to present day
+  - Purple/orange gradient theme with timeline visualization and progress tracking
+  - Covers key moments: Genesis Block, Pizza Day, 2017 mania, institutional adoption
+  - Real historical data with engaging storytelling and knowledge-based scoring system
 - **Replaced CoinGlass Bull Market Peak Indicators**: Integrated authentic 30 indicators with color-coded progress bars
   - Red below 25%, yellow 25-75%, green above 75% for visual clarity
   - Real-time data fetching with 5-minute refresh intervals and countdown timers

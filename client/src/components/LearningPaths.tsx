@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BookOpen, Users, Clock, Play, CheckCircle, ArrowRight, Gamepad2, TrendingUp } from 'lucide-react';
 import { DollarDilemmaGame } from "./DollarDilemmaGame";
+import { BitcoinTimeMachine } from "./BitcoinTimeMachine";
 
 interface LearningPath {
   id: string;
@@ -33,6 +34,7 @@ interface Lesson {
 interface LearningPathsData {
   boomer: LearningPath;
   millennial: LearningPath;
+  bitcoinTimeMachine: LearningPath;
   dollarDilemma: LearningPath;
 }
 
@@ -93,12 +95,21 @@ export function LearningPaths() {
 
   // Game view
   if (activeView === 'game' && selectedPath?.isGame) {
-    return (
-      <DollarDilemmaGame 
-        gameData={selectedPath.gameData} 
-        onBack={handleBackToPaths}
-      />
-    );
+    if (selectedPath.id === 'bitcoin-time-machine') {
+      return (
+        <BitcoinTimeMachine 
+          gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    } else {
+      return (
+        <DollarDilemmaGame 
+          gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    }
   }
 
   // Path details view
@@ -214,7 +225,7 @@ export function LearningPaths() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {pathsData && Object.values(pathsData).map((path) => (
           <Card key={path.id} className="bg-card border-muted/20 hover:shadow-lg transition-all duration-200 group cursor-pointer">
             <CardHeader>

@@ -1114,6 +1114,170 @@ All this data is updated live in the dashboard above. Try asking about specific 
             }
           ]
         },
+        bitcoinTimeMachine: {
+          id: "bitcoin-time-machine",
+          title: "The Bitcoin Time Machine",
+          subtitle: "Journey through Bitcoin's revolutionary timeline",
+          description: "Travel through Bitcoin's history from 2008 to today. Experience key moments, meet important figures, and understand how Bitcoin evolved from a whitepaper to digital gold. Interactive scenarios with real historical data and market events.",
+          color: "bg-purple-500",
+          icon: "⏰",
+          estimatedTime: "30-40 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "2008: The Genesis - Satoshi's Vision",
+                story: "You've traveled back to October 31, 2008. The global financial crisis is in full swing - banks are collapsing, governments are printing money, and people are losing trust in traditional finance. A mysterious figure named 'Satoshi Nakamoto' just published a 9-page whitepaper titled 'Bitcoin: A Peer-to-Peer Electronic Cash System.'",
+                data: {
+                  title: "The Financial Crisis Context (2008)",
+                  stats: [
+                    { label: "Bank Failures (2008)", value: "465 banks", note: "Worst since Great Depression" },
+                    { label: "Government Bailouts", value: "$700 billion", note: "TARP program alone" },
+                    { label: "Global GDP Loss", value: "-5.1%", note: "Deepest recession since 1930s" }
+                  ]
+                },
+                quiz: {
+                  question: "What problem was Bitcoin designed to solve?",
+                  options: [
+                    "A) Slow internet speeds",
+                    "B) Need for trusted third parties in digital payments",
+                    "C) Video game currencies",
+                    "D) Social media platforms"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly! Bitcoin eliminates the need for banks or governments to validate transactions, creating true peer-to-peer digital money.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "2009: The First Block - Genesis Day",
+                story: "January 3, 2009. You witness Satoshi mining the very first Bitcoin block (Genesis Block). Embedded in this block is a newspaper headline: 'The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.' The first 50 bitcoins are created - worth $0 at this moment.",
+                data: {
+                  title: "Bitcoin's Humble Beginning",
+                  stats: [
+                    { label: "First Bitcoin Price", value: "$0.00", note: "No market existed yet" },
+                    { label: "Genesis Block Reward", value: "50 BTC", note: "First bitcoins ever created" },
+                    { label: "Network Hash Rate", value: "~4.5 MH/s", note: "Satoshi's computer alone" }
+                  ]
+                },
+                quiz: {
+                  question: "What was significant about the Genesis Block's embedded message?",
+                  options: [
+                    "A) It was Satoshi's real name",
+                    "B) It referenced bank bailouts, showing Bitcoin's purpose",
+                    "C) It contained a Bitcoin address",
+                    "D) It was just random text"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect insight! The message was a timestamp and critique of the traditional banking system that Bitcoin aimed to replace.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "2010: Pizza Day - First Real Transaction",
+                story: "May 22, 2010. You're witnessing Bitcoin history! A programmer named Laszlo Hanyecz just bought two Papa John's pizzas for 10,000 bitcoins. This is the first documented real-world Bitcoin transaction. People are starting to realize this digital currency might actually have value.",
+                data: {
+                  title: "The Famous Pizza Purchase",
+                  stats: [
+                    { label: "Pizza Cost", value: "10,000 BTC", note: "Worth ~$40 at the time" },
+                    { label: "BTC Price Then", value: "$0.004", note: "Based on mining costs" },
+                    { label: "Those BTC Today", value: "$1.1 billion+", note: "Most expensive pizzas ever" }
+                  ]
+                },
+                quiz: {
+                  question: "Why was the Pizza Day transaction so important?",
+                  options: [
+                    "A) It was the largest transaction ever",
+                    "B) It established Bitcoin's real-world value",
+                    "C) It crashed the Bitcoin network",
+                    "D) It was the first mining reward"
+                  ],
+                  correct: 1,
+                  explanation: "Brilliant! This transaction proved Bitcoin could be used for real purchases, establishing its value as actual money, not just digital tokens.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "2017: The Great Bull Run - Mainstream Awakening",
+                story: "December 2017. Bitcoin fever has gripped the world! The price has skyrocketed from $1,000 to nearly $20,000. Your grandmother is asking about Bitcoin, major news outlets cover it daily, and futures contracts are launching. But with great heights come great falls...",
+                data: {
+                  title: "The 2017 Bitcoin Mania",
+                  stats: [
+                    { label: "Peak Price (Dec 2017)", value: "$19,783", note: "All-time high at the time" },
+                    { label: "Google Searches", value: "10x increase", note: "'Bitcoin' most searched term" },
+                    { label: "New Wallets Created", value: "15 million+", note: "During 2017 alone" }
+                  ]
+                },
+                quiz: {
+                  question: "What drove Bitcoin's massive 2017 price surge?",
+                  options: [
+                    "A) Institutional adoption only",
+                    "B) Media attention and retail FOMO",
+                    "C) Government endorsements",
+                    "D) Technical improvements"
+                  ],
+                  correct: 1,
+                  explanation: "Spot on! Mainstream media coverage and retail investor 'Fear of Missing Out' created a feedback loop driving prices to unprecedented levels.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "2021: Institutional Embrace - Digital Gold",
+                story: "February 2021. Tesla just announced a $1.5 billion Bitcoin purchase! MicroStrategy, Square, and major institutions are adding Bitcoin to their balance sheets. El Salvador is considering making it legal tender. Bitcoin is transforming from 'internet money' to 'digital gold.'",
+                data: {
+                  title: "Institutional Bitcoin Adoption",
+                  stats: [
+                    { label: "Corporate Holdings", value: "$60+ billion", note: "Public companies combined" },
+                    { label: "Tesla Purchase", value: "$1.5 billion", note: "Sparked corporate trend" },
+                    { label: "Market Cap Peak", value: "$1.2 trillion", note: "Larger than many countries' GDP" }
+                  ]
+                },
+                quiz: {
+                  question: "Why did institutions finally embrace Bitcoin?",
+                  options: [
+                    "A) Government pressure",
+                    "B) Inflation hedge and digital gold narrative",
+                    "C) Better technology only",
+                    "D) Social media trends"
+                  ],
+                  correct: 1,
+                  explanation: "Excellent understanding! Institutions saw Bitcoin as a hedge against currency debasement and inflation, treating it as 'digital gold' for their treasuries.",
+                  points: 10
+                }
+              },
+              {
+                id: 6,
+                title: "2024-Today: The Future Unfolds - Your Bitcoin Journey",
+                story: "Present day. Bitcoin has survived multiple 'deaths,' regulatory challenges, and market cycles. It's proven its resilience and value proposition. Countries are creating Bitcoin reserves, ETFs are approved, and Lightning Network enables instant payments. Your journey through Bitcoin's history is complete - but Bitcoin's story continues to be written.",
+                data: {
+                  title: "Bitcoin Today: Maturation Phase",
+                  stats: [
+                    { label: "Network Hash Rate", value: "1,000+ EH/s", note: "Billion times more secure than 2009" },
+                    { label: "Countries with Bitcoin Legal Status", value: "40+", note: "Growing regulatory clarity" },
+                    { label: "Lightning Network Capacity", value: "$200+ million", note: "Instant Bitcoin payments" }
+                  ]
+                },
+                quiz: {
+                  question: "What makes Bitcoin valuable in today's world?",
+                  options: [
+                    "A) Government backing",
+                    "B) Scarcity, security, and decentralization",
+                    "C) Corporate control",
+                    "D) Unlimited supply"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect! Bitcoin's fixed supply (21 million), unbreakable security, and decentralized nature make it unique digital property in a world of infinite money printing.",
+                  points: 10
+                }
+              }
+            ]
+          }
+        },
         dollarDilemma: {
           id: "dollar-dilemma-game",
           title: "The Dollar Dilemma: Economic Adventure",
