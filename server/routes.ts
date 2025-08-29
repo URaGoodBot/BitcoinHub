@@ -1022,51 +1022,169 @@ All this data is updated live in the dashboard above. Try asking about specific 
   app.get(`${apiPrefix}/learning/paths`, async (req, res) => {
     try {
       const learningPaths = {
-        boomer: {
-          id: "boomer-path",
-          title: "Bitcoin for Baby Boomers",
-          subtitle: "Clear, step-by-step guidance with familiar analogies",
-          description: "A comprehensive Bitcoin education program designed specifically for Baby Boomers. Features clear explanations, familiar analogies (Bitcoin as digital gold), and practical guidance without technical jargon.",
-          color: "bg-blue-500",
-          icon: "👤",
-          estimatedTime: "4-5 hours",
-          lessons: [
-            {
-              id: "boomer-1",
-              title: "What is Bitcoin? (Simple Introduction)",
-              type: "reading",
-              duration: "15 min",
-              description: "Bitcoin explained using familiar concepts like gold, banking, and traditional investments."
-            },
-            {
-              id: "boomer-2", 
-              title: "Why Bitcoin Matters for Your Generation",
-              type: "reading",
-              duration: "20 min",
-              description: "How Bitcoin addresses concerns about inflation, savings protection, and wealth preservation."
-            },
-            {
-              id: "boomer-3",
-              title: "Setting Up Your First Bitcoin Wallet",
-              type: "video",
-              duration: "12 min",
-              description: "Step-by-step wallet setup with security best practices."
-            },
-            {
-              id: "boomer-4",
-              title: "Buying Bitcoin Safely",
-              type: "reading", 
-              duration: "18 min",
-              description: "How to purchase Bitcoin through trusted platforms with security tips."
-            },
-            {
-              id: "boomer-5",
-              title: "Knowledge Check: Bitcoin Basics",
-              type: "quiz",
-              duration: "10 min",
-              description: "Test your understanding of key Bitcoin concepts."
-            }
-          ]
+        bitcoinBoom: {
+          id: "bitcoin-boom-game",
+          title: "Bitcoin Boom: Empowering Boomers",
+          subtitle: "Build a brighter legacy for your family",
+          description: "Interactive journey through fiat system flaws and Bitcoin solutions. Play as a Boomer mentor guiding younger generations through economic history. Discover how Bitcoin can reshape the financial system for your children's future.",
+          color: "bg-emerald-500",
+          icon: "🎯",
+          estimatedTime: "40-50 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "The Fiat Foundation – Post-WWII Promises Turn Sour",
+                story: "As a young Boomer in the 1950s, you grew up in a U.S.-dominated world where the dollar became the global reserve after WWII. But in 1971, ending the gold standard allowed unlimited money printing, leading to inflation and debt that eroded middle-class savings. Your generation witnessed this transformation firsthand.",
+                data: {
+                  title: "The 1971 Monetary Shift Impact",
+                  stats: [
+                    { label: "Pre-1971 Inflation", value: "~2% avg", note: "Stable gold-backed dollar" },
+                    { label: "Post-1971 Inflation", value: "~4% avg", note: "Peaked at 13.5% in 1980" },
+                    { label: "Dollar Value Lost", value: "85%", note: "Since 1971 to 2025" }
+                  ]
+                },
+                quiz: {
+                  question: "What key 1971 event enabled endless fiat printing?",
+                  options: [
+                    "A) WWII end",
+                    "B) Gold standard abandonment", 
+                    "C) Internet invention",
+                    "D) Stock market boom"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly right! Nixon's decision to end the gold standard broke the 'sound money' link, allowing unlimited dollar printing that has devalued savings for generations.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "The Inequality Engine – How Fiat Widens the Gap",
+                story: "In your prime working years (1980s-2000s), you watched as fiat policies favored the wealthy: Easy money inflated assets like stocks and homes, but wages stagnated. Now your children face a world where the top 1% capture most gains, making financial independence much harder to achieve.",
+                data: {
+                  title: "Growing Wealth Inequality Since 1971",
+                  stats: [
+                    { label: "Wealth Gap (Gini)", value: "0.35 → 0.41", note: "1971 to 2025 increase" },
+                    { label: "Top 1% Share", value: "10% → 30%", note: "Tripled since 1970s" },
+                    { label: "Real Wage Growth", value: "0.3%/year", note: "vs CEO pay up 1,000%" }
+                  ]
+                },
+                quiz: {
+                  question: "How does fiat printing exacerbate inequality?",
+                  options: [
+                    "A) By devaluing savings for the poor/middle class",
+                    "B) By evenly benefiting all classes",
+                    "C) By reducing taxes equally", 
+                    "D) It has no impact on inequality"
+                  ],
+                  correct: 0,
+                  explanation: "Perfect understanding! The 'Cantillon effect' means new money reaches elites first, inflating their assets while devaluing everyone else's savings and wages.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Generational Burden – Why Your Kids Can't Afford the Dream",
+                story: "Now retired in 2025, you see your children struggling with challenges you never faced: Housing costs up 500% since your youth, student debt at $1.7T, forcing many to delay homeownership and families. Fiat inflation has transferred wealth upward, leaving younger generations financially dependent longer.",
+                data: {
+                  title: "Affordability Crisis by Generation",
+                  stats: [
+                    { label: "Home Price Growth", value: "$82K → $417K", note: "1985 to 2025 (inflation-adjusted)" },
+                    { label: "Millennial Ownership", value: "42%", note: "vs Boomers' 55% at same age" },
+                    { label: "Youth Debt Burden", value: "$40K+ avg", note: "60% say inflation hurts most" }
+                  ]
+                },
+                quiz: {
+                  question: "Why does fiat currency hurt younger generations more?",
+                  options: [
+                    "A) They spend more frivolously than previous generations",
+                    "B) Inflation erodes entry-level wages and starter assets",
+                    "C) There are better opportunities available now",
+                    "D) There's actually no generational difference"
+                  ],
+                  correct: 1,
+                  explanation: "Absolutely correct! Long-term currency devaluation creates a compound disadvantage for those just starting to build wealth, making each generation relatively poorer at the same life stage.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Bitcoin Basics – A New Sound Money Alternative",
+                story: "Enter the solution phase: As your protégé discovers Bitcoin in 2025, you learn it's digital gold with a fixed supply (21 million coins), decentralized control, and no government printing ability. It directly counters fiat's fundamental flaws by preserving purchasing power over time.",
+                data: {
+                  title: "Bitcoin vs Fiat Performance",
+                  stats: [
+                    { label: "Bitcoin Growth", value: "$0 → $65K", note: "2009 to 2025, $1.3T market cap" },
+                    { label: "vs Real Estate", value: "+3,112%", note: "Bitcoin vs 3% real estate" },
+                    { label: "Fixed Supply", value: "21M coins", note: "No inflation possible" }
+                  ]
+                },
+                quiz: {
+                  question: "How does Bitcoin fight inflation?",
+                  options: [
+                    "A) Through unlimited supply expansion",
+                    "B) Fixed 21 million coin cap, like digital gold",
+                    "C) Through government control and regulation",
+                    "D) By charging high transaction fees"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly! Bitcoin's mathematical scarcity (only 21 million will ever exist) protects against the money printing that causes inflation, making it digital gold for the internet age.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "Bitcoin's Inequality Fix – Financial Inclusion for All",
+                story: "Bitcoin can reduce inequality gaps by enabling global financial access: low-cost transfers without traditional banks, financial inclusion for the unbanked, and wealth building without elite gatekeepers. In 2025, it's already bridging divides, especially empowering younger generations locked out of traditional wealth-building.",
+                data: {
+                  title: "Bitcoin's Democratizing Impact",
+                  stats: [
+                    { label: "U.S. Crypto Adoption", value: "28% adults", note: "65M Americans, Gen Z/Millennials 50%+" },
+                    { label: "Global Financial Access", value: "560M users", note: "1.7B unbanked gaining access" },
+                    { label: "Fee Reduction", value: "90% lower", note: "vs traditional remittances" }
+                  ]
+                },
+                quiz: {
+                  question: "How can Bitcoin reduce financial inequality?",
+                  options: [
+                    "A) By centralizing all financial control",
+                    "B) Through financial inclusion and low barriers to entry", 
+                    "C) By increasing transaction fees for everyone",
+                    "D) It cannot reduce inequality at all"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect insight! Bitcoin democratizes access to sound money and wealth preservation, removing traditional barriers that kept financial tools exclusive to the wealthy.",
+                  points: 10
+                }
+              },
+              {
+                id: 6,
+                title: "Be the Change – Your Role in Building a Better Legacy",
+                story: "You have the power to help: educate your family, make small Bitcoin investments for children and grandchildren, and support sound money policies. In 2025, Boomer involvement in Bitcoin adoption is accelerating the transition to a fairer financial system that could benefit all future generations.",
+                data: {
+                  title: "Boomer Impact on Bitcoin Adoption",
+                  stats: [
+                    { label: "Boomer Adoption Growth", value: "6-10%", note: "Rising for retirement hedges" },
+                    { label: "Youth Seeking Guidance", value: "60%", note: "Want family financial education" },
+                    { label: "Potential Global Impact", value: "Lower Gini", note: "Fairer wealth distribution possible" }
+                  ]
+                },
+                quiz: {
+                  question: "What's a practical way you can join the Bitcoin solution?",
+                  options: [
+                    "A) Ignore it completely and stick to traditional assets",
+                    "B) Start with education and small holdings for family legacy",
+                    "C) Advocate for printing more fiat currency",
+                    "D) Sell all existing assets immediately"
+                  ],
+                  correct: 1,
+                  explanation: "Excellent choice! Building a Bitcoin legacy starts small – educating yourself and family, perhaps gifting small amounts to children/grandchildren, and supporting policies that promote financial freedom.",
+                  points: 10
+                }
+              }
+            ]
+          }
         },
         millennial: {
           id: "millennial-path",

@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BookOpen, Users, Clock, Play, CheckCircle, ArrowRight, Gamepad2, TrendingUp } from 'lucide-react';
 import { DollarDilemmaGame } from "./DollarDilemmaGame";
 import { BitcoinTimeMachine } from "./BitcoinTimeMachine";
+import { BitcoinBoomGame } from "./BitcoinBoomGame";
 
 interface LearningPath {
   id: string;
@@ -32,7 +33,7 @@ interface Lesson {
 }
 
 interface LearningPathsData {
-  boomer: LearningPath;
+  bitcoinBoom: LearningPath;
   millennial: LearningPath;
   bitcoinTimeMachine: LearningPath;
   dollarDilemma: LearningPath;
@@ -98,6 +99,13 @@ export function LearningPaths() {
     if (selectedPath.id === 'bitcoin-time-machine') {
       return (
         <BitcoinTimeMachine 
+          gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'bitcoin-boom-game') {
+      return (
+        <BitcoinBoomGame 
           gameData={selectedPath.gameData} 
           onBack={handleBackToPaths}
         />
@@ -256,7 +264,7 @@ export function LearningPaths() {
                     </span>
                     <span className="text-muted-foreground">
                       <Users className="inline h-4 w-4 mr-1" />
-                      {path.id.includes('boomer') ? 'Baby Boomers' : path.id.includes('millennial') ? 'Millennials' : 'All Ages'}
+                      {path.id.includes('boom') ? 'Baby Boomers' : path.id.includes('millennial') ? 'Millennials' : 'All Ages'}
                     </span>
                   </div>
                 )}
