@@ -78,13 +78,18 @@ Preferred communication style: Simple, everyday language.
 - **CoinPaprika**: On-chain metrics
 
 ## Recent Updates (August 2025)
-- Replaced previous trading indicators with authentic CoinGlass Bull Market Peak Indicators (30 indicators)
-- Implemented dedicated '/indicators' tab showing the exact 30 indicators from CoinGlass bull market analysis
-- Added real-time data fetching from CoinGlass with 5-minute refresh intervals and progress tracking
-- Created clean, simple indicator cards showing current values, targets, progress percentages, and hit status
-- Integrated comprehensive Bitcoin learning program for Baby Boomers and Millennials with 25 structured lessons
-- Enhanced navigation with new Indicators tab in both desktop and mobile menus for bull market analysis
-- Added auto-refresh countdown timers and manual refresh functionality for live indicator data
-- Enhanced legislation tracking with August 2025 updates and manual refresh functionality
-- Updated learning section with generational-specific content bridging Baby Boomers and Millennials
-- Implemented authentic data architecture following CoinGlass indicator structure and methodology
+- **Complete Learning Section Redesign**: Replaced complex course catalog with three distinct learning paths
+  - Baby Boomers Path: Clear, step-by-step guidance with familiar analogies (Bitcoin as digital gold)
+  - Millennials Path: Interactive, engaging content with modern presentation styles
+  - Dollar Dilemma Game: Interactive economic adventure exploring generational financial challenges
+- **Dollar Dilemma Integration**: Implemented comprehensive 6-level game based on user's economic adventure concept
+  - Explores post-WWII economic policies and their impact on generational wealth gaps
+  - Interactive quizzes with scoring system and detailed explanations
+  - Real historical data about Marshall Plan, trade deficits, middle-class decline, and asset bubbles
+  - Connects economic history to Bitcoin as a potential solution for fairer money system
+- **Replaced CoinGlass Bull Market Peak Indicators**: Integrated authentic 30 indicators with color-coded progress bars
+  - Red below 25%, yellow 25-75%, green above 75% for visual clarity
+  - Real-time data fetching with 5-minute refresh intervals and countdown timers
+- **Enhanced navigation**: New clean learning paths interface replacing confusing course structure
+- **Removed broken elements**: Eliminated non-functional quizzes, dead YouTube links, and outdated course content
+- **Improved user experience**: Clear generational targeting with appropriate content styles and complexity levels

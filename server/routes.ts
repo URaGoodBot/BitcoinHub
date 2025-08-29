@@ -1018,6 +1018,275 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
 
+  // Learning paths endpoint
+  app.get(`${apiPrefix}/learning/paths`, async (req, res) => {
+    try {
+      const learningPaths = {
+        boomer: {
+          id: "boomer-path",
+          title: "Bitcoin for Baby Boomers",
+          subtitle: "Clear, step-by-step guidance with familiar analogies",
+          description: "A comprehensive Bitcoin education program designed specifically for Baby Boomers. Features clear explanations, familiar analogies (Bitcoin as digital gold), and practical guidance without technical jargon.",
+          color: "bg-blue-500",
+          icon: "👤",
+          estimatedTime: "4-5 hours",
+          lessons: [
+            {
+              id: "boomer-1",
+              title: "What is Bitcoin? (Simple Introduction)",
+              type: "reading",
+              duration: "15 min",
+              description: "Bitcoin explained using familiar concepts like gold, banking, and traditional investments."
+            },
+            {
+              id: "boomer-2", 
+              title: "Why Bitcoin Matters for Your Generation",
+              type: "reading",
+              duration: "20 min",
+              description: "How Bitcoin addresses concerns about inflation, savings protection, and wealth preservation."
+            },
+            {
+              id: "boomer-3",
+              title: "Setting Up Your First Bitcoin Wallet",
+              type: "video",
+              duration: "12 min",
+              description: "Step-by-step wallet setup with security best practices."
+            },
+            {
+              id: "boomer-4",
+              title: "Buying Bitcoin Safely",
+              type: "reading", 
+              duration: "18 min",
+              description: "How to purchase Bitcoin through trusted platforms with security tips."
+            },
+            {
+              id: "boomer-5",
+              title: "Knowledge Check: Bitcoin Basics",
+              type: "quiz",
+              duration: "10 min",
+              description: "Test your understanding of key Bitcoin concepts."
+            }
+          ]
+        },
+        millennial: {
+          id: "millennial-path",
+          title: "Bitcoin for Millennials", 
+          subtitle: "Interactive, engaging content with modern presentation",
+          description: "A dynamic Bitcoin education designed for Millennials. Features interactive content, modern analogies, and engaging presentations that connect Bitcoin to current financial challenges.",
+          color: "bg-orange-500",
+          icon: "🚀",
+          estimatedTime: "3-4 hours",
+          lessons: [
+            {
+              id: "millennial-1",
+              title: "Bitcoin: Your Financial Game Changer",
+              type: "video",
+              duration: "8 min", 
+              description: "Why Bitcoin matters for Millennials facing housing costs and inflation."
+            },
+            {
+              id: "millennial-2",
+              title: "Blockchain Tech Explained (No BS)",
+              type: "interactive",
+              duration: "15 min",
+              description: "Interactive blockchain demo showing how transactions work."
+            },
+            {
+              id: "millennial-3", 
+              title: "Setting Up Your Stack",
+              type: "video",
+              duration: "10 min",
+              description: "Modern wallet setup and security for the digital generation."
+            },
+            {
+              id: "millennial-4",
+              title: "DCA Strategy and HODLing",
+              type: "reading",
+              duration: "12 min", 
+              description: "Dollar-cost averaging and long-term investment strategies."
+            },
+            {
+              id: "millennial-5",
+              title: "Level Up Quiz: Bitcoin Mastery",
+              type: "quiz",
+              duration: "8 min",
+              description: "Test your Bitcoin knowledge with modern, relevant questions."
+            }
+          ]
+        },
+        dollarDilemma: {
+          id: "dollar-dilemma-game",
+          title: "The Dollar Dilemma: Economic Adventure",
+          subtitle: "Interactive game exploring generational economic challenges",
+          description: "An engaging text-based game where Baby Boomers guide Millennials through economic history, exploring how post-WWII policies created today's affordability crisis and how Bitcoin offers solutions.",
+          color: "bg-green-500", 
+          icon: "🎮",
+          estimatedTime: "45-60 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "Post-WWII Boom – The U.S. Becomes the World's Banker",
+                story: "After World War II ends in 1945, you're a young Boomer growing up in a prosperous America. The U.S. emerged as the only major power with its economy intact—factories humming, GDP soaring. Europe and Japan are in ruins, so the U.S. steps up as the global financier to rebuild allies and prevent communism's spread.",
+                data: {
+                  title: "Marshall Plan Impact (1948-1952)",
+                  stats: [
+                    { label: "U.S. Aid Provided", value: "$13.3 billion", note: "~$140 billion today" },
+                    { label: "Countries Aided", value: "16 European nations", note: "Rebuilt industries & trade" },
+                    { label: "Trade Balance (1945-1970)", value: "+0.5% to +1.5% GDP", note: "Consistent surpluses" }
+                  ]
+                },
+                quiz: {
+                  question: "Why did the U.S. fund Europe's recovery?",
+                  options: [
+                    "A) For charity alone",
+                    "B) To create trading partners and secure influence", 
+                    "C) To compete with Soviet aid",
+                    "D) All of the above"
+                  ],
+                  correct: 3,
+                  explanation: "It was strategic! The U.S. aimed to create markets, secure influence, and counter Soviet expansion.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "The Shift to Importer – Buying the World's Goods",
+                story: "By the 1970s, as a young adult Boomer, you see the U.S. dollar become the world's reserve currency. Rebuilt countries like Japan and Germany start exporting cheap, high-quality goods. The U.S., to support global stability, runs trade deficits—importing more to prop up allies' economies.",
+                data: {
+                  title: "Trade Deficit Timeline",
+                  stats: [
+                    { label: "First Deficit (1971)", value: "$2.26 billion", note: "First since 1888" },
+                    { label: "2022 Deficit", value: "$958 billion", note: "Massive increase" },
+                    { label: "Manufacturing Peak", value: "19.5M jobs (1979)", note: "Down to ~13M by 2023" }
+                  ]
+                },
+                quiz: {
+                  question: "What started the persistent U.S. trade deficits?", 
+                  options: [
+                    "A) Over-importing to support global allies",
+                    "B) Ending the gold standard in 1971",
+                    "C) Rising foreign competition",
+                    "D) All of the above"
+                  ],
+                  correct: 3,
+                  explanation: "All factors combined: supporting allies, abandoning gold standard, and increased competition.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Hollowing the Middle – Your Generation's Peak vs. Decline",
+                story: "As a mid-career Boomer in the 1980s-90s, you benefit from stable jobs and affordable homes. But the system erodes the middle class: Wages stagnate while productivity rises, due to offshoring and imports. Your kids enter a world where 'good jobs' are scarcer.",
+                data: {
+                  title: "Middle Class Decline (Post-1971)",
+                  stats: [
+                    { label: "Middle Class (1971)", value: "61% of adults", note: "Down to 51% by 2023" },
+                    { label: "Wage vs Productivity Gap", value: "Productivity +61%", note: "Wages only +17% (1979-2021)" },
+                    { label: "Inequality Index", value: "0.35 (1970)", note: "Rose to 0.41 by 2022" }
+                  ]
+                },
+                quiz: {
+                  question: "How did trade deficits contribute to middle-class decline?",
+                  options: [
+                    "A) By increasing inflation",
+                    "B) Through job losses in manufacturing", 
+                    "C) No impact",
+                    "D) By boosting wages"
+                  ],
+                  correct: 1,
+                  explanation: "Deindustrialization hit hard! Manufacturing job losses decimated middle-class employment.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Foreign Profits Loop Back – Inflating U.S. Assets",
+                story: "Now retired, you watch foreign countries (holding U.S. dollars from trade surpluses) reinvest in America. They buy stocks and real estate, driving up prices. This boosts your retirement portfolio but prices out your kids.",
+                data: {
+                  title: "Foreign Investment & Wealth Gap",
+                  stats: [
+                    { label: "Foreign U.S. Holdings (2023)", value: "$26.9 trillion", note: "Up $2T from 2022" },
+                    { label: "Foreign Real Estate Investment", value: ">$1.2 trillion", note: "Last 15 years" },
+                    { label: "Top 1% Wealth Share", value: "30%+ (2023)", note: "Was 10% in 1980" }
+                  ]
+                },
+                quiz: {
+                  question: "Why does foreign reinvestment widen U.S. inequality?",
+                  options: [
+                    "A) It inflates asset prices, benefiting owners",
+                    "B) It lowers taxes",
+                    "C) It creates jobs evenly",
+                    "D) No effect"
+                  ],
+                  correct: 0,
+                  explanation: "Assets boom for the wealthy! Foreign money inflates stocks and real estate, benefiting those who already own assets.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "Generational Crunch – Why Your Kids Need Help",
+                story: "Your Millennial child can't buy a home like you did at their age. Boomers bought houses for ~$115K median in 1995 (~$230K adjusted); now $445K. They rely on you for down payments amid high costs.",
+                data: {
+                  title: "Generational Housing Crisis",
+                  stats: [
+                    { label: "Boomer Homeownership (Age 30)", value: "55%", note: "vs 42% for Millennials" },
+                    { label: "Median Home Price (Boomers)", value: "$150K (adjusted)", note: "vs $400K+ for Gen Z" },
+                    { label: "Parental Help Required", value: "80% of Millennials", note: "Say housing unaffordable" }
+                  ]
+                },
+                quiz: {
+                  question: "Why do Millennials depend more on parental help?",
+                  options: [
+                    "A) Laziness",
+                    "B) Stagnant wages + inflated housing from asset bubbles",
+                    "C) Too much avocado toast", 
+                    "D) Better jobs now"
+                  ],
+                  correct: 1,
+                  explanation: "Systemic issues! Wages stagnated while asset bubbles inflated housing costs beyond reach.",
+                  points: 10
+                }
+              },
+              {
+                id: 6,
+                title: "Bitcoin as a Fix – Breaking the Fiat Cycle",
+                story: "You've seen how fiat money (unlimited printing post-1971) fuels inflation, deficits, and inequality. Bitcoin offers an alternative: decentralized, fixed supply (21 million coins max), no central bank manipulation. It acts as 'sound money' like gold, protecting savings from erosion and reducing wealth transfers to the elite.",
+                data: {
+                  title: "Bitcoin vs Fiat Money",
+                  stats: [
+                    { label: "Bitcoin Supply", value: "21 million max", note: "Fixed, unchangeable limit" },
+                    { label: "Fiat Inflation Average", value: "2-3% yearly", note: "Erodes purchasing power" },
+                    { label: "Potential Impact", value: "Lower inequality", note: "No money printing benefits" }
+                  ]
+                },
+                quiz: {
+                  question: "How could Bitcoin help solve these issues?",
+                  options: [
+                    "A) By allowing unlimited printing",
+                    "B) As a fixed-supply asset that fights inflation and asset bubbles",
+                    "C) By increasing trade deficits",
+                    "D) No way"
+                  ],
+                  correct: 1,
+                  explanation: "Sound money for all! Bitcoin's fixed supply prevents the money printing that creates asset bubbles and inequality.",
+                  points: 10
+                }
+              }
+            ]
+          }
+        }
+      };
+      
+      res.json(learningPaths);
+    } catch (error) {
+      console.error("Error fetching learning paths:", error);
+      res.status(500).json({ message: "Failed to fetch learning paths" });
+    }
+  });
+
   // Legislation API endpoints
   app.get(`${apiPrefix}/legislation`, async (_req, res) => {
     try {
