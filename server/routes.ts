@@ -1350,6 +1350,120 @@ All this data is updated live in the dashboard above. Try asking about specific 
             ]
           }
         },
+        millennialEscape: {
+          id: "millennial-escape-game",
+          title: "Millennial Inflation Escape",
+          subtitle: "Building Your Path to Financial Freedom",
+          description: "Navigate the modern financial landscape as a 30-something Millennial. Make smart choices to escape inflation's grip, educate your family, build hedges against currency debasement, and create tools for collective financial freedom in 2025.",
+          color: "bg-cyan-500",
+          icon: "🚀",
+          estimatedTime: "25-35 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "Recognize the Trap – Understand Inflation's Grip in 2025",
+                story: "You're scrolling your feed in August 2025, seeing rent up 5% again while your salary barely budges. Inflation at 2.7% means your $50K savings buys less each year—groceries up 2.9%, energy costs fluctuating but overall prices rising. The fiat system prints money endlessly, devaluing your hard work and savings.",
+                data: {
+                  title: "The Millennial Financial Squeeze (2025)",
+                  stats: [
+                    { label: "Purchasing Power Lost", value: "23%", note: "Since 2020, hitting Millennials hardest" },
+                    { label: "Student Debt Total", value: "$1.7T", note: "Crushing generational burden" },
+                    { label: "Median Home Price", value: "$417K", note: "Out of reach for many" }
+                  ]
+                },
+                quiz: {
+                  question: "What's the biggest inflation threat to Millennials in 2025?",
+                  options: [
+                    "A) High taxes on income",
+                    "B) Endless money printing debasing savings",
+                    "C) Low interest rates temporarily",
+                    "D) Stock market volatility"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly! Fiat money printing since 1971 has created endless currency debasement, with the dollar losing 85% of its value. This hits Millennials hardest as you're building wealth with constantly depreciating currency.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "Educate Loved Ones – Share Knowledge to Build Allies",
+                story: "Your Boomer parents don't understand why you're 'obsessed' with Bitcoin. Time to educate them with simple resources that explain how fiat currency traps generations, while sound money like Bitcoin (trading around $110,000 in August 2025) preserves purchasing power across time.",
+                data: {
+                  title: "Educational Resources for Family (2025)",
+                  stats: [
+                    { label: "Saylor Academy", value: "Free courses", note: "Bitcoin for Everybody modules" },
+                    { label: "BitcoinIsHope.com", value: "Global stories", note: "Real-world inclusion benefits" },
+                    { label: "Family Games", value: "Interactive", note: "Make learning fun together" }
+                  ]
+                },
+                quiz: {
+                  question: "What's the best approach to educate skeptical family about Bitcoin?",
+                  options: [
+                    "A) Force them to buy Bitcoin immediately",
+                    "B) Share simple educational resources and real-world benefits",
+                    "C) Argue about complex technical details",
+                    "D) Ignore their concerns completely"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect approach! Starting with simple, relatable resources helps family understand the 'why' behind Bitcoin before diving into technical aspects. Education builds allies who multiply your efforts.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Invest to Hedge – Strategies Against Currency Debasement",
+                story: "With inflation at 2.7%, your portfolio needs assets that outpace currency debasement. Millennials are embracing crypto (50%+ ownership), real estate, commodities, and diversified investments. Bitcoin's fixed supply makes it a powerful hedge against endless money printing.",
+                data: {
+                  title: "Inflation Hedge Assets (2025 Performance)",
+                  stats: [
+                    { label: "Bitcoin", value: "$110K", note: "Up 18% YTD, fixed 21M supply" },
+                    { label: "Real Estate/REITs", value: "Steady gains", note: "Appreciates with inflation" },
+                    { label: "Commodities/Gold", value: "Hedge play", note: "Outperforms during debasement" }
+                  ]
+                },
+                quiz: {
+                  question: "What makes Bitcoin the best Millennial hedge against inflation?",
+                  options: [
+                    "A) It's stored as cash in banks",
+                    "B) Fixed 21M supply counters endless money printing",
+                    "C) It encourages high-interest debt accumulation",
+                    "D) It only goes up in value every day"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly right! Bitcoin's mathematically fixed supply of 21 million coins directly counters the infinite money printing that causes inflation, making it the ultimate hedge for your generation.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Build and Collaborate – Create Tools and Communities",
+                story: "72% of young adults are taking action against rising costs in 2025—join them by building solutions. Create online communities, educational content, or collaborative tools. Escape the financial trap through collective power and shared knowledge, not just individual action.",
+                data: {
+                  title: "Building Financial Freedom Together",
+                  stats: [
+                    { label: "Young Adults Taking Action", value: "72%", note: "Against rising costs in 2025" },
+                    { label: "Bitcoin DAOs", value: "Growing", note: "Shared investing strategies" },
+                    { label: "Financial Literacy Groups", value: "Expanding", note: "Influence policy for fairness" }
+                  ]
+                },
+                quiz: {
+                  question: "What's the most effective way to build financial resilience as a Millennial?",
+                  options: [
+                    "A) Work alone and trust only yourself",
+                    "B) Build communities and share knowledge collectively",
+                    "C) Wait for government solutions",
+                    "D) Complain on social media without action"
+                  ],
+                  correct: 1,
+                  explanation: "Absolutely! Building communities multiplies your impact - shared knowledge, collaborative investing, and collective advocacy create systemic change that benefits your entire generation.",
+                  points: 10
+                }
+              }
+            ]
+          }
+        },
         bitcoinTimeMachine: {
           id: "bitcoin-time-machine",
           title: "The Bitcoin Time Machine",

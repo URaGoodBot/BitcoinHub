@@ -10,6 +10,7 @@ import { DollarDilemmaGame } from "./DollarDilemmaGame";
 import { BitcoinTimeMachine } from "./BitcoinTimeMachine";
 import { BitcoinBoomGame } from "./BitcoinBoomGame";
 import { PolicySimulatorGame } from "./PolicySimulatorGame";
+import { MillennialEscapeGame } from "./MillennialEscapeGame";
 
 interface LearningPath {
   id: string;
@@ -36,6 +37,7 @@ interface Lesson {
 interface LearningPathsData {
   bitcoinBoom: LearningPath;
   policySimulator: LearningPath;
+  millennialEscape: LearningPath;
   bitcoinTimeMachine: LearningPath;
   dollarDilemma: LearningPath;
 }
@@ -114,6 +116,13 @@ export function LearningPaths() {
     } else if (selectedPath.id === 'boomer-policy-simulator') {
       return (
         <PolicySimulatorGame 
+          gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'millennial-escape-game') {
+      return (
+        <MillennialEscapeGame 
           gameData={selectedPath.gameData} 
           onBack={handleBackToPaths}
         />
@@ -272,7 +281,7 @@ export function LearningPaths() {
                     </span>
                     <span className="text-muted-foreground">
                       <Users className="inline h-4 w-4 mr-1" />
-                      {path.id.includes('boom') || path.id.includes('policy') ? 'Baby Boomers' : path.id.includes('millennial') ? 'Millennials' : 'All Ages'}
+                      {path.id.includes('boom') || path.id.includes('policy') ? 'Baby Boomers' : path.id.includes('millennial') || path.id.includes('escape') ? 'Millennials' : 'All Ages'}
                     </span>
                   </div>
                 )}
