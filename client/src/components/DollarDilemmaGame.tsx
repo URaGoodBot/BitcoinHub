@@ -194,8 +194,8 @@ export function DollarDilemmaGame({ gameData, onBack }: DollarDilemmaGameProps) 
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-muted/30 rounded-lg p-4">
-            <p className="leading-relaxed">{level.story}</p>
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 border border-gray-300 dark:border-gray-600">
+            <p className="leading-relaxed text-gray-800 dark:text-gray-200">{level.story}</p>
           </div>
 
           <div>
@@ -205,11 +205,11 @@ export function DollarDilemmaGame({ gameData, onBack }: DollarDilemmaGameProps) 
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {level.data.stats.map((stat, index) => (
-                <Card key={index} className="bg-background border-muted/20">
+                <Card key={index} className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
                   <CardContent className="p-4 text-center">
                     <div className="font-semibold text-primary">{stat.value}</div>
-                    <div className="text-sm font-medium">{stat.label}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{stat.note}</div>
+                    <div className="text-sm font-medium text-gray-800 dark:text-gray-200">{stat.label}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">{stat.note}</div>
                   </CardContent>
                 </Card>
               ))}
@@ -232,12 +232,12 @@ export function DollarDilemmaGame({ gameData, onBack }: DollarDilemmaGameProps) 
                     selectedAnswer === index
                       ? showResult
                         ? index === level.quiz.correct
-                          ? 'border-green-500 bg-green-50 text-green-700'
-                          : 'border-red-500 bg-red-50 text-red-700'
-                        : 'border-primary bg-primary/10'
+                          ? 'border-green-500 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300'
+                          : 'border-red-500 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300'
+                        : 'border-primary bg-primary/10 text-primary-foreground'
                       : showResult && index === level.quiz.correct
-                      ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-muted hover:border-muted-foreground bg-background'
+                      ? 'border-green-500 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-primary/5 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200'
                   }`}
                 >
                   <div className="flex items-center">
@@ -259,20 +259,20 @@ export function DollarDilemmaGame({ gameData, onBack }: DollarDilemmaGameProps) 
             </div>
 
             {showResult && (
-              <div className="bg-muted/30 rounded-lg p-4">
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 border border-gray-300 dark:border-gray-600">
                 <div className="flex items-start space-x-3">
                   {selectedAnswer === level.quiz.correct ? (
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                   )}
                   <div>
-                    <p className="font-medium">
+                    <p className="font-medium text-gray-800 dark:text-gray-200">
                       {selectedAnswer === level.quiz.correct ? 'Correct!' : 'Not quite right.'}
                     </p>
-                    <p className="text-sm text-muted-foreground mt-1">{level.quiz.explanation}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{level.quiz.explanation}</p>
                     {selectedAnswer === level.quiz.correct && !answeredQuestions.has(currentLevel) && (
-                      <Badge variant="outline" className="mt-2">
+                      <Badge variant="outline" className="mt-2 border-primary text-primary">
                         +{level.quiz.points} Insight Points
                       </Badge>
                     )}
