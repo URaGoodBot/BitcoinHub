@@ -78,9 +78,9 @@ Preferred communication style: Simple, everyday language.
 - **CoinPaprika**: On-chain metrics
 
 ## Recent Updates (August 2025)
-- **Complete Learning Section Redesign**: Replaced complex course catalog with four distinct learning paths
+- **Complete Learning Section Redesign**: Replaced complex course catalog with four distinct interactive games
   - Bitcoin Boom Game: Interactive Boomer-focused journey through fiat system flaws and Bitcoin solutions
-  - Millennials Path: Interactive, engaging content with modern presentation styles  
+  - Policy Simulator Game: Experience consequences of historical government spending decisions from WWII to 2025
   - Dollar Dilemma Game: Interactive economic adventure exploring generational financial challenges
 - **Dollar Dilemma Integration**: Implemented comprehensive 6-level game based on user's economic adventure concept
   - Explores post-WWII economic policies and their impact on generational wealth gaps

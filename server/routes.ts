@@ -1186,51 +1186,169 @@ All this data is updated live in the dashboard above. Try asking about specific 
             ]
           }
         },
-        millennial: {
-          id: "millennial-path",
-          title: "Bitcoin for Millennials", 
-          subtitle: "Interactive, engaging content with modern presentation",
-          description: "A dynamic Bitcoin education designed for Millennials. Features interactive content, modern analogies, and engaging presentations that connect Bitcoin to current financial challenges.",
-          color: "bg-orange-500",
-          icon: "🚀",
-          estimatedTime: "3-4 hours",
-          lessons: [
-            {
-              id: "millennial-1",
-              title: "Bitcoin: Your Financial Game Changer",
-              type: "video",
-              duration: "8 min", 
-              description: "Why Bitcoin matters for Millennials facing housing costs and inflation."
-            },
-            {
-              id: "millennial-2",
-              title: "Blockchain Tech Explained (No BS)",
-              type: "interactive",
-              duration: "15 min",
-              description: "Interactive blockchain demo showing how transactions work."
-            },
-            {
-              id: "millennial-3", 
-              title: "Setting Up Your Stack",
-              type: "video",
-              duration: "10 min",
-              description: "Modern wallet setup and security for the digital generation."
-            },
-            {
-              id: "millennial-4",
-              title: "DCA Strategy and HODLing",
-              type: "reading",
-              duration: "12 min", 
-              description: "Dollar-cost averaging and long-term investment strategies."
-            },
-            {
-              id: "millennial-5",
-              title: "Level Up Quiz: Bitcoin Mastery",
-              type: "quiz",
-              duration: "8 min",
-              description: "Test your Bitcoin knowledge with modern, relevant questions."
-            }
-          ]
+        policySimulator: {
+          id: "boomer-policy-simulator",
+          title: "Boomer Policy Simulator",
+          subtitle: "Dollars, Decisions, and Descendants",
+          description: "Step into the shoes of government leaders you supported through your votes. Make key economic decisions from post-WWII to 2025 - fund wars, bail out banks, print money. See how each choice drove inflation and burdened your children with higher costs.",
+          color: "bg-red-500",
+          icon: "🏛️",
+          estimatedTime: "35-45 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "Post-WWII Rebuild – Fund the Marshall Plan and Cold War? (1948-1950s)",
+                story: "You're President Truman. Europe is devastated; to counter communism, you must decide whether to propose $13B aid (Marshall Plan) and ramp up military spending for the Cold War. This kickstarts global recovery but via U.S. debt and money creation.",
+                data: {
+                  title: "Marshall Plan & Cold War Costs",
+                  stats: [
+                    { label: "Marshall Plan Cost", value: "$13.3B", note: "~$140B in today's dollars" },
+                    { label: "Defense Spending", value: "40% of GDP", note: "By 1950s peaks" },
+                    { label: "Debt Increase", value: "+$0.04T", note: "From $0.26T to $0.3T" }
+                  ]
+                },
+                quiz: {
+                  question: "How did this spending start the inflationary cycle that hurt your children?",
+                  options: [
+                    "A) By printing money to fund foreign aid",
+                    "B) By reducing taxes for everyone",
+                    "C) By boosting domestic jobs evenly",
+                    "D) It had no long-term impact"
+                  ],
+                  correct: 0,
+                  explanation: "Correct! Wartime-like borrowing and money printing began devaluing the dollar, setting the foundation for future inflation that would erode your children's purchasing power.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "Vietnam Escalation – Approve Massive War Funding? (1965-1973)",
+                story: "As Presidents Johnson and Nixon, Vietnam costs spiral out of control. You're spending $3B per month by 1968, funded through bonds and money printing, ignoring gold standard constraints. Your children will inherit the inflationary consequences.",
+                data: {
+                  title: "Vietnam War Financial Impact",
+                  stats: [
+                    { label: "Total War Cost", value: "$168B", note: "~$1T in today's dollars" },
+                    { label: "Monthly Peak Cost", value: "$3B", note: "1968 spending rate" },
+                    { label: "Inflation Surge", value: "5-10%", note: "Annual rates during war" }
+                  ]
+                },
+                quiz: {
+                  question: "What was the long-term impact on your children from this spending?",
+                  options: [
+                    "A) Cheaper consumer goods for them",
+                    "B) Higher living costs via inflation and debt burden",
+                    "C) More job opportunities across the board",
+                    "D) No significant generational impact"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly right! The war's inflationary financing eroded savings and purchasing power, meaning your kids faced higher costs for homes, education, and basic necessities.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "1971 Nixon Shock – End the Gold Standard Forever?",
+                story: "President Nixon faces a choice: The dollar is under pressure from Vietnam spending. Suspend gold convertibility to allow flexible money printing for growing deficits. This decision will fundamentally change money itself for your children's entire lives.",
+                data: {
+                  title: "The Great Monetary Experiment",
+                  stats: [
+                    { label: "Pre-1971 Inflation", value: "~2% avg", note: "Stable gold-backed era" },
+                    { label: "Post-1971 Inflation", value: "4-5% avg", note: "Unlimited printing era" },
+                    { label: "Dollar Value Lost", value: "85%", note: "From 1971 to 2025" }
+                  ]
+                },
+                quiz: {
+                  question: "Why did ending the gold standard enable more inflation for your kids?",
+                  options: [
+                    "A) It created a fixed money supply system",
+                    "B) It allowed unlimited money printing without constraints",
+                    "C) It reduced government debt significantly",
+                    "D) It encouraged gold hoarding by citizens"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect! Breaking the gold link removed scarcity constraints, allowing endless money creation that would devalue your children's wages and savings for decades to come.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "2008 Crisis – Bail Out Banks with TARP? ",
+                story: "The financial system is melting down. As leaders you supported, approve $700B to stabilize Wall Street. This sets a precedent for money printing and bailouts, inflating assets while your children struggle with student debt and housing costs.",
+                data: {
+                  title: "The Great Financial Bailout",
+                  stats: [
+                    { label: "TARP Authorized", value: "$700B", note: "Net cost: $498B" },
+                    { label: "Debt Jump", value: "+$2T", note: "From $10T to $12T+" },
+                    { label: "Asset Inflation", value: "+10%", note: "Homes, stocks rise faster than wages" }
+                  ]
+                },
+                quiz: {
+                  question: "How did this bailout impact your children's generation?",
+                  options: [
+                    "A) It made home prices more affordable for them",
+                    "B) It widened the wealth gap via asset price inflation",
+                    "C) It created more bailout opportunities for young people",
+                    "D) Only option A is correct"
+                  ],
+                  correct: 1,
+                  explanation: "Correct! The bailouts inflated asset prices beyond your children's reach while favoring existing asset holders, creating a generational wealth gap that persists today.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "Post-9/11 Wars & COVID – Fund Endless Wars and $5T Stimulus?",
+                story: "Your final test: Approve $2.89T for Iraq/Afghanistan wars and $5.6T in COVID stimulus. The debt reaches $35T by 2025, inflation spikes to 9%, and your children face an affordability crisis in housing, education, and basic living costs.",
+                data: {
+                  title: "The Final Debt Explosion",
+                  stats: [
+                    { label: "War Costs", value: "$2.89T+", note: "$4-6T including long-term care" },
+                    { label: "COVID Stimulus", value: "$5.6T", note: "Inflation spikes to 9% in 2022" },
+                    { label: "Total National Debt", value: "$35T", note: "By 2025, unsustainable burden" }
+                  ]
+                },
+                quiz: {
+                  question: "What is the overall burden you've created for your children?",
+                  options: [
+                    "A) A stable, growing economy for their future",
+                    "B) Inherited debt crises and inflation that erodes their wealth",
+                    "C) Better technology that compensates for economic issues",
+                    "D) No significant generational impact"
+                  ],
+                  correct: 1,
+                  explanation: "Unfortunately correct. The cumulative effect of these decisions has created systemic debt and monetary erosion, leaving your children with an affordability crisis and diminished economic prospects.",
+                  points: 10
+                }
+              },
+              {
+                id: 6,
+                title: "Bitcoin Alternative – A Fixed-Supply Reset",
+                story: "Now imagine a Bitcoin standard with a fixed 21 million coin supply. Governments can't inflate away problems—they must tax or borrow honestly, limiting excess spending. Bitcoin's scarcity protects against monetary debasement, preserving wealth across generations.",
+                data: {
+                  title: "Bitcoin vs Fiat Comparison",
+                  stats: [
+                    { label: "Bitcoin Supply", value: "21M fixed", note: "No inflation possible" },
+                    { label: "Fiat Supply", value: "Unlimited", note: "Enabled all above decisions" },
+                    { label: "Your Kids' Outcome", value: "Preserved wealth", note: "No monetary debasement" }
+                  ]
+                },
+                quiz: {
+                  question: "How would Bitcoin have protected your children's future?",
+                  options: [
+                    "A) By allowing even more government spending flexibility",
+                    "B) By preventing monetary debasement through fixed supply",
+                    "C) By making government debt completely unnecessary", 
+                    "D) By eliminating all economic cycles completely"
+                  ],
+                  correct: 1,
+                  explanation: "Exactly! Bitcoin's fixed supply would have prevented the monetary debasement that enabled excessive spending, preserving your children's purchasing power and creating a fairer economic system.",
+                  points: 10
+                }
+              }
+            ]
+          }
         },
         bitcoinTimeMachine: {
           id: "bitcoin-time-machine",

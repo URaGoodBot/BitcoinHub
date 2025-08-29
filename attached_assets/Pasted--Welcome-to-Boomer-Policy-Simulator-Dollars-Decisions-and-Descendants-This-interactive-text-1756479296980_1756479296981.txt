@@ -1,0 +1,143 @@
+### Welcome to "Boomer Policy Simulator: Dollars, Decisions, and Descendants"
+
+This interactive text-based game puts you in the shoes of the U.S. government leaders you supported through your votes as a Baby Boomer. You'll make key decisions on major economic events from post-WWII to 2025, like funding wars and bailing out banks. Each choice simulates money creation (often through debt and printing), showing real historical data on how it drove inflation, eroded purchasing power, and burdened your children's generation with higher costs for homes, education, and living. We'll track a "Debt Meter" (national debt in trillions) and "Inflation Impact" (cumulative dollar devaluation % since decision).
+
+To play: At each level, choose "Yes" (historical path) or "No" (alternate history). "Yes" shows real impacts; "No" shows hypothetical savings. Answer a quiz for +10 Insight Points (start at 0; max 50). Wrong? Retry with hint. At the end, we'll "replay" in a Bitcoin world, where fixed-supply money limits inflationary spending.
+
+**Starting Meters (1945 Post-WWII):** Debt: $0.26T (3.5% of GDP today-adjusted). Inflation Impact: 0% baseline.
+
+**Level 1: Post-WWII Rebuild – Fund the Marshall Plan and Cold War Arms Race? (1948-1950s)**
+
+You're President Truman. Europe is devastated; to counter communism, propose $13B aid (Marshall Plan) and ramp up military spending for the Cold War. This kickstarts global recovery but via U.S. debt.
+
+**Decision:** Yes (Historical – Fund it) or No (Hypothetical – Isolationism)?
+
+- **If Yes:** U.S. spends $13.3B on Marshall Plan (~$140B today) and Cold War military hits 40% of GDP by 1950s peaks. Debt rises to $0.3T by 1950; mild inflation (2-5% annual) diverts funds from domestic programs, setting stage for future borrowing. Your kids (future generations) face early wealth transfers abroad, reducing U.S. investment in education/housing.
+
+  Updated Meters: Debt +$0.04T (to $0.3T). Inflation Impact: +5% (mild devaluation from spending).
+
+- **If No:** Hypothetical: Debt stays flat; inflation lower, but Europe struggles—possible higher long-term U.S. costs from instability.
+
+| Event | Cost (Then/Adjusted) | Debt Increase | Inflation Effect |
+|-------|----------------------|---------------|------------------|
+| Marshall Plan | $13B / $140B | +$0.013T | +2-3% annual avg. |
+| Cold War Buildup | ~$4T WWII residual + ongoing | +$0.03T early | Diverts 40% GDP to defense |
+
+**Quiz: How did this spending start the inflationary cycle?**
+A) By printing money for aid  
+B) Reduced taxes  
+C) Boosted domestic jobs evenly  
+D) No impact  
+
+*(Correct: A – Wartime-like borrowing/printing began devaluing the dollar! +10 Insights. Hint: Think fiat expansion roots.)*
+
+**Level 2: Vietnam Escalation – Approve Massive War Funding? (1965-1973)**
+
+As LBJ/Nixon, Vietnam costs spiral. Fund $3B/month by 1968 via bonds and printing, ignoring gold constraints.
+
+**Decision:** Yes or No?
+
+- **If Yes:** War costs $168B then (~$1T today, or $823B adjusted). Budget hits $179B; inflation surges (5-10% annual, peaking later). Debt up $0.25T; middle-class taxes rise, diverting from social programs. Your kids inherit 1970s stagflation—homes cost 2x more in real terms by 1980.
+
+  Updated Meters: Debt +$0.25T (to $0.55T). Inflation Impact: +20% cumulative (accelerated devaluation).
+
+- **If No:** Hypothetical: Save $1T; lower inflation, more domestic investment—your kids afford college without massive loans.
+
+| Year Range | Monthly Cost | Total Adjusted | Inflation Spike |
+|------------|--------------|----------------|----------------|
+| 1965-1973 | $3B (1968 peak) | $1T | 5-10% annual |
+
+**Quiz: What long-term kid impact from this?**
+A) Cheaper goods  
+B) Higher living costs via inflation/debt  
+C) More jobs  
+D) None  
+
+*(Correct: B – Eroded savings/power for future gens! +10 Insights.)*
+
+**Level 3: 1971 Nixon Shock – End the Gold Standard?**
+
+Dollar under pressure; suspend gold convertibility to allow flexible printing for deficits.
+
+**Decision:** Yes or No?
+
+- **If Yes:** Enables endless fiat; inflation drifts higher (avg. 5% 1971-2000, Great Inflation era). Debt balloons; dollar loses 85% value since. Your kids face wage stagnation—median income buys less by 2000.
+
+  Updated Meters: Debt +$0.5T by 1980 (to $1T). Inflation Impact: +40% (devaluation explodes).
+
+- **If No:** Hypothetical: Tied to gold, limits spending; stable dollar, lower inequality.
+
+| Pre/Post | Inflation Avg. | Dollar Loss |
+|----------|----------------|-------------|
+| Pre-1971 | ~2%            | Minimal     |
+| Post     | 4-5%           | 85% by 2025 |
+
+**Quiz: Why did this enable more inflation?**
+A) Fixed money supply  
+B) Allowed unlimited printing  
+C) Reduced debt  
+D) Gold hoarding  
+
+*(Correct: B – Broke scarcity rules! +10 Insights.)*
+
+**Level 4: 2008 Crisis – Bail Out Banks with TARP?**
+
+Financial meltdown; approve $700B to stabilize Wall Street.
+
+**Decision:** Yes or No?
+
+- **If Yes:** Costs $498B net (~3.5% GDP); debt jumps $2T (from $10T to $12T+). Low immediate inflation but sets precedent for QE/printing, inflating assets. Your kids: Housing bubbles, student debt soars to $1.7T by 2025.
+
+  Updated Meters: Debt +$2T (to $12T+). Inflation Impact: +10% (asset-driven).
+
+- **If No:** Hypothetical: Riskier crash but less moral hazard; potentially fairer recovery.
+
+| Program | Authorized | Net Cost | Debt Jump |
+|---------|------------|----------|-----------|
+| TARP    | $700B      | $498B    | +$2T      |
+
+**Quiz: Kid impact?**
+A) Lower home prices  
+B) Widened wealth gap via asset inflation  
+C) More bailouts for them  
+D) A only  
+
+*(Correct: B – Favored elites! +10 Insights.)*
+
+**Level 5: Post-9/11 Wars & COVID – Fund Iraq/Afghanistan and $5T Stimulus? (2001-2025)**
+
+Approve endless wars ($2.89T) and COVID packages ($5.6T).
+
+**Decision:** Yes or No?
+
+- **If Yes:** Wars: $4-6T long-term; COVID: Debt up 50%, inflation spikes to 9% (2022). Total debt hits $35T by 2025. Your kids: Unaffordable everything—homes $417K median, dependency on you.
+
+  Final Meters: Debt $35T+. Inflation Impact: +200%+ (dollar worth <20% of 1945).
+
+- **If No:** Hypothetical: Trillions saved; milder recessions, stable prices.
+
+| Event | Total Cost | Debt Add | Inflation |
+|-------|------------|----------|-----------|
+| Wars  | $2.89T+    | +$3T     | Indirect via debt |
+| COVID | $5.6T      | +$7T     | 9% peak   |
+
+**Quiz: Overall kid burden?**
+A) Stable economy  
+B) Inherited debt/inflation crises  
+C) Better tech  
+D) None  
+
+*(Correct: B – Systemic erosion! +10 Insights.)*
+
+**Final Level: Bitcoin Replay – A Fixed-Supply Alternative**
+
+Now, imagine a Bitcoin standard (21M fixed supply, no printing). Governments can't inflate for wars/bailouts—must tax/borrow honestly, limiting excess. Bitcoin's scarcity hedges devaluation; no "Nixon Shock" equivalent. In this world: Debt stays low (~$10T max), inflation near 0%. Your kids: Affordable lives, preserved savings.
+
+| Fiat vs. Bitcoin | Supply | Inflation Control | Kid Benefit |
+|------------------|--------|-------------------|-------------|
+| Fiat             | Unlimited | High from decisions | Eroded wealth |
+| Bitcoin          | 21M fixed | None—scarcity protects | Stable value, fairer system |
+
+**Game Over! Insight Score: [e.g., 50/50]**
+
+Your choices mirrored history's inflationary path. Bitcoin offers a reset: Decentralized, immune to overprinting—empowering individuals over endless government spending. Discuss with your kids! If expand, let me know.
