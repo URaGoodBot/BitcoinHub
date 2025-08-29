@@ -66,10 +66,9 @@ export function BullMarketIndicators() {
 
   const getProgressColor = (progress: string) => {
     const value = parseFloat(progress.replace('%', ''));
-    if (value < 30) return 'bg-red-500';
-    if (value < 60) return 'bg-yellow-500';
-    if (value < 80) return 'bg-orange-500';
-    return 'bg-red-600';
+    if (value < 25) return 'bg-red-500';
+    if (value <= 75) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
   const getSignalColor = (signal: 'Hold' | 'Sell') => {
@@ -229,11 +228,16 @@ export function BullMarketIndicators() {
                       <span className="text-xs text-muted-foreground">Progress</span>
                       <span className="text-xs font-medium">{indicator.progress}</span>
                     </div>
-                    <Progress 
-                      value={parseFloat(indicator.progress.replace('%', ''))} 
-                      className="h-2"
-                      indicatorClassName={getProgressColor(indicator.progress)}
-                    />
+                    <div className="relative">
+                      <Progress 
+                        value={parseFloat(indicator.progress.replace('%', ''))} 
+                        className="h-2"
+                      />
+                      <div 
+                        className={`absolute top-0 left-0 h-2 rounded-full transition-all ${getProgressColor(indicator.progress)}`}
+                        style={{ width: `${parseFloat(indicator.progress.replace('%', ''))}%` }}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-between items-center text-xs pt-1">
