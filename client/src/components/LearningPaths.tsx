@@ -255,8 +255,8 @@ export function LearningPaths() {
           <Card key={path.id} className="bg-card border-muted/20 hover:shadow-lg transition-all duration-200 group cursor-pointer">
             <CardHeader>
               <div className="flex items-start justify-between mb-4">
-                <div className={`p-4 rounded-xl ${path.color} text-white text-3xl group-hover:scale-110 transition-transform`}>
-                  {path.isGame ? <Gamepad2 className="h-8 w-8" /> : path.icon}
+                <div className={`p-4 rounded-xl ${path.color} text-white text-3xl group-hover:scale-110 transition-transform shadow-lg ring-2 ring-white/20 group-hover:ring-white/40`}>
+                  {path.isGame ? <Gamepad2 className="h-8 w-8 drop-shadow-lg" /> : path.icon}
                 </div>
                 <Badge variant="outline" className="bg-background">
                   <Clock className="mr-1 h-3 w-3" />
