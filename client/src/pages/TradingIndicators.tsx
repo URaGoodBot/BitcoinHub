@@ -1,19 +1,19 @@
-import { CryptoIndicators } from "@/components/CryptoIndicators";
+import { BullMarketIndicators } from "@/components/BullMarketIndicators";
 
 const TradingIndicators = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="border-b border-muted/20 pb-4 mb-6">
         <div className="flex justify-between items-center mb-2">
-          <h1 className="text-2xl font-bold text-foreground">Bitcoin Trading Indicators</h1>
+          <h1 className="text-2xl font-bold text-foreground">Bull Market Peak Indicators</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Comprehensive AI-powered analysis of 30+ technical indicators with live Bitcoin data, price predictions, and market insights.
+          30 key indicators from CoinGlass to help identify Bitcoin bull market peaks. Data refreshes every 5 minutes with real-time analysis.
         </p>
       </header>
       
-      {/* Cryptocurrency Trading Indicators */}
-      <CryptoIndicators />
+      {/* Bull Market Peak Indicators */}
+      <BullMarketIndicators />
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { getMarketSentiment } from "./api/sentiment";
 import { getLegislationData, refreshLegislationData } from "./api/legislation";
 import { getInflationData } from "./api/inflation";
+import { getCoinglassIndicators } from "./api/coinglass-indicators";
 import { z } from "zod";
 import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -1116,6 +1117,20 @@ All this data is updated live in the dashboard above. Try asking about specific 
     } catch (error) {
       console.error("Error uploading legislation data:", error);
       res.status(500).json({ error: "Failed to upload legislation data" });
+    }
+  });
+
+  // Bull Market Peak Indicators from CoinGlass
+  app.get(`${apiPrefix}/indicators/bull-market-signals`, async (req, res) => {
+    try {
+      const indicators = await getCoinglassIndicators();
+      res.json(indicators);
+    } catch (error) {
+      console.error('Error fetching CoinGlass bull market indicators:', error);
+      res.status(500).json({ 
+        message: "Failed to fetch bull market indicators",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 

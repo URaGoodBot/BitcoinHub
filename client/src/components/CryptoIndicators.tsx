@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp, TrendingDown, BarChart3, Search, ExternalLink, Activity, Zap, Target, Gauge, RefreshCw, AlertTriangle, Brain, DollarSign } from "lucide-react";
+import { TrendingUp, TrendingDown, Search, RefreshCw, AlertTriangle, Target, ExternalLink } from "lucide-react";
 
 interface TradingIndicator {
   id: string;
