@@ -11,6 +11,8 @@ import { BitcoinTimeMachine } from "./BitcoinTimeMachine";
 import { BitcoinBoomGame } from "./BitcoinBoomGame";
 import { PolicySimulatorGame } from "./PolicySimulatorGame";
 import { MillennialEscapeGame } from "./MillennialEscapeGame";
+import { TreasureHuntGame } from "./TreasureHuntGame";
+import { EscapeRoomGame } from "./EscapeRoomGame";
 
 interface LearningPath {
   id: string;
@@ -40,6 +42,8 @@ interface LearningPathsData {
   millennialEscape: LearningPath;
   bitcoinTimeMachine: LearningPath;
   dollarDilemma: LearningPath;
+  treasureHunt: LearningPath;
+  escapeRoom: LearningPath;
 }
 
 export function LearningPaths() {
@@ -123,6 +127,20 @@ export function LearningPaths() {
     } else if (selectedPath.id === 'millennial-escape-game') {
       return (
         <MillennialEscapeGame 
+          gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'bitcoin-treasure-hunt') {
+      return (
+        <TreasureHuntGame 
+          gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'crypto-escape-room') {
+      return (
+        <EscapeRoomGame 
           gameData={selectedPath.gameData} 
           onBack={handleBackToPaths}
         />

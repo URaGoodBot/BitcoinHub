@@ -1791,6 +1791,234 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        treasureHunt: {
+          id: "bitcoin-treasure-hunt",
+          title: "Bitcoin Treasure Hunt: Boomer Legacy Quest",
+          subtitle: "Secure Your Family's Financial Future",
+          description: "Navigate economic history as a treasure hunter uncovering Bitcoin's value as a legacy tool. Collect Bitcoin Gold Coins by solving historical puzzles and avoid Fiat Traps to build wealth for your children and grandchildren.",
+          color: "bg-amber-600",
+          icon: "🏴‍☠️",
+          estimatedTime: "25-35 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "The Gold Standard Clue – 1971 Shift",
+                story: "You're a seasoned treasure hunter in 2025, exploring a map of economic history. Your first clue leads to the spot where the dollar lost its gold anchor. In 1971, Nixon ended convertibility, sparking the inflation that now runs at 2.7% in 2025. Find this treasure while avoiding the Fiat Trap of hoarding cash.",
+                data: {
+                  title: "The 1971 Economic Shift",
+                  stats: [
+                    { label: "Dollar Value Lost", value: "85%", note: "Since 1971 to 2025" },
+                    { label: "Current Bitcoin Price", value: "$110,000", note: "Aug 29, 2025 - fixed supply alternative" },
+                    { label: "Cash Devaluation", value: "2-3% yearly", note: "Through inflation erosion" }
+                  ]
+                },
+                quiz: {
+                  question: "What caused the start of persistent inflation in 1971?",
+                  options: [
+                    "A) Gold standard abandonment",
+                    "B) War costs alone",
+                    "C) Tax cuts",
+                    "D) Technology boom"
+                  ],
+                  correct: 0,
+                  explanation: "Correct! Nixon's move to end gold convertibility removed the anchor that kept money printing in check, starting the inflationary cycle that hurt your children's purchasing power.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "The Inflation Cave – 2008 Bailout Pitfall",
+                story: "Your treasure map leads to a dangerous cave filled with the remnants of the $700B TARP bailout. Government debt jumped $2T, inflating assets to levels your Millennial children can't afford. Navigate carefully to avoid supporting more bailouts that hurt the next generation.",
+                data: {
+                  title: "The 2008 Bailout Impact on Your Children",
+                  stats: [
+                    { label: "Current Home Prices", value: "$417K", note: "2025 average, up from $82K in 1985" },
+                    { label: "Millennial Homeownership", value: "42%", note: "vs Boomers' 55% at same age" },
+                    { label: "Asset Inflation Impact", value: "3x higher", note: "Housing costs vs wages since 2008" }
+                  ]
+                },
+                quiz: {
+                  question: "How did the 2008 bailouts primarily hurt your children's generation?",
+                  options: [
+                    "A) Through asset price inflation",
+                    "B) By creating more jobs",
+                    "C) By lowering taxes",
+                    "D) It had no effect"
+                  ],
+                  correct: 0,
+                  explanation: "Exactly! Asset inflation from money printing made homes, stocks, and other wealth-building assets expensive just as your children entered their earning years.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "The Bitcoin Vault – 2025 Opportunity",
+                story: "You've discovered Bitcoin's vault! Its mathematical 21 million coin cap resists the printing that has devalued everything else. Bitcoin is up 18% year-to-date to $110K, and 6-10% of Boomers are using it as a hedge. A small 0.1 BTC gift could grow to $11K+ for your grandchildren.",
+                data: {
+                  title: "Bitcoin as Legacy Protection",
+                  stats: [
+                    { label: "Boomer Crypto Adoption", value: "6-10%", note: "Growing for retirement hedges" },
+                    { label: "Bitcoin YTD Performance", value: "+18%", note: "Strong 2025 performance to $110K" },
+                    { label: "0.1 BTC Gift Value", value: "$11,000+", note: "Current value for grandchildren" }
+                  ]
+                },
+                quiz: {
+                  question: "What gives Bitcoin its edge as a legacy preservation tool?",
+                  options: [
+                    "A) Unlimited supply growth",
+                    "B) Fixed 21 million cap",
+                    "C) Government control",
+                    "D) High transaction fees"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect! Bitcoin's mathematical scarcity (only 21 million will ever exist) protects against the money printing that has eroded your generation's purchasing power.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Legacy Treasure Chest – Action Time",
+                story: "You've reached the treasure chest! Now use your Bitcoin Gold Coins to build a real legacy. Your options: educate your family about sound money (like Michael Saylor's course), invest 5% of assets in BTC, or start a family Bitcoin wallet. Remember, 60% of young people want Boomer guidance on crypto.",
+                data: {
+                  title: "Building Your Bitcoin Legacy",
+                  stats: [
+                    { label: "Youth Seeking Guidance", value: "60%", note: "Want family financial education from Boomers" },
+                    { label: "Recommended Allocation", value: "5-10%", note: "Conservative Bitcoin position for hedging" },
+                    { label: "Education Impact", value: "High", note: "Financial literacy multiplies wealth preservation" }
+                  ]
+                },
+                quiz: {
+                  question: "What's the most effective legacy move for a Boomer in 2025?",
+                  options: [
+                    "A) Large cash gifts that inflate away",
+                    "B) Crypto education and small BTC gifts",
+                    "C) Taking on more debt for family",
+                    "D) Ignoring new financial tools"
+                  ],
+                  correct: 1,
+                  explanation: "Excellent choice! Education creates lasting wealth-building skills, while small Bitcoin gifts introduce your family to sound money that preserves value across generations.",
+                  points: 10
+                }
+              }
+            ]
+          }
+        },
+        escapeRoom: {
+          id: "crypto-escape-room",
+          title: "Crypto Escape Room: Millennial Breakout",
+          subtitle: "Break Free from the Fiat Prison",
+          description: "You're trapped in a 2025 'Fiat Prison' of inflation and debt. Solve economic puzzles using Bitcoin knowledge, investment strategies, and community building to earn Freedom Keys and escape with a wealth-building plan.",
+          color: "bg-indigo-600",
+          icon: "🔐",
+          estimatedTime: "20-30 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "The Inflation Lock – Decode the Devaluation",
+                story: "You're locked in the Fiat Prison where inflation at 2.7% (July 2025) is slowly eroding your $50K savings by $1,350 yearly. The first lock requires you to find the right hedge against this silent wealth theft. Choose wisely to earn your first Freedom Key.",
+                data: {
+                  title: "The Inflation Trap",
+                  stats: [
+                    { label: "Current Inflation Rate", value: "2.7%", note: "July 2025 - eroding savings power" },
+                    { label: "Your Annual Loss", value: "$1,350", note: "On $50K savings in cash" },
+                    { label: "Dollar Decline Since 2020", value: "23%", note: "vs Bitcoin up 3,112% historically" }
+                  ]
+                },
+                quiz: {
+                  question: "What's your best defense against inflation eroding your savings?",
+                  options: [
+                    "A) Keep everything in cash",
+                    "B) Buy Bitcoin with fixed supply",
+                    "C) Government bonds at 2%",
+                    "D) Luxury spending sprees"
+                  ],
+                  correct: 1,
+                  explanation: "Correct! Bitcoin's scarcity (21 million cap) has historically outpaced inflation, protecting purchasing power when fiat currencies lose value through printing.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "The Debt Chain – Break Student Loan Bonds",
+                story: "Heavy chains of student debt weigh you down - part of the $1.7T crushing your generation. Your average $40K burden keeps you trapped. The key to breaking these chains lies in combining side hustles with smart crypto investments. Over 50% of Millennials already own crypto for this reason.",
+                data: {
+                  title: "The Student Debt Crisis",
+                  stats: [
+                    { label: "Total Student Debt", value: "$1.7 trillion", note: "Crushing Millennial wealth building" },
+                    { label: "Average Individual Debt", value: "$40,000", note: "Delaying homeownership and families" },
+                    { label: "Millennials in Crypto", value: "50%+", note: "Using new tools for financial freedom" }
+                  ]
+                },
+                quiz: {
+                  question: "What's the fastest path to escape crushing student debt?",
+                  options: [
+                    "A) Take out more loans for expenses",
+                    "B) Combine crypto investments with side hustles",
+                    "C) Ignore the debt and hope for forgiveness",
+                    "D) Put everything in high-fee savings accounts"
+                  ],
+                  correct: 1,
+                  explanation: "Smart choice! Side hustles ($500-$1K/month) plus strategic crypto allocation create multiple income streams to accelerate debt payoff and build wealth simultaneously.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "The Community Door – Build a Support Network",
+                story: "The prison's community door is locked, but you can pick it by building connections. Starting a Discord for 100 Millennials to share Bitcoin tips and strategies multiplies everyone's knowledge. In 2025, 72% of young adults are taking action against rising costs, and DAOs are growing 30% annually.",
+                data: {
+                  title: "The Power of Financial Communities",
+                  stats: [
+                    { label: "Young Adults Taking Action", value: "72%", note: "Against rising costs in 2025" },
+                    { label: "DAO Growth Rate", value: "30%", note: "Annual growth in decentralized communities" },
+                    { label: "Community Learning Multiplier", value: "5x faster", note: "Shared knowledge vs solo learning" }
+                  ]
+                },
+                quiz: {
+                  question: "Why is building a financial community crucial for Millennials?",
+                  options: [
+                    "A) Faster learning and shared strategies",
+                    "B) Higher fees and costs",
+                    "C) No real benefit",
+                    "D) Isolation works better"
+                  ],
+                  correct: 0,
+                  explanation: "Absolutely! Communities multiply your learning speed, share successful strategies, and provide support during market volatility. Together you're stronger than the system trying to keep you down.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "The Wealth Exit – Craft Your Freedom Plan",
+                story: "You've reached the final exit! Use your Freedom Keys to unlock your escape plan. Your options: invest 5% in Bitcoin ($110K), diversify with REITs for inflation protection, or develop AI skills for higher income. With Bitcoin up 18% YTD and REITs up 5%, smart diversification is key to permanent escape.",
+                data: {
+                  title: "Your 2025 Wealth Building Options",
+                  stats: [
+                    { label: "Bitcoin YTD Performance", value: "+18%", note: "Strong 2025 performance" },
+                    { label: "REIT Performance", value: "+5%", note: "Inflation-protected real estate" },
+                    { label: "AI Skills Premium", value: "40%+ salary", note: "Tech skills command premium pay" }
+                  ]
+                },
+                quiz: {
+                  question: "What's the best 2025 strategy for Millennial wealth building?",
+                  options: [
+                    "A) Hoard cash and hope for the best",
+                    "B) Diversified hedges: crypto, real estate, skills",
+                    "C) Take on more debt for consumption",
+                    "D) Do nothing and complain online"
+                  ],
+                  correct: 1,
+                  explanation: "Perfect escape plan! Diversification across Bitcoin (inflation hedge), REITs (real assets), and high-value skills creates multiple wealth streams that can't be easily devalued by monetary policy.",
+                  points: 10
+                }
+              }
+            ]
+          }
         }
       };
       
