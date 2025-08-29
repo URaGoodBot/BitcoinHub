@@ -9,6 +9,7 @@ import Learn from "@/pages/Learn";
 import NewsFeed from "@/pages/NewsFeed";
 import WebResources from "@/pages/WebResources";
 import Legislation from "@/pages/Legislation";
+import TradingIndicators from "@/pages/TradingIndicators";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
@@ -21,6 +22,7 @@ function Router() {
         <Route path="/learn" component={Learn} />
         <Route path="/web-resources" component={WebResources} />
         <Route path="/legislation" component={Legislation} />
+        <Route path="/indicators" component={TradingIndicators} />
         <Route path="/admin" component={Admin} />
         <Route component={NotFound} />
       </Switch>

@@ -22,7 +22,8 @@ const Navbar = () => {
     refetchInterval: 2 * 60 * 1000, // Check every 2 minutes for new notifications
   });
 
-  const unreadCount = notifications.filter((n: any) => !n.read).length;
+  const notificationsList = Array.isArray(notifications) ? notifications : [];
+  const unreadCount = notificationsList.filter((n: any) => !n.read).length;
 
   // Mutation to mark notification as read and remove it
   const markAsReadMutation = useMutation({
@@ -115,6 +116,11 @@ const Navbar = () => {
                   Legislation
                 </a>
               </Link>
+              <Link href="/indicators">
+                <a className={`${isActiveLink('/indicators') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Indicators
+                </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -142,9 +148,9 @@ const Navbar = () => {
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
                     <p className="text-sm text-muted-foreground mt-2">Loading notifications...</p>
                   </div>
-                ) : notifications.length > 0 ? (
+                ) : notificationsList.length > 0 ? (
                   <div className="max-h-96 overflow-y-auto">
-                    {(showAllNotifications ? notifications : notifications.slice(0, 5)).map((notification: any) => {
+                    {(showAllNotifications ? notificationsList : notificationsList.slice(0, 5)).map((notification: any) => {
                       const Icon = getNotificationIcon(notification.type);
                       return (
                         <DropdownMenuItem 
@@ -208,9 +214,9 @@ const Navbar = () => {
                     className="flex-1 justify-center text-sm text-primary cursor-pointer"
                     onClick={handleViewAllNotifications}
                   >
-                    {showAllNotifications ? 'Show less' : `View all (${notifications.length})`}
+                    {showAllNotifications ? 'Show less' : `View all (${notificationsList.length})`}
                   </DropdownMenuItem>
-                  {notifications.length > 0 && (
+                  {notificationsList.length > 0 && (
                     <DropdownMenuItem 
                       className="justify-center text-sm text-destructive cursor-pointer"
                       onClick={handleClearAllNotifications}
@@ -264,6 +270,16 @@ const Navbar = () => {
             <Link href="/web-resources">
               <a className={`${isActiveLink('/web-resources') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
                 Web Resources
+              </a>
+            </Link>
+            <Link href="/legislation">
+              <a className={`${isActiveLink('/legislation') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+                Legislation
+              </a>
+            </Link>
+            <Link href="/indicators">
+              <a className={`${isActiveLink('/indicators') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+                Indicators
               </a>
             </Link>
           </div>
