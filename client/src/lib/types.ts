@@ -141,13 +141,13 @@ export interface TwitterAuthor {
   username: string;
   displayName: string;
   verified: boolean;
-  profileImageUrl: string;
+  avatar?: string; // Changed from profileImageUrl to avatar for consistency
 }
 
 export interface TwitterMetrics {
-  likes: number;
-  retweets: number;
-  replies: number;
+  likes?: number;
+  retweets?: number;
+  comments?: number; // Changed from replies to comments for consistency
 }
 
 export interface TwitterPost {
@@ -155,7 +155,8 @@ export interface TwitterPost {
   author: TwitterAuthor;
   text: string;
   createdAt: string;
-  metrics: TwitterMetrics;
+  metrics?: TwitterMetrics;
   hashtags: string[];
-  imageUrl?: string; // Optional image URL from Reddit posts
+  imageUrl?: string;
+  url?: string; // Add URL field for external links
 }
