@@ -85,7 +85,7 @@ Preferred communication style: Simple, everyday language.
   - Real-time countdown timer for next data refresh
   - Direct comparison highlighting the difference between real-time and delayed official data
 - **Renamed Dashboard to Analytics and reorganized navigation with Learn tab as first menu item**
-- **Enhanced X/Twitter News Section**: Redesigned the Twitter feed to be more Twitter-like with authentic post styling, interactive buttons, avatars, and improved layout matching modern social media design patterns
+- **Simplified News Feed**: Removed Reddit, Twitter, and trending sections per user request, keeping only the actual news section and upcoming events for a cleaner, more focused experience
 - **Complete Learning Section Redesign**: Replaced complex course catalog with five distinct interactive games
   - Bitcoin Boom Game: Interactive Boomer-focused journey through fiat system flaws and Bitcoin solutions
   - Policy Simulator Game: Experience consequences of historical government spending decisions from WWII to 2025

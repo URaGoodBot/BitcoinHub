@@ -8,9 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, RefreshCw, Clock, MapPin, Calendar, Users, ExternalLink, Globe, Newspaper, MessageCircle, Twitter, BarChart2, TrendingUp } from "lucide-react";
+import { Search, RefreshCw, Clock, MapPin, Calendar, Users, ExternalLink, Globe, Newspaper, MessageCircle, TrendingUp } from "lucide-react";
 import { NewsItem, TwitterPost } from "@/lib/types";
-import { TwitterFeed } from "@/components/TwitterFeed";
 
 interface CryptoEvent {
   id: string;
@@ -242,7 +241,7 @@ const FeedSkeleton = ({ count }: { count: number }) => (
 );
 
 const NewsFeed = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("news");
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   
@@ -257,27 +256,9 @@ const NewsFeed = () => {
     refetchInterval: 60000, // Refresh every minute
   });
   
-  // Twitter data
-  const { 
-    data: twitterPosts, 
-    isLoading: isLoadingTwitter, 
-    refetch: refetchTwitter 
-  } = useQuery({
-    queryKey: ["/api/twitter/tweets", refreshTrigger],
-    refetchOnWindowFocus: false,
-    refetchInterval: 60000, // Refresh every minute
-  });
-
-  // Twitter hashtags
-  const { 
-    data: twitterHashtags, 
-    isLoading: isLoadingHashtags 
-  } = useQuery({
-    queryKey: ["/api/twitter/hashtags"],
-    refetchOnWindowFocus: false,
-  });
+  // Remove Twitter data queries since we're removing those sections
   
-  // Filter news and twitter based on search query
+  // Filter news based on search query
   const filteredNews = (newsItems as NewsItem[])?.filter(item => 
     searchQuery === "" || 
     item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -285,54 +266,19 @@ const NewsFeed = () => {
     item.source.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
   
-  const filteredTwitter = (twitterPosts as TwitterPost[])?.filter(post => 
-    searchQuery === "" || 
-    post.text.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    post.author.username.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    post.author.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    post.hashtags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  ) || [];
-  
-  // Combined feed for "All" tab
-  const combinedFeed = [];
-  const maxItems = Math.max(filteredNews?.length || 0, filteredTwitter?.length || 0);
-  
-  for (let i = 0; i < maxItems; i++) {
-    if (i < filteredNews?.length) {
-      combinedFeed.push({ type: 'news', item: filteredNews[i] });
-    }
-    if (i < filteredTwitter?.length) {
-      combinedFeed.push({ type: 'reddit', item: filteredTwitter[i] });
-    }
-  }
-  
-  // Sort combined feed by timestamp (newest first)
-  combinedFeed.sort((a, b) => {
-    const dateA = new Date(a.type === 'news' 
-      ? (a.item as NewsItem).publishedAt 
-      : (a.item as TwitterPost).createdAt
-    );
-    const dateB = new Date(b.type === 'news' 
-      ? (b.item as NewsItem).publishedAt 
-      : (b.item as TwitterPost).createdAt
-    );
-    return dateB.getTime() - dateA.getTime();
-  });
-  
   // Handle refresh
   const handleRefresh = () => {
     setRefreshTrigger(prev => prev + 1);
     refetchNews();
-    refetchTwitter();
   };
   
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Bitcoin News & Social Feed</h1>
+          <h1 className="text-2xl font-bold text-foreground">Bitcoin News & Updates</h1>
           <p className="text-sm text-muted-foreground">
-            Stay updated with the latest Bitcoin news and social media conversations
+            Stay updated with the latest Bitcoin news and upcoming events
           </p>
         </div>
         <Button variant="outline" onClick={handleRefresh} className="flex items-center">
@@ -350,7 +296,7 @@ const NewsFeed = () => {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search news and tweets..."
+                  placeholder="Search news articles..."
                   className="pl-9 bg-muted"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -359,58 +305,16 @@ const NewsFeed = () => {
             </CardHeader>
             
             <CardContent className="p-0">
-              <Tabs defaultValue="all" className="w-full" value={activeTab} onValueChange={setActiveTab}>
+              <Tabs defaultValue="news" className="w-full" value={activeTab} onValueChange={setActiveTab}>
                 <div className="px-6 pt-2">
                   <TabsList className="w-full">
-                    <TabsTrigger value="all" className="flex-1">
-                      <Globe className="h-4 w-4 mr-2" />
-                      All
-                    </TabsTrigger>
                     <TabsTrigger value="news" className="flex-1">
                       <Newspaper className="h-4 w-4 mr-2" />
                       News
                     </TabsTrigger>
-                    <TabsTrigger value="reddit" className="flex-1">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Reddit
-                    </TabsTrigger>
-                    <TabsTrigger value="twitter" className="flex-1">
-                      <Twitter className="h-4 w-4 mr-2" />
-                      X/Twitter
-                    </TabsTrigger>
-                    <TabsTrigger value="trending" className="flex-1">
-                      <BarChart2 className="h-4 w-4 mr-2" />
-                      Trending
-                    </TabsTrigger>
                   </TabsList>
                 </div>
                 
-                {/* All Tab - Combined feed */}
-                <TabsContent value="all" className="p-0">
-                  <ScrollArea className="h-[800px]">
-                    <div className="p-6 space-y-4">
-                      {isLoadingNews || isLoadingTwitter ? (
-                        <FeedSkeleton count={5} />
-                      ) : combinedFeed.length === 0 ? (
-                        <div className="text-center py-8">
-                          <p className="text-muted-foreground">No content matching your search</p>
-                        </div>
-                      ) : (
-                        combinedFeed.map((item, index) => (
-                          <div key={`${item.type}-${index}`}>
-                            {item.type === 'news' ? (
-                              <NewsCard item={item.item as NewsItem} />
-                            ) : (
-                              <RedditPostCard post={item.item as TwitterPost} />
-                            )}
-                            {index < combinedFeed.length - 1 && <Separator className="my-4" />}
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </ScrollArea>
-                </TabsContent>
-
                 {/* News Tab */}
                 <TabsContent value="news" className="p-0">
                   <ScrollArea className="h-[800px]">
@@ -429,87 +333,6 @@ const NewsFeed = () => {
                           </div>
                         ))
                       )}
-                    </div>
-                  </ScrollArea>
-                </TabsContent>
-
-                {/* Reddit Tab */}
-                <TabsContent value="reddit" className="p-0">
-                  <div className="px-6 pt-3 pb-2">
-                    <div className="flex items-center gap-2 overflow-x-auto pb-2">
-                      {!isLoadingHashtags && (twitterHashtags as string[])?.map((hashtag) => (
-                        <Badge 
-                          key={hashtag}
-                          variant="outline"
-                          className="cursor-pointer whitespace-nowrap"
-                        >
-                          {hashtag}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Content from r/Bitcoin
-                    </div>
-                  </div>
-                  <ScrollArea className="h-[800px]">
-                    <div className="p-6 space-y-4">
-                      {isLoadingTwitter ? (
-                        <FeedSkeleton count={5} />
-                      ) : filteredTwitter.length === 0 ? (
-                        <div className="text-center py-8">
-                          <p className="text-muted-foreground">No Reddit posts matching your search</p>
-                        </div>
-                      ) : (
-                        filteredTwitter.map((post, index) => (
-                          <div key={post.id}>
-                            <RedditPostCard post={post} />
-                            {index < filteredTwitter.length - 1 && <Separator className="my-4" />}
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </ScrollArea>
-                </TabsContent>
-                
-                {/* Twitter/X Feed Tab */}
-                <TabsContent value="twitter" className="p-0">
-                  <TwitterFeed searchQuery={searchQuery} />
-                </TabsContent>
-
-                {/* Trending Tab */}
-                <TabsContent value="trending" className="p-0">
-                  <ScrollArea className="h-[800px]">
-                    <div className="p-6">
-                      <h3 className="text-lg font-semibold mb-4">Trending Topics</h3>
-                      <div className="grid grid-cols-1 gap-6">
-                        {/* Trending Hashtags */}
-                        <Card>
-                          <CardHeader>
-                            <h4 className="text-base font-semibold">Popular Hashtags</h4>
-                          </CardHeader>
-                          <CardContent>
-                            {isLoadingHashtags ? (
-                              <div className="space-y-3">
-                                {[1, 2, 3, 4, 5].map(i => (
-                                  <div key={i} className="h-6 bg-muted rounded animate-pulse"></div>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="space-y-2">
-                                {(twitterHashtags as string[])?.map((hashtag, index) => (
-                                  <div key={hashtag} className="flex items-center justify-between">
-                                    <div className="flex items-center">
-                                      <span className="font-medium text-muted-foreground mr-2">{index + 1}</span>
-                                      <span className="font-medium">{hashtag}</span>
-                                    </div>
-                                    <Badge variant="outline">{Math.floor(Math.random() * 10000)} posts</Badge>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </div>
                     </div>
                   </ScrollArea>
                 </TabsContent>
