@@ -17,9 +17,9 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/" component={Learn} />
+        <Route path="/analytics" component={Dashboard} />
         <Route path="/news" component={NewsFeed} />
-        <Route path="/learn" component={Learn} />
         <Route path="/web-resources" component={WebResources} />
         <Route path="/legislation" component={Legislation} />
         <Route path="/indicators" component={TradingIndicators} />

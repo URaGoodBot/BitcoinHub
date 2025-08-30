@@ -84,6 +84,7 @@ Preferred communication style: Simple, everyday language.
   - Daily updates vs monthly government reports (45 days ahead)
   - Real-time countdown timer for next data refresh
   - Direct comparison highlighting the difference between real-time and delayed official data
+- **Renamed Dashboard to Analytics and reorganized navigation with Learn tab as first menu item**
 - **Complete Learning Section Redesign**: Replaced complex course catalog with five distinct interactive games
   - Bitcoin Boom Game: Interactive Boomer-focused journey through fiat system flaws and Bitcoin solutions
   - Policy Simulator Game: Experience consequences of historical government spending decisions from WWII to 2025

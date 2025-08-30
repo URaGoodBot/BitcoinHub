@@ -93,17 +93,17 @@ const Navbar = () => {
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
               <Link href="/">
                 <a className={`${isActiveLink('/') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                  Dashboard
+                  Learn
+                </a>
+              </Link>
+              <Link href="/analytics">
+                <a className={`${isActiveLink('/analytics') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                  Analytics
                 </a>
               </Link>
               <Link href="/news">
                 <a className={`${isActiveLink('/news') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
                   News
-                </a>
-              </Link>
-              <Link href="/learn">
-                <a className={`${isActiveLink('/learn') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
-                  Learn
                 </a>
               </Link>
               <Link href="/web-resources">
