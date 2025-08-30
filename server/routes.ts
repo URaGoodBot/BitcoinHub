@@ -622,6 +622,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Truflation inflation data
+  app.get(`${apiPrefix}/financial/truflation`, async (req, res) => {
+    try {
+      console.log('Fetching Truflation US Inflation Index data...');
+      const { getTruflationData } = await import('./api/truflation.js');
+      const truflationData = await getTruflationData();
+      res.json(truflationData);
+    } catch (error) {
+      console.error("Error fetching Truflation data:", error);
+      res.status(500).json({ message: "Failed to fetch Truflation inflation data" });
+    }
+  });
+
+  // Truflation vs BLS comparison
+  app.get(`${apiPrefix}/financial/inflation-comparison`, async (req, res) => {
+    try {
+      console.log('Fetching Truflation vs BLS inflation comparison...');
+      const { getTruflationComparison } = await import('./api/truflation.js');
+      const comparison = await getTruflationComparison();
+      res.json(comparison);
+    } catch (error) {
+      console.error("Error fetching inflation comparison:", error);
+      res.status(500).json({ message: "Failed to fetch inflation comparison data" });
+    }
+  });
+
   // Chatbot endpoint
   app.post(`${apiPrefix}/chatbot/ask`, async (req, res) => {
     try {

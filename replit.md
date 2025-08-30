@@ -76,8 +76,14 @@ Preferred communication style: Simple, everyday language.
 - **alternative.me**: Fear & Greed Index
 - **Grok xAI**: AI-powered analysis, chatbot, trading indicators analysis, price predictions, and legislative updates
 - **CoinPaprika**: On-chain metrics
+- **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (August 2025)
+- **Truflation Integration**: Added real-time US inflation data widget with 5-minute auto-refresh placed alongside Fed Watch Tool
+  - Shows current Truflation rate (2.16%) vs BLS official rate comparison
+  - Daily updates vs monthly government reports (45 days ahead)
+  - Real-time countdown timer for next data refresh
+  - Direct comparison highlighting the difference between real-time and delayed official data
 - **Complete Learning Section Redesign**: Replaced complex course catalog with five distinct interactive games
   - Bitcoin Boom Game: Interactive Boomer-focused journey through fiat system flaws and Bitcoin solutions
   - Policy Simulator Game: Experience consequences of historical government spending decisions from WWII to 2025
