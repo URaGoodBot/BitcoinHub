@@ -13,6 +13,7 @@ import { PolicySimulatorGame } from "./PolicySimulatorGame";
 import { MillennialEscapeGame } from "./MillennialEscapeGame";
 import { TreasureHuntGame } from "./TreasureHuntGame";
 import { EscapeRoomGame } from "./EscapeRoomGame";
+import { BitcoinQuestGame } from "./BitcoinQuestGame";
 
 interface LearningPath {
   id: string;
@@ -44,6 +45,7 @@ interface LearningPathsData {
   dollarDilemma: LearningPath;
   treasureHunt: LearningPath;
   escapeRoom: LearningPath;
+  bitcoinQuest: LearningPath;
 }
 
 export function LearningPaths() {
@@ -142,6 +144,12 @@ export function LearningPaths() {
       return (
         <EscapeRoomGame 
           gameData={selectedPath.gameData} 
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'bitcoin-quest-game') {
+      return (
+        <BitcoinQuestGame 
           onBack={handleBackToPaths}
         />
       );

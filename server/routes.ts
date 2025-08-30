@@ -2045,6 +2045,74 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        bitcoinQuest: {
+          id: "bitcoin-quest-game",
+          title: "Bitcoin Quest: Rise to Riches",
+          subtitle: "An Educational Adventure for Boomers",
+          description: "You're Pat, a retiree in 2025, exploring Bitcoin's origins and evolution through a charming farmers' market adventure. Learn about Satoshi Nakamoto, Operation Chokepoint 2.0, FTX collapse, and stablecoins through simple, relatable analogies and engaging storytelling.",
+          color: "bg-orange-500",
+          icon: "🛒",
+          estimatedTime: "45-60 min",
+          isGame: true,
+          gameData: {
+            chapters: [
+              {
+                id: 1,
+                title: "The Mystery of Satoshi",
+                setting: "Coffee Stall at Farmers' Market",
+                description: "Meet Sam, your tech-savvy neighbor, and learn about Satoshi Nakamoto, the mysterious creator of Bitcoin and the 2008 white paper.",
+                objective: "Understand Bitcoin's origins and the double-spend problem solution",
+                completed: false,
+                analogy: "Bitcoin is like 'digital gold' — limited, valuable, and not controlled by a bank."
+              },
+              {
+                id: 2,
+                title: "The Rise of Bitcoin",
+                setting: "Fruit Stall Accepting Bitcoin", 
+                description: "Explore Bitcoin's early days from 2009-2020, including the genesis block and the 2017 bull run. Learn about mining and scarcity.",
+                objective: "Complete a mining puzzle and make your first Bitcoin purchase",
+                completed: false,
+                analogy: "Bitcoin mining is like solving a puzzle to unlock a safe, with only so many safes available."
+              },
+              {
+                id: 3,
+                title: "Operation Chokepoint 2.0",
+                setting: "Newsstand with Headlines",
+                description: "Understand the 2023 regulatory crackdown on crypto-friendly banks like Silvergate and Signature, and how it affected the industry.",
+                objective: "Navigate regulatory challenges and learn about crypto resilience",
+                completed: false,
+                analogy: "Banks closing crypto accounts is like a store refusing your cash because they don't like where you shop."
+              },
+              {
+                id: 4,
+                title: "The FTX Fallout",
+                setting: "Vendor Selling Crypto News",
+                description: "Learn about the 2022 FTX collapse, Sam Bankman-Fried's fraud, and important lessons about due diligence and risk management.",
+                objective: "Pass the FTX knowledge quiz and earn risk awareness badge",
+                completed: false,
+                analogy: "FTX is like a bank that lent out your savings without telling you, then went bankrupt."
+              },
+              {
+                id: 5,
+                title: "Stablecoins at the Market",
+                setting: "Vegetable Stall Accepting Stablecoins",
+                description: "Discover stablecoins like USDT and their role in reducing volatility. Practice using them for everyday purchases.",
+                objective: "Successfully complete a stablecoin transaction",
+                completed: false,
+                analogy: "Stablecoins are like gift cards — they hold steady value and can be used anywhere that accepts them."
+              },
+              {
+                id: 6,
+                title: "The Future of Bitcoin",
+                setting: "Community Board with Predictions",
+                description: "Explore Bitcoin's potential as a global reserve asset, corporate adoption, and predictions about replacing traditional currency.",
+                objective: "Complete investment simulation and unlock Bitcoin Visionary title",
+                completed: false,
+                analogy: "Bitcoin is like planting a tree today that grows into a forest for future generations."
+              }
+            ]
+          }
         }
       };
       
