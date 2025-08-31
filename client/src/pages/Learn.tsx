@@ -11,10 +11,7 @@ const Learn = () => {
             <h1 className="text-2xl font-bold text-foreground">Bitcoin Learning Hub</h1>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground max-w-2xl">
-          Choose your personalized Bitcoin education path. We've designed specific learning experiences 
-          for Baby Boomers, Millennials, and an interactive economic game that bridges generations.
-        </p>
+
       </header>
 
       <LearningPaths />
