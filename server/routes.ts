@@ -2546,6 +2546,28 @@ Please provide a helpful, accurate response about the Bitcoin White Paper.`;
     }
   });
 
+  // Site-wide AI Chat endpoint
+  app.post(`${apiPrefix}/site-chat`, async (req, res) => {
+    try {
+      const { question } = req.body;
+      
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({ error: 'Question is required' });
+      }
+
+      const { chatWithOpenAI } = await import('./api/openai-chat.js');
+      
+      const response = await chatWithOpenAI(question);
+      
+      res.json({ response });
+    } catch (error) {
+      console.error("Error in site chat:", error);
+      res.status(500).json({ 
+        error: "I'm experiencing technical difficulties. Please try again in a moment." 
+      });
+    }
+  });
+
   // Last updated timestamp
   app.get(`${apiPrefix}/last-updated`, (req, res) => {
     res.json(new Date().toISOString());
