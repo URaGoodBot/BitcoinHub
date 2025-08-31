@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, RefreshCw, Clock, MapPin, Calendar, Users, ExternalLink, Globe, Newspaper, MessageCircle, TrendingUp } from "lucide-react";
 import { NewsItem, TwitterPost } from "@/lib/types";
+import { TwitterFeed } from "@/components/TwitterFeed";
 
 interface CryptoEvent {
   id: string;
@@ -343,6 +344,9 @@ const NewsFeed = () => {
         
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* HodlMyBeer Twitter Feed */}
+          <TwitterFeed />
+          
           {/* Upcoming Events */}
           <Card>
             <CardHeader>

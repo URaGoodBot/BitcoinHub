@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { getBitcoinMarketData, getBitcoinChart, getBitcoinPrice } from "./api/cryptocompare";
 import { getLatestNews } from "./api/newsapi";
-import { getLatestTweets, getTrendingHashtags, getPopularAccounts, getHodlMyBeerFollowing } from "./api/twitter";
+// Twitter imports removed - now using specific HodlMyBeer integration
 
 import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
@@ -2469,6 +2469,28 @@ All this data is updated live in the dashboard above. Try asking about specific 
       console.error('Error fetching CoinGlass bull market indicators:', error);
       res.status(500).json({ 
         message: "Failed to fetch bull market indicators",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Twitter feed endpoint
+  app.get(`${apiPrefix}/twitter/hodlmybeer`, async (req, res) => {
+    try {
+      const { getHodlMyBeerTweets, clearTwitterCache } = await import('./api/twitter.js');
+      
+      // Force refresh if requested
+      if (req.query.refresh === 'true') {
+        console.log('🔄 Force refreshing HodlMyBeer tweets...');
+        clearTwitterCache();
+      }
+      
+      const tweets = await getHodlMyBeerTweets();
+      res.json(tweets);
+    } catch (error) {
+      console.error("Error fetching HodlMyBeer tweets:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch HodlMyBeer tweets",
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
