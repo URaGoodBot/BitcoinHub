@@ -1,9 +1,11 @@
-import { ExternalLink, TrendingUp, Activity, Target, Gauge, RefreshCw, FileText } from "lucide-react";
+import { ExternalLink, TrendingUp, Activity, Target, Gauge, RefreshCw, FileText, MessageCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { BitcoinWhitepaperChat } from "@/components/BitcoinWhitepaperChat";
 
 const WebResources = () => {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -343,15 +345,35 @@ const WebResources = () => {
                   Bitcoin White Paper
                 </CardTitle>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-300 dark:border-amber-700"
-                onClick={() => window.open('https://bitcoin.org/bitcoin.pdf', '_blank')}
-              >
-                <ExternalLink className="h-3 w-3 mr-1" />
-                Read PDF
-              </Button>
+              <div className="flex gap-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-300 dark:border-amber-700"
+                    >
+                      <MessageCircle className="h-3 w-3 mr-1" />
+                      Ask AI
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl max-h-[80vh]">
+                    <DialogHeader>
+                      <DialogTitle>Bitcoin White Paper AI Assistant</DialogTitle>
+                    </DialogHeader>
+                    <BitcoinWhitepaperChat />
+                  </DialogContent>
+                </Dialog>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-300 dark:border-amber-700"
+                  onClick={() => window.open('https://bitcoin.org/bitcoin.pdf', '_blank')}
+                >
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Read PDF
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">

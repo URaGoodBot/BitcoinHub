@@ -2496,6 +2496,56 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
 
+  // Bitcoin White Paper Chat endpoint
+  app.post(`${apiPrefix}/whitepaper-chat`, async (req, res) => {
+    try {
+      const { question } = req.body;
+      
+      if (!question || typeof question !== 'string') {
+        return res.status(400).json({ error: 'Question is required' });
+      }
+
+      const { analyzeWithGrok } = await import('./api/grok.js');
+      
+      const prompt = `You are an expert AI assistant specializing in the Bitcoin White Paper by Satoshi Nakamoto. Your role is to answer questions about this foundational document with accuracy and clarity.
+
+Context: The Bitcoin White Paper, titled "Bitcoin: A Peer-to-Peer Electronic Cash System," was published by Satoshi Nakamoto on October 31, 2008. It introduced the concept of a decentralized digital currency system that solves the double-spending problem without requiring a trusted third party.
+
+Key topics you should be knowledgeable about:
+- The peer-to-peer electronic cash system concept
+- Digital signatures and transaction verification
+- The proof-of-work consensus mechanism
+- The double-spending problem and its solution
+- Network security and the longest chain rule
+- Privacy considerations and transaction linking
+- Incentive structures for network participants
+- The electronic coin definition and ownership transfers
+- Simplified payment verification (SPV)
+- Network protocols and message propagation
+
+Guidelines for your responses:
+- Provide accurate information based on the original white paper
+- Explain technical concepts in accessible language when needed
+- Reference specific sections of the paper when relevant
+- Clarify misconceptions about Bitcoin's original design
+- Connect concepts to modern Bitcoin implementations when helpful
+- Keep responses focused and concise while being comprehensive
+
+User question: ${question}
+
+Please provide a helpful, accurate response about the Bitcoin White Paper.`;
+
+      const response = await analyzeWithGrok(prompt);
+      
+      res.json({ response });
+    } catch (error) {
+      console.error("Error in whitepaper chat:", error);
+      res.status(500).json({ 
+        error: "Failed to process your question. Please try again." 
+      });
+    }
+  });
+
   // Last updated timestamp
   app.get(`${apiPrefix}/last-updated`, (req, res) => {
     res.json(new Date().toISOString());
