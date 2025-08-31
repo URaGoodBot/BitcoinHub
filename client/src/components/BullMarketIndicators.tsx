@@ -109,7 +109,7 @@ export function BullMarketIndicators() {
                 Bull Market Peak Indicators
               </CardTitle>
               <p className="text-muted-foreground">
-                30 key indicators to help identify Bitcoin bull market peaks. Data from CoinGlass.
+                Key indicators to help identify Bitcoin bull market peaks.
               </p>
             </div>
             <div className="flex flex-col items-end space-y-2">
