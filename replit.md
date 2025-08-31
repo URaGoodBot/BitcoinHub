@@ -86,7 +86,7 @@ Preferred communication style: Simple, everyday language.
   - Direct comparison highlighting the difference between real-time and delayed official data
 - **Renamed Dashboard to Analytics and reorganized navigation with Learn tab as first menu item**
 - **Simplified News Feed**: Removed Reddit, Twitter, and trending sections per user request, keeping only the actual news section and upcoming events for a cleaner, more focused experience
-- **Bitcoin Quest: Rise to Riches Game**: Added new educational adventure game specifically designed for Boomers (55+) with farmers' market setting, covering Satoshi Nakamoto, Operation Chokepoint 2.0, FTX collapse, and stablecoins through simple analogies and point-and-click gameplay
+- **Bitcoin Origins Quiz for Boomers**: Replaced adventure game with comprehensive 20-question multiple-choice quiz featuring educational hints, four themed sections (Origins & Satoshi, Key Events & Scandals, Regulations & Challenges, Modern Adoption), scoring levels (Novice/Enthusiast/Guru), and accessible Boomer-friendly design with large fonts and simple analogies
 - **Complete Learning Section Redesign**: Replaced complex course catalog with five distinct interactive games
   - Bitcoin Boom Game: Interactive Boomer-focused journey through fiat system flaws and Bitcoin solutions
   - Policy Simulator Game: Experience consequences of historical government spending decisions from WWII to 2025

@@ -150,6 +150,7 @@ export function LearningPaths() {
     } else if (selectedPath.id === 'bitcoin-quest-game') {
       return (
         <BitcoinQuestGame 
+          gameData={selectedPath.gameData}
           onBack={handleBackToPaths}
         />
       );

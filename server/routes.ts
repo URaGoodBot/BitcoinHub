@@ -2048,68 +2048,303 @@ All this data is updated live in the dashboard above. Try asking about specific 
         },
         bitcoinQuest: {
           id: "bitcoin-quest-game",
-          title: "Bitcoin Quest: Rise to Riches",
-          subtitle: "An Educational Adventure for Boomers",
-          description: "You're Pat, a retiree in 2025, exploring Bitcoin's origins and evolution through a charming farmers' market adventure. Learn about Satoshi Nakamoto, Operation Chokepoint 2.0, FTX collapse, and stablecoins through simple, relatable analogies and engaging storytelling.",
+          title: "Bitcoin Basics: The Story of Digital Money",
+          subtitle: "A Quiz for Boomers",
+          description: "Learn Bitcoin's origins through 20 multiple-choice questions with helpful hints. Discover Satoshi Nakamoto, key events, regulations, and modern adoption. Perfect for beginners with simple analogies and accessible design.",
           color: "bg-orange-500",
-          icon: "🛒",
-          estimatedTime: "45-60 min",
+          icon: "❓",
+          estimatedTime: "25-35 min",
           isGame: true,
           gameData: {
-            chapters: [
+            type: "quiz",
+            totalQuestions: 20,
+            sections: [
               {
                 id: 1,
-                title: "The Mystery of Satoshi",
-                setting: "Coffee Stall at Farmers' Market",
-                description: "Meet Sam, your tech-savvy neighbor, and learn about Satoshi Nakamoto, the mysterious creator of Bitcoin and the 2008 white paper.",
-                objective: "Understand Bitcoin's origins and the double-spend problem solution",
-                completed: false,
-                analogy: "Bitcoin is like 'digital gold' — limited, valuable, and not controlled by a bank."
+                title: "Origins & Satoshi",
+                questions: [1, 2, 3, 4, 5]
               },
               {
                 id: 2,
-                title: "The Rise of Bitcoin",
-                setting: "Fruit Stall Accepting Bitcoin", 
-                description: "Explore Bitcoin's early days from 2009-2020, including the genesis block and the 2017 bull run. Learn about mining and scarcity.",
-                objective: "Complete a mining puzzle and make your first Bitcoin purchase",
-                completed: false,
-                analogy: "Bitcoin mining is like solving a puzzle to unlock a safe, with only so many safes available."
+                title: "Key Events & Scandals", 
+                questions: [6, 7, 8, 9, 10]
               },
               {
                 id: 3,
-                title: "Operation Chokepoint 2.0",
-                setting: "Newsstand with Headlines",
-                description: "Understand the 2023 regulatory crackdown on crypto-friendly banks like Silvergate and Signature, and how it affected the industry.",
-                objective: "Navigate regulatory challenges and learn about crypto resilience",
-                completed: false,
-                analogy: "Banks closing crypto accounts is like a store refusing your cash because they don't like where you shop."
+                title: "Regulations & Challenges",
+                questions: [11, 12, 13, 14, 15]
               },
               {
                 id: 4,
-                title: "The FTX Fallout",
-                setting: "Vendor Selling Crypto News",
-                description: "Learn about the 2022 FTX collapse, Sam Bankman-Fried's fraud, and important lessons about due diligence and risk management.",
-                objective: "Pass the FTX knowledge quiz and earn risk awareness badge",
-                completed: false,
-                analogy: "FTX is like a bank that lent out your savings without telling you, then went bankrupt."
+                title: "Modern Adoption",
+                questions: [16, 17, 18, 19, 20]
+              }
+            ],
+            scoringLevels: [
+              { min: 0, max: 10, level: "Novice", message: "Good start! Keep learning about Bitcoin's basics." },
+              { min: 11, max: 15, level: "Enthusiast", message: "Well done! You have solid Bitcoin knowledge." },
+              { min: 16, max: 20, level: "Guru", message: "Excellent! You're a Bitcoin expert." }
+            ],
+            questions: [
+              {
+                id: 1,
+                question: "Who is credited with inventing Bitcoin, and what was their famous publication?",
+                options: [
+                  "Elon Musk, the Tesla Manifesto",
+                  "Satoshi Nakamoto, the Bitcoin Whitepaper", 
+                  "Bill Gates, the Microsoft Money Paper",
+                  "Warren Buffett, the Investment Ledger"
+                ],
+                correct: 1,
+                explanation: "Satoshi Nakamoto, a mysterious figure, created Bitcoin and published the Bitcoin Whitepaper in 2008, outlining a digital currency without banks – like email bypassing post offices.",
+                hint: "Imagine inventing money that works online without banks. In 2008, someone using a fake name, like a mystery author, shared a plan called a 'whitepaper' – a blueprint for Bitcoin. This person, Satoshi Nakamoto, sparked a revolution. Who wrote this famous document?"
+              },
+              {
+                id: 2,
+                question: "When was the first Bitcoin block, called the 'Genesis Block,' mined?",
+                options: [
+                  "January 3, 2009",
+                  "October 31, 2008", 
+                  "July 4, 2010",
+                  "December 25, 2011"
+                ],
+                correct: 0,
+                explanation: "The Genesis Block, mined on January 3, 2009, was Bitcoin's first transaction record, launching the blockchain – like the opening page of a public ledger.",
+                hint: "Bitcoin's blockchain is like a public notebook for transactions. Its first page, the Genesis Block, started it all after the 2008 financial crisis. It was 'mined' by solving a math puzzle, like unlocking a safe, soon after Bitcoin's plan was shared. When did this happen?"
+              },
+              {
+                id: 3,
+                question: "What was the first real-world transaction using Bitcoin?",
+                options: [
+                  "Buying a car in 2010",
+                  "Two pizzas for 10,000 BTC in 2010",
+                  "A house in 2011", 
+                  "Stocks in 2009"
+                ],
+                correct: 1,
+                explanation: "On May 22, 2010, Laszlo Hanyecz paid 10,000 Bitcoin for two pizzas, proving Bitcoin could work for real purchases – now celebrated as Bitcoin Pizza Day.",
+                hint: "Early Bitcoin was like play money, untested for real buys. In 2010, someone used it to buy something simple – pizza! They paid 10,000 Bitcoin, worth millions today, to show it worked like cash. What was this first purchase?"
+              },
+              {
+                id: 4,
+                question: "What is Bitcoin's 'halving' event, and when was the first one?",
+                options: [
+                  "Doubling supply every 4 years, first in 2012",
+                  "Halving mining rewards every 4 years, first in 2012",
+                  "Halving prices every year, first in 2010",
+                  "Splitting coins, first in 2009"
+                ],
+                correct: 1,
+                explanation: "Bitcoin's halving cuts the reward for mining new blocks in half every ~4 years, controlling supply. The first was November 2012, impacting prices long-term.",
+                hint: "Bitcoin's like a gold mine with limited supply. Every 4 years, a 'halving' cuts new Bitcoin rewards for miners, like reducing gold output. This keeps Bitcoin scarce, affecting its value. The first halving happened a few years after Bitcoin began. When was it?"
               },
               {
                 id: 5,
-                title: "Stablecoins at the Market",
-                setting: "Vegetable Stall Accepting Stablecoins",
-                description: "Discover stablecoins like USDT and their role in reducing volatility. Practice using them for everyday purchases.",
-                objective: "Successfully complete a stablecoin transaction",
-                completed: false,
-                analogy: "Stablecoins are like gift cards — they hold steady value and can be used anywhere that accepts them."
+                question: "By 2013, what major milestone did Bitcoin reach in price?",
+                options: [
+                  "$1 per BTC",
+                  "Over $1,000 per BTC",
+                  "$10,000 per BTC",
+                  "$100 per BTC"
+                ],
+                correct: 1,
+                explanation: "Bitcoin hit over $1,000 in late 2013 amid growing interest, but it was volatile – like a stock market boom and bust in fast-forward.",
+                hint: "In its early years, Bitcoin's price was low, like pennies. By 2013, excitement grew, and its value soared past a major milestone, like a stock spiking. It wasn't millions, but a big jump for a new currency. What was this price point?"
               },
               {
                 id: 6,
-                title: "The Future of Bitcoin",
-                setting: "Community Board with Predictions",
-                description: "Explore Bitcoin's potential as a global reserve asset, corporate adoption, and predictions about replacing traditional currency.",
-                objective: "Complete investment simulation and unlock Bitcoin Visionary title",
-                completed: false,
-                analogy: "Bitcoin is like planting a tree today that grows into a forest for future generations."
+                question: "What was the Mt. Gox hack, and when did it happen?",
+                options: [
+                  "A 2014 exchange hack losing 850,000 BTC",
+                  "A 2012 mining scandal",
+                  "A 2016 government seizure",
+                  "A 2010 wallet bug"
+                ],
+                correct: 0,
+                explanation: "Mt. Gox, once the biggest Bitcoin exchange, was hacked in 2014, leading to bankruptcy and loss of user funds – a reminder to use secure storage, like a bank vault for digital money.",
+                hint: "Imagine a bank for Bitcoin getting robbed. Mt. Gox was a major platform where people traded Bitcoin, but in 2014, hackers stole a huge amount, causing it to collapse. It showed the need for secure storage. When did this big hack occur?"
+              },
+              {
+                id: 7,
+                question: "What caused the FTX collapse?",
+                options: [
+                  "A global recession in 2020",
+                  "Embezzlement and mismanagement in 2022",
+                  "A hack in 2023",
+                  "Government ban in 2021"
+                ],
+                correct: 1,
+                explanation: "FTX, a major crypto exchange, collapsed in November 2022 due to its founder Sam Bankman-Fried misusing customer funds – like a bank manager dipping into deposits. Repayments began in 2025.",
+                hint: "FTX was like a popular crypto bank, but in 2022, its leader misused customer money, like a dishonest manager. This led to a huge collapse, shaking trust in crypto. It wasn't a hack or ban. What caused the fall?"
+              },
+              {
+                id: 8,
+                question: "How did the 2022 crypto winter affect Bitcoin?",
+                options: [
+                  "Price soared to $100,000",
+                  "Price dropped below $20,000 amid market crashes",
+                  "It became illegal",
+                  "Supply doubled"
+                ],
+                correct: 1,
+                explanation: "The 2022 'crypto winter' saw Bitcoin fall from $69,000 to under $20,000 due to inflation, FTX fallout, and economic fears – similar to stock market dips during recessions.",
+                hint: "In 2022, crypto faced a 'winter' – a tough period like a stock market crash. Bitcoin's price fell sharply due to economic woes and scandals like FTX. It didn't soar or get banned. How low did it go?"
+              },
+              {
+                id: 9,
+                question: "What was Bitcoin's all-time high price before 2025?",
+                options: [
+                  "$10,000 in 2020",
+                  "Around $69,000 in 2021",
+                  "$50,000 in 2023",
+                  "$100,000 in 2024"
+                ],
+                correct: 1,
+                explanation: "Bitcoin peaked at about $69,000 in November 2021, driven by institutional adoption – but prices fluctuate like the housing market.",
+                hint: "Bitcoin's price soared in 2021 as big companies invested, like a gold rush. It hit a record high before 2025, not quite $100,000, but a huge leap. Think about the peak before the 2022 crash. What was it?"
+              },
+              {
+                id: 10,
+                question: "In 2024, what major approval boosted Bitcoin?",
+                options: [
+                  "U.S. Bitcoin ETFs",
+                  "Global ban lifted",
+                  "New mining tech",
+                  "Pizza Day holiday"
+                ],
+                correct: 0,
+                explanation: "The SEC approved Bitcoin spot ETFs in January 2024, allowing easier investment like buying stocks – leading to new highs in 2024-2025.",
+                hint: "In 2024, the U.S. made Bitcoin easier to invest in, like adding it to a stock portfolio. This approval, called ETFs, boosted its price. It wasn't a ban lift or tech change. What was this big step?"
+              },
+              {
+                id: 11,
+                question: "What is Operation Chokepoint 2.0?",
+                options: [
+                  "A 2023-2025 U.S. effort to debank crypto via regulators",
+                  "A Bitcoin mining restriction",
+                  "An international crypto tax",
+                  "A stablecoin ban"
+                ],
+                correct: 0,
+                explanation: "Under the Biden admin, Operation Chokepoint 2.0 allegedly pressured banks to cut ties with crypto firms, echoing earlier actions against other industries – like regulatory red tape for new businesses.",
+                hint: "Imagine regulators making it hard for crypto businesses to get bank accounts. Operation Chokepoint 2.0, around 2023–2025, was a U.S. push to limit crypto by pressuring banks, like extra rules for a new industry. It wasn't about mining or taxes. What was it?"
+              },
+              {
+                id: 12,
+                question: "How did regulators respond to crypto in 2023?",
+                options: [
+                  "Full legalization worldwide",
+                  "Increased scrutiny after FTX, including SEC lawsuits",
+                  "Banned all exchanges",
+                  "Made Bitcoin official currency"
+                ],
+                correct: 1,
+                explanation: "Post-FTX, U.S. regulators like the SEC sued exchanges for unregistered securities – aiming for consumer protection, much like rules for Wall Street.",
+                hint: "After FTX's 2022 collapse, regulators got tough, like police cracking down after a bank scandal. In 2023, the U.S. sued crypto platforms to enforce rules, not banning or legalizing everything. What did they do?"
+              },
+              {
+                id: 13,
+                question: "What role did El Salvador play in Bitcoin history?",
+                options: [
+                  "Banned it in 2021",
+                  "Made Bitcoin legal tender in 2021",
+                  "Hacked the network",
+                  "Mined the most BTC"
+                ],
+                correct: 1,
+                explanation: "In 2021, El Salvador became the first country to adopt Bitcoin as legal tender, using it alongside the USD – like adding a new currency to everyday transactions.",
+                hint: "Imagine a country saying Bitcoin is as valid as dollars for shopping. In 2021, El Salvador did just that, becoming the first to make Bitcoin legal tender. It wasn't a ban or hack. What did they do?"
+              },
+              {
+                id: 14,
+                question: "By 2025, how many Bitcoins are in circulation?",
+                options: [
+                  "All 21 million",
+                  "About 19.9 million",
+                  "10 million",
+                  "Unlimited"
+                ],
+                correct: 1,
+                explanation: "As of 2025, nearly 19.9 million BTC are mined out of a 21 million cap – the rest will take until ~2140, creating scarcity like rare collectibles.",
+                hint: "Bitcoin has a limit, like rare coins. By 2025, most of its 21 million total are in use, but not all. Mining slows over time, so it's not unlimited or half. How many are out there?"
+              },
+              {
+                id: 15,
+                question: "What environmental concern surrounds Bitcoin?",
+                options: [
+                  "Paper waste",
+                  "High energy use for mining",
+                  "Plastic pollution",
+                  "Water usage"
+                ],
+                correct: 1,
+                explanation: "Bitcoin mining uses significant electricity, often from renewables now, but critics compare it to running a small country's power grid – leading to greener innovations.",
+                hint: "Bitcoin mining is like running powerful computers, using lots of electricity – like a factory's power bill. Critics worry about its environmental impact, but it's not about paper or water. What's the main concern?"
+              },
+              {
+                id: 16,
+                question: "What are stablecoins, and how are they used?",
+                options: [
+                  "Volatile coins like Bitcoin",
+                  "Coins pegged to stable assets like USD for steady value",
+                  "Government-issued BTC",
+                  "Mining rewards"
+                ],
+                correct: 1,
+                explanation: "Stablecoins like USDT maintain a $1 value, used for trading or payments – like digital dollars without bank fees.",
+                hint: "Stablecoins are like digital dollars, keeping a steady $1 value, unlike Bitcoin's ups and downs. They're used for payments or trading, not mining or government coins. What are they?"
+              },
+              {
+                id: 17,
+                question: "How are farmers using stablecoins in markets?",
+                options: [
+                  "To increase volatility",
+                  "For cross-border payments, saving 3-6% fees and accessing global markets",
+                  "To mine crypto",
+                  "For weather insurance"
+                ],
+                correct: 1,
+                explanation: "By 2025, farmers use stablecoins for efficient payments, reducing costs and stabilizing prices – like faster, cheaper wire transfers for selling produce globally.",
+                hint: "Farmers use stablecoins like digital cash to sell goods worldwide, saving on bank fees. It's not for mining or insurance but for easier, cheaper payments. How do they use them?"
+              },
+              {
+                id: 18,
+                question: "What Bitcoin event happened in 2024?",
+                options: [
+                  "Fourth halving",
+                  "Fifth halving",
+                  "Network shutdown",
+                  "Price to zero"
+                ],
+                correct: 0,
+                explanation: "The April 2024 halving reduced rewards to 3.125 BTC per block, historically boosting prices long-term – like supply cuts in oil markets.",
+                hint: "Bitcoin's halving, like reducing new gold output, happens every 4 years. In 2024, the fourth one cut mining rewards, affecting value. It wasn't a shutdown. What occurred?"
+              },
+              {
+                id: 19,
+                question: "In 2025, how has Bitcoin's price trended?",
+                options: [
+                  "Stayed under $10,000",
+                  "Reached new highs over $100,000 amid adoption",
+                  "Banned globally",
+                  "Fixed at $50,000"
+                ],
+                correct: 1,
+                explanation: "By mid-2025, Bitcoin surpassed $100,000, driven by ETFs and institutional interest – but always volatile, like gold prices over decades.",
+                hint: "By 2025, Bitcoin's price soared past previous records, like a stock boom, thanks to big investors. It wasn't banned or stuck low. What was the trend?"
+              },
+              {
+                id: 20,
+                question: "What future trend involves Bitcoin and AI?",
+                options: [
+                  "AI mining bans",
+                  "Stablecoins paired with AI for smarter payments",
+                  "AI replacing Bitcoin",
+                  "No connection"
+                ],
+                correct: 1,
+                explanation: "In 2025, AI enhances stablecoin systems for efficient, intelligent finance in emerging markets – like smart assistants handling your banking.",
+                hint: "AI and stablecoins are teaming up, like smart apps for banking, making payments faster in 2025. It's not about replacing Bitcoin or mining bans. What's the trend?"
               }
             ]
           }
