@@ -1,4 +1,4 @@
-import { ExternalLink, TrendingUp, Activity, Target, Gauge, RefreshCw } from "lucide-react";
+import { ExternalLink, TrendingUp, Activity, Target, Gauge, RefreshCw, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -327,6 +327,71 @@ const WebResources = () => {
             </div>
             <div className="text-xs text-center text-orange-600 dark:text-orange-400 pt-2 border-t border-orange-200/50">
               Alternative.me • Real-time market sentiment analysis
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bitcoin White Paper */}
+        <Card className="bg-gradient-to-br from-amber-50 to-yellow-100 border-amber-200 dark:from-amber-950/20 dark:to-yellow-950/20 dark:border-amber-800">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-amber-600 rounded-lg">
+                  <FileText className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg font-semibold text-amber-900 dark:text-amber-100">
+                  Bitcoin White Paper
+                </CardTitle>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-amber-700 border-amber-300 hover:bg-amber-100 dark:text-amber-300 dark:border-amber-700"
+                onClick={() => window.open('https://bitcoin.org/bitcoin.pdf', '_blank')}
+              >
+                <ExternalLink className="h-3 w-3 mr-1" />
+                Read PDF
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-amber-200/50">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-amber-900 dark:text-amber-100">Original Bitcoin Paper</h4>
+                <Badge variant="secondary" className="text-xs">
+                  Historical
+                </Badge>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Title:</span>
+                  <span className="font-medium text-amber-900 dark:text-amber-100">
+                    Bitcoin: A Peer-to-Peer Electronic Cash System
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Author:</span>
+                  <span className="font-medium text-amber-900 dark:text-amber-100">
+                    Satoshi Nakamoto
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Published:</span>
+                  <span className="font-medium text-amber-900 dark:text-amber-100">October 31, 2008</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Pages:</span>
+                  <span className="font-medium text-amber-900 dark:text-amber-100">9 pages</span>
+                </div>
+                <div className="pt-2">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                    The foundational document that introduced Bitcoin to the world. A revolutionary peer-to-peer electronic cash system that eliminates the need for trusted third parties.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="text-xs text-center text-amber-600 dark:text-amber-400 pt-2 border-t border-amber-200/50">
+              Bitcoin.org • Original source document
             </div>
           </CardContent>
         </Card>
