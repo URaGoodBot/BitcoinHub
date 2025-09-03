@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Clock, Info } from 'lucide-react';
+import { TrendingUp, TrendingDown, Clock, Info, RefreshCw } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { queryClient } from '@/lib/queryClient';
 
 interface TruflationData {
   current_rate: number;
@@ -36,16 +39,18 @@ interface InflationComparison {
 
 export function TruflationWidget() {
   const [timeUntilRefresh, setTimeUntilRefresh] = useState(300); // 5 minutes in seconds
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { toast } = useToast();
 
   // Fetch Truflation data with 5-minute refresh
-  const { data: truflationData, refetch: refetchTruflation } = useQuery<TruflationData>({
+  const { data: truflationData, refetch: refetchTruflation, isFetching } = useQuery<TruflationData>({
     queryKey: ['/api/financial/truflation'],
     refetchInterval: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
   });
 
   // Fetch comparison data
-  const { data: comparisonData } = useQuery<InflationComparison>({
+  const { data: comparisonData, refetch: refetchComparison } = useQuery<InflationComparison>({
     queryKey: ['/api/financial/inflation-comparison'],
     refetchInterval: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false
@@ -72,19 +77,51 @@ export function TruflationWidget() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Manual refresh function
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      // Call the API with refresh parameter to clear cache
+      await fetch('/api/financial/truflation?refresh=true');
+      await fetch('/api/financial/inflation-comparison?refresh=true');
+      
+      // Invalidate and refetch the data
+      await queryClient.invalidateQueries({ queryKey: ['/api/financial/truflation'] });
+      await queryClient.invalidateQueries({ queryKey: ['/api/financial/inflation-comparison'] });
+      
+      // Reset countdown timer
+      setTimeUntilRefresh(300);
+      
+      toast({
+        title: "Data Refreshed",
+        description: "Truflation data has been updated with the latest information.",
+        duration: 3000,
+      });
+    } catch (error) {
+      toast({
+        title: "Refresh Failed",
+        description: "Failed to refresh data. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   if (!truflationData) {
     return (
-      <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+      <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center">
-            <TrendingUp className="mr-2 h-5 w-5 text-blue-600" />
+            <TrendingUp className="mr-2 h-5 w-5 text-orange-600" />
             Truflation US Inflation Index
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-blue-200 rounded w-24"></div>
-            <div className="h-4 bg-blue-200 rounded w-32"></div>
+            <div className="h-8 bg-orange-200 rounded w-24"></div>
+            <div className="h-4 bg-orange-200 rounded w-32"></div>
           </div>
         </CardContent>
       </Card>
@@ -96,31 +133,42 @@ export function TruflationWidget() {
 
   return (
     <TooltipProvider>
-      <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 hover:shadow-lg transition-shadow">
+      <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200 hover:shadow-lg transition-shadow">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg flex items-center">
-              <TrendingUp className="mr-2 h-5 w-5 text-blue-600" />
+              <TrendingUp className="mr-2 h-5 w-5 text-orange-600" />
               Truflation US Inflation Index
             </CardTitle>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4 text-blue-500" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs">Real-time inflation data updated daily, 45 days ahead of BLS reports</p>
-              </TooltipContent>
-            </Tooltip>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={isRefreshing || isFetching}
+                className="h-8 w-8 p-0 hover:bg-orange-100"
+              >
+                <RefreshCw className={`h-4 w-4 text-orange-600 ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
+              </Button>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="h-4 w-4 text-orange-500" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs">Real-time inflation data updated daily, 45 days ahead of BLS reports</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Current Rate */}
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-blue-700">
+              <div className="text-3xl font-bold text-orange-700">
                 {truflationData.current_rate.toFixed(2)}%
               </div>
-              <div className="text-sm text-blue-600">Current Rate</div>
+              <div className="text-sm text-orange-600">Current Rate</div>
             </div>
             <div className="text-right">
               <div className={`flex items-center ${isIncrease ? 'text-red-600' : 'text-green-600'}`}>

@@ -626,7 +626,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/financial/truflation`, async (req, res) => {
     try {
       console.log('Fetching Truflation US Inflation Index data...');
-      const { getTruflationData } = await import('./api/truflation.js');
+      const { getTruflationData, clearTruflationCache } = await import('./api/truflation.js');
+      
+      // Clear cache if refresh parameter is present
+      if (req.query.refresh === 'true') {
+        clearTruflationCache();
+        console.log('Truflation cache cleared for manual refresh');
+      }
+      
       const truflationData = await getTruflationData();
       res.json(truflationData);
     } catch (error) {
@@ -639,7 +646,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/financial/inflation-comparison`, async (req, res) => {
     try {
       console.log('Fetching Truflation vs BLS inflation comparison...');
-      const { getTruflationComparison } = await import('./api/truflation.js');
+      const { getTruflationComparison, clearTruflationCache } = await import('./api/truflation.js');
+      
+      // Clear cache if refresh parameter is present
+      if (req.query.refresh === 'true') {
+        clearTruflationCache();
+        console.log('Truflation cache cleared for comparison refresh');
+      }
+      
       const comparison = await getTruflationComparison();
       res.json(comparison);
     } catch (error) {
