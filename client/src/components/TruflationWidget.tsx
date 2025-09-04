@@ -111,17 +111,17 @@ export function TruflationWidget() {
 
   if (!truflationData) {
     return (
-      <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200">
+      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center">
-            <TrendingUp className="mr-2 h-5 w-5 text-orange-600" />
+            <TrendingUp className="mr-2 h-5 w-5 text-primary" />
             Truflation US Inflation Index
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-orange-200 rounded w-24"></div>
-            <div className="h-4 bg-orange-200 rounded w-32"></div>
+            <div className="h-8 bg-primary/20 rounded w-24"></div>
+            <div className="h-4 bg-primary/20 rounded w-32"></div>
           </div>
         </CardContent>
       </Card>
@@ -133,11 +133,11 @@ export function TruflationWidget() {
 
   return (
     <TooltipProvider>
-      <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200 hover:shadow-lg transition-shadow">
+      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 hover:shadow-lg transition-shadow">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg flex items-center">
-              <TrendingUp className="mr-2 h-5 w-5 text-orange-600" />
+              <TrendingUp className="mr-2 h-5 w-5 text-primary" />
               Truflation US Inflation Index
             </CardTitle>
             <div className="flex items-center gap-2">
@@ -146,13 +146,13 @@ export function TruflationWidget() {
                 size="sm"
                 onClick={handleRefresh}
                 disabled={isRefreshing || isFetching}
-                className="h-8 w-8 p-0 hover:bg-orange-100"
+                className="h-8 w-8 p-0 hover:bg-primary/10"
               >
-                <RefreshCw className={`h-4 w-4 text-orange-600 ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 text-primary ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
               </Button>
               <Tooltip>
                 <TooltipTrigger>
-                  <Info className="h-4 w-4 text-orange-500" />
+                  <Info className="h-4 w-4 text-primary/70" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">Real-time inflation data updated daily, 45 days ahead of BLS reports</p>
@@ -165,10 +165,10 @@ export function TruflationWidget() {
           {/* Current Rate */}
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-orange-700">
+              <div className="text-3xl font-bold text-primary">
                 {truflationData.current_rate.toFixed(2)}%
               </div>
-              <div className="text-sm text-orange-600">Current Rate</div>
+              <div className="text-sm text-primary/70">Current Rate</div>
             </div>
             <div className="text-right">
               <div className={`flex items-center ${isIncrease ? 'text-red-600' : 'text-green-600'}`}>
