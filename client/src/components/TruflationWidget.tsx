@@ -111,7 +111,7 @@ export function TruflationWidget() {
 
   if (!truflationData) {
     return (
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+      <Card className="bg-slate-800/90 border-slate-700/50">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center">
             <TrendingUp className="mr-2 h-5 w-5 text-primary" />
@@ -120,8 +120,8 @@ export function TruflationWidget() {
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-3">
-            <div className="h-8 bg-primary/20 rounded w-24"></div>
-            <div className="h-4 bg-primary/20 rounded w-32"></div>
+            <div className="h-8 bg-slate-700/50 rounded w-24"></div>
+            <div className="h-4 bg-slate-700/50 rounded w-32"></div>
           </div>
         </CardContent>
       </Card>
@@ -133,11 +133,11 @@ export function TruflationWidget() {
 
   return (
     <TooltipProvider>
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 hover:shadow-lg transition-shadow">
+      <Card className="bg-slate-800/90 border-slate-700/50 hover:shadow-lg transition-shadow">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg flex items-center">
-              <TrendingUp className="mr-2 h-5 w-5 text-primary" />
+            <CardTitle className="text-lg flex items-center text-white">
+              <TrendingUp className="mr-2 h-5 w-5 text-slate-400" />
               Truflation US Inflation Index
             </CardTitle>
             <div className="flex items-center gap-2">
@@ -146,13 +146,13 @@ export function TruflationWidget() {
                 size="sm"
                 onClick={handleRefresh}
                 disabled={isRefreshing || isFetching}
-                className="h-8 w-8 p-0 hover:bg-primary/10"
+                className="h-8 w-8 p-0 hover:bg-slate-700/50 text-slate-400 hover:text-white"
               >
-                <RefreshCw className={`h-4 w-4 text-primary ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${(isRefreshing || isFetching) ? 'animate-spin' : ''}`} />
               </Button>
               <Tooltip>
                 <TooltipTrigger>
-                  <Info className="h-4 w-4 text-primary/70" />
+                  <Info className="h-4 w-4 text-slate-400" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">Real-time inflation data updated daily, 45 days ahead of BLS reports</p>
@@ -165,10 +165,10 @@ export function TruflationWidget() {
           {/* Current Rate */}
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-primary">
+              <div className="text-3xl font-bold text-white">
                 {truflationData.current_rate.toFixed(2)}%
               </div>
-              <div className="text-sm text-primary/70">Current Rate</div>
+              <div className="text-sm text-slate-400">Current Rate</div>
             </div>
             <div className="text-right">
               <div className={`flex items-center ${isIncrease ? 'text-red-600' : 'text-green-600'}`}>
@@ -177,21 +177,21 @@ export function TruflationWidget() {
                   {isIncrease ? '+' : ''}{truflationData.change.toFixed(2)}%
                 </span>
               </div>
-              <div className="text-xs text-muted-foreground">vs yesterday</div>
+              <div className="text-xs text-slate-500">vs yesterday</div>
             </div>
           </div>
 
           {/* Comparison with BLS */}
           {comparisonData && (
-            <div className="bg-white/60 rounded-lg p-3 space-y-2">
+            <div className="bg-slate-700/30 rounded-lg p-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">vs BLS Official:</span>
-                <span className="font-medium">
+                <span className="text-slate-400">vs BLS Official:</span>
+                <span className="font-medium text-white">
                   {comparisonData.bls_official.rate.toFixed(2)}%
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Difference:</span>
+                <span className="text-slate-400">Difference:</span>
                 <Badge 
                   variant={rateDifference < 0 ? "secondary" : "destructive"}
                   className="text-xs"
@@ -199,14 +199,14 @@ export function TruflationWidget() {
                   {rateDifference > 0 ? '+' : ''}{rateDifference.toFixed(2)}%
                 </Badge>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-slate-500">
                 Truflation: Daily updates • BLS: Monthly (45 days delayed)
               </div>
             </div>
           )}
 
           {/* Update Status */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center justify-between text-xs text-slate-500">
             <div className="flex items-center">
               <Clock className="h-3 w-3 mr-1" />
               Next update: {formatTime(timeUntilRefresh)}
