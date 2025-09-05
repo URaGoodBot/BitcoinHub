@@ -45,22 +45,6 @@ export const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 
-// Bitcoin price alerts
-export const priceAlerts = pgTable("price_alerts", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
-  type: text("type").notNull(), // 'above' or 'below'
-  price: doublePrecision("price").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  isTriggered: boolean("is_triggered").default(false).notNull(),
-  notifiedAt: timestamp("notified_at"),
-});
-
-export const insertPriceAlertSchema = createInsertSchema(priceAlerts).pick({
-  userId: true,
-  type: true,
-  price: true,
-});
 
 // Forum posts (now meme-focused)
 export const forumPosts = pgTable("forum_posts", {
@@ -184,8 +168,6 @@ export const insertLearningProgressSchema = createInsertSchema(learningProgress)
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
-export type PriceAlert = typeof priceAlerts.$inferSelect;
-export type InsertPriceAlert = z.infer<typeof insertPriceAlertSchema>;
 
 export type ForumPost = typeof forumPosts.$inferSelect;
 export type InsertForumPost = z.infer<typeof insertForumPostSchema>;

@@ -12,7 +12,7 @@ import { getLegislationData, refreshLegislationData } from "./api/legislation";
 import { getInflationData } from "./api/inflation";
 import { getCoinglassIndicators } from "./api/coinglass-indicators";
 import { z } from "zod";
-import { insertPriceAlertSchema, insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
+import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
 import session from "express-session";
 import bcrypt from "bcryptjs";
@@ -947,65 +947,6 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
 
-  // Price alerts - require authentication
-  app.get(`${apiPrefix}/alerts`, requireAuth, async (req, res) => {
-    try {
-      const userId = (req.session as any).userId;
-      const alerts = await storage.getPriceAlerts(userId);
-      res.json(alerts);
-    } catch (error) {
-      console.error("Error fetching price alerts:", error);
-      res.status(500).json({ message: "Failed to fetch price alerts" });
-    }
-  });
-
-  app.post(`${apiPrefix}/alerts`, requireAuth, async (req, res) => {
-    try {
-      const schema = z.object({
-        type: z.enum(["above", "below"]),
-        price: z.number().positive()
-      });
-      
-      const { type, price } = schema.parse(req.body);
-      const userId = (req.session as any).userId;
-      
-      const alert = await storage.createPriceAlert({
-        userId,
-        type,
-        price
-      });
-      
-      res.status(201).json(alert);
-    } catch (error) {
-      console.error("Error creating price alert:", error);
-      res.status(400).json({ message: "Invalid price alert data" });
-    }
-  });
-
-  app.delete(`${apiPrefix}/alerts/:id`, requireAuth, async (req, res) => {
-    try {
-      const alertId = parseInt(req.params.id);
-      const userId = (req.session as any).userId;
-      
-      if (isNaN(alertId)) {
-        return res.status(400).json({ message: "Invalid alert ID" });
-      }
-      
-      // Verify the alert belongs to the current user before deleting
-      const userAlerts = await storage.getPriceAlerts(userId);
-      const alertToDelete = userAlerts.find(alert => alert.id === alertId.toString());
-      
-      if (!alertToDelete) {
-        return res.status(404).json({ message: "Alert not found or not owned by user" });
-      }
-      
-      await storage.deletePriceAlert(alertId);
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error deleting price alert:", error);
-      res.status(500).json({ message: "Failed to delete price alert" });
-    }
-  });
 
   // Learning progress - require authentication
   app.get(`${apiPrefix}/learning/progress`, requireAuth, async (req, res) => {

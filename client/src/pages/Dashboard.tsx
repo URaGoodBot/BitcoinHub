@@ -12,7 +12,6 @@ import { InflationWidget } from "@/components/InflationWidget";
 
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
-import PriceAlertsWidget from "@/components/PriceAlertsWidget";
 import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 import AITrendPrediction from "@/components/AITrendPrediction";
 
@@ -127,7 +126,6 @@ const Dashboard = () => {
       {/* Market Summary, Price Alerts, and AI Prediction */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <MarketSummaryWidget />
-        <PriceAlertsWidget />
         <AITrendPrediction />
       </div>
       
