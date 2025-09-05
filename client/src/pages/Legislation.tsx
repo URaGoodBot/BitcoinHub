@@ -181,7 +181,7 @@ const Legislation = () => {
             <div className="flex items-center gap-3">
               <Scale className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation - August 2025</h1>
+                <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation - September 2025</h1>
                 <p className="text-muted-foreground">Track congressional bills affecting cryptocurrency with AI-powered updates</p>
               </div>
             </div>
@@ -310,7 +310,7 @@ const Legislation = () => {
                   <div>
                     <CardTitle className="text-xl flex items-center gap-2">
                       <AlertCircle className="h-6 w-6 text-purple-500" />
-                      Crypto Catalysts Tracker - August 2025
+                      Crypto Catalysts Tracker - September 2025
                     </CardTitle>
                     <p className="text-muted-foreground">
                       Key cryptocurrency-related events monitored for their probability of occurrence and market impact.
