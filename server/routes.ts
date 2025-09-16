@@ -2264,6 +2264,145 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        triffinDilemma: {
+          id: "triffin-dilemma-quiz",
+          title: "Triffin's Dilemma Quiz",
+          subtitle: "The Reserve Currency's Hidden Toll - September 2025",
+          description: "Interactive quiz exploring Triffin's Dilemma through economic history. For older generations who remember stable dollars and inflationary shocks, discover how reserve currency status creates inevitable conflicts between global liquidity and domestic stability.",
+          color: "bg-slate-600",
+          icon: "💰",
+          estimatedTime: "20-30 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "Britain's Imperial Burden",
+                story: "Think back to the 1920s when Britain clung to the gold standard post-WWI, running deficits to maintain the pound's global role, which led to gold outflows and the 1931 sterling crisis that deepened the Great Depression. Relate this to today: Just as families in the 1930s saw savings evaporate from currency devaluation, modern Americans face a dollar weakened by deficits needed to supply global demand for U.S. assets, hitting everyday costs like groceries and gas.",
+                data: {
+                  title: "September 2025 Economic Reality",
+                  stats: [
+                    { label: "U.S. Gross National Debt", value: "$37.45T", note: "About 133% of GDP" },
+                    { label: "Dollar Index (DXY) YTD", value: "-10.2%", note: "Down to around 96.6" },
+                    { label: "Consumer Sentiment", value: "55.4", note: "Lowest since May 2025" }
+                  ]
+                },
+                quiz: {
+                  question: "What is the core conflict in Triffin's Dilemma that mirrors Britain's 1920s struggle?",
+                  options: [
+                    "A) The U.S. should hoard gold to strengthen the dollar",
+                    "B) Supplying dollars globally via deficits eventually erodes the currency's stability",
+                    "C) Foreign countries should stop demanding U.S. dollars for trade",
+                    "D) The Federal Reserve can print unlimited dollars without consequences"
+                  ],
+                  correct: 1,
+                  explanation: "Triffin's Dilemma exposed the Bretton Woods conflict: The U.S. had to export dollars through deficits to support global trade (like funding Europe's recovery via the Marshall Plan), but this created excess claims on finite gold, mirroring Britain's overstretch that inflated away savers' wealth. In 2025's fiat version, $37.45 trillion in debt supplies Treasuries to foreigners ($8 trillion held abroad), but it devalues the dollar (down 10.2% YTD), fueling 2.9% inflation that hits fixed-income retirees hardest.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "The Gold Drain Crisis",
+                story: "Recall the late 1960s: U.S. gold reserves plummeted from 20,000 tons in 1950 to under 9,000 by 1971, drained by deficits from Vietnam War spending ($168 billion, akin to today's $900 billion defense budget) and Great Society programs like Medicare. This echoes the Roman Empire's debasement of silver coins in the 3rd century to fund wars, leading to hyperinflation and collapse. Today, imagine your fixed pension or savings shrinking as debt piles up just to supply global dollar demand.",
+                data: {
+                  title: "Current Debt Servicing Crisis",
+                  stats: [
+                    { label: "Annual Debt Servicing", value: "$1.1T+", note: "Exceeds Medicare spending" },
+                    { label: "Current Inflation Rate", value: "2.9%", note: "Core inflation at 3.1%" },
+                    { label: "Foreign Treasury Holdings", value: "$8T", note: "Demand requires U.S. supply" }
+                  ]
+                },
+                quiz: {
+                  question: "Why did the U.S. abandon the gold standard in 1971, and how does this relate to today's fiscal pressures?",
+                  options: [
+                    "A) The U.S. found new gold mines and no longer needed the standard",
+                    "B) Deficits from wars and social spending led to foreign gold redemptions, depleting reserves",
+                    "C) Europe banned U.S. dollars in international transactions",
+                    "D) The Fed overprinted gold-backed notes by mistake"
+                  ],
+                  correct: 1,
+                  explanation: "Persistent deficits flooded markets with dollars, prompting conversions (e.g., France's demands), much like Rome's coin clipping eroded trust. Nixon ended gold convertibility to avert crisis, shifting to fiat. Now, with debt at $37.45 trillion and servicing over $1.1 trillion yearly (more than Medicare), the 'New Triffin' relies on faith amid tariffs and policies. This hits younger people hardest: They face shakier entitlements, $1.8 trillion student debt, and gig economy insecurity.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Imperial Overstretch Pattern",
+                story: "Consider the British pound's fall: In the 1800s, imperial deficits from wars (e.g., Napoleonic) and global trade dominance led to gold drains, culminating in WWI-era devaluation, similar to how Spain's 16th-century silver influx from colonies sparked inflation but eventual decline. Relate to now: Like a family overspending on credit for status, the U.S. borrows to maintain dollar hegemony, but it squeezes household budgets via higher prices for everything from housing to healthcare.",
+                data: {
+                  title: "Generational Impact Analysis",
+                  stats: [
+                    { label: "Homeownership Age", value: "26 (1980) → 33 (2025)", note: "Rising barriers for young" },
+                    { label: "Student Debt Burden", value: "$1.8T", note: "Crushing young adults" },
+                    { label: "Real Wage Stagnation", value: "50+ years", note: "Since gold standard end" }
+                  ]
+                },
+                quiz: {
+                  question: "What historical pattern connects Britain's imperial decline to America's current reserve currency challenges?",
+                  options: [
+                    "A) Both relied on infinite commodity supplies without deficits",
+                    "B) Global currency status requires deficits that erode confidence over time",
+                    "C) Britain fixed its issues by adopting the dollar early",
+                    "D) The U.S. avoided Britain's mistakes by eliminating deficits"
+                  ],
+                  correct: 1,
+                  explanation: "Britain's pound, like the dollar, demanded deficits for empire/trade, but overreach inflated values away, as in Spain's 'price revolution.' Today, U.S. deficits meet insatiable demand for safe assets, but the dollar's 10.2% YTD drop from fiscal strains echoes those falls. The broken post-1971 system, without gold's check, amplifies this—older generations enjoyed pound/dollar peaks; younger ones inherit wealth gaps, with homeownership ages rising from 26 in 1980 to 33 in 2025.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "The Petrodollar Trap",
+                story: "Post-1971, the dollar became fiat, backed by oil deals (petrodollars) like OPEC's 1970s agreements, but abrupt deficit cuts could spike rates globally, reminiscent of the 1931 British gold abandonment that halted trade and worsened Depression unemployment. Think relatable: Cutting spending cold turkey might lower taxes short-term but crash markets, like a business slashing costs and losing customers. Informed by this, why can't the U.S. halt deficits despite $37.45 trillion debt?",
+                data: {
+                  title: "Global Dependency Metrics",
+                  stats: [
+                    { label: "Petrodollar Recycling", value: "~$2T annually", note: "Oil revenues into Treasuries" },
+                    { label: "Global Dollar Reserves", value: "60%", note: "Central banks hold dollars" },
+                    { label: "Trade Settlement", value: "40%+", note: "Global trade in dollars" }
+                  ]
+                },
+                quiz: {
+                  question: "Why can't the U.S. simply stop running deficits to solve its debt problem?",
+                  options: [
+                    "A) Deficits only impact U.S. budgets, not worldwide",
+                    "B) Global hunger for U.S. debt as a safe store requires ongoing borrowing to provide liquidity",
+                    "C) Nations like China can instantly swap the dollar's role",
+                    "D) The U.S. has rebuilt gold reserves to cover all dollars"
+                  ],
+                  correct: 1,
+                  explanation: "Like petrodollars recycling oil wealth into Treasuries, foreign holdings ($8 trillion) demand U.S. supply, but stopping risks rate spikes and recessions, as in 1931. In 2025, with 2.9% inflation and policies like tariffs, the cycle persists without Bretton Woods' anchor. Younger generations suffer most: Deficits crowd out education/infrastructure investments, fueling job insecurity in automated economies, unlike boomers' era of growth.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "The Modern Consequences",
+                story: "Flash to Weimar Germany's 1920s hyperinflation from war reparations and printing, or Argentina's repeated defaults from unchecked deficits—both show unanchored systems breeding crises. Relate personally: As debt swells, it's like a credit card maxing out, hiking family costs while benefits dwindle. With consumer sentiment at 55.4 lows amid job fears, why is Triffin's Dilemma intensifying in 2025, and who bears the brunt?",
+                data: {
+                  title: "September 2025 Crisis Indicators",
+                  stats: [
+                    { label: "Job Market Anxiety", value: "55.4", note: "Consumer sentiment low" },
+                    { label: "Gig Economy Share", value: "35%", note: "Young workforce unstable" },
+                    { label: "Retirement Shortfall", value: "$4T", note: "Generational wealth gap" }
+                  ]
+                },
+                quiz: {
+                  question: "In September 2025, why is Triffin's Dilemma intensifying, and who suffers most from its effects?",
+                  options: [
+                    "A) It's easing with a booming economy",
+                    "B) Perpetual deficits devalue the dollar, inflating future costs for programs and employment",
+                    "C) Older folks' pensions are hit hardest by inflation",
+                    "D) It only touches Wall Street, not daily life"
+                  ],
+                  correct: 1,
+                  explanation: "Without gold, faith in U.S. discipline wanes as $37.45 trillion debt and $1.1 trillion+ servicing (topping defense) spark 2.9% inflation, akin to Weimar's printing press. Older generations have fixed assets cushioning them; younger ones face gig work, $1.7 trillion student loans, and entitlement cuts, trapping them in cycles like Latin America's debt traps post-commodity booms.",
+                  points: 10
+                }
+              }
+            ]
+          }
         }
       };
       

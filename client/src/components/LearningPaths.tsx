@@ -14,6 +14,7 @@ import { MillennialEscapeGame } from "./MillennialEscapeGame";
 import { TreasureHuntGame } from "./TreasureHuntGame";
 import { EscapeRoomGame } from "./EscapeRoomGame";
 import { BitcoinQuestGame } from "./BitcoinQuestGame";
+import { TriffinDilemmaGame } from "./TriffinDilemmaGame";
 
 interface LearningPath {
   id: string;
@@ -46,6 +47,7 @@ interface LearningPathsData {
   treasureHunt: LearningPath;
   escapeRoom: LearningPath;
   bitcoinQuest: LearningPath;
+  triffinDilemma: LearningPath;
 }
 
 export function LearningPaths() {
@@ -150,6 +152,13 @@ export function LearningPaths() {
     } else if (selectedPath.id === 'bitcoin-quest-game') {
       return (
         <BitcoinQuestGame 
+          gameData={selectedPath.gameData}
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'triffin-dilemma-quiz') {
+      return (
+        <TriffinDilemmaGame 
           gameData={selectedPath.gameData}
           onBack={handleBackToPaths}
         />
