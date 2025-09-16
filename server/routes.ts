@@ -2681,6 +2681,145 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        historicalEchoes: {
+          id: "historical-echoes-quiz",
+          title: "Broader Historical Echoes Quiz",
+          subtitle: "From Gold Standard Wobbles to Banking Panics – The Monetary System's Enduring Flaws",
+          description: "Interactive quiz connecting monetary history from the classical gold standard to modern crises. For those who've seen economic upheavals like the 1930s deflation or 1970s stagflation—discover how past crises echo today's broken monetary system challenges.",
+          color: "bg-blue-600",
+          icon: "🏛️",
+          estimatedTime: "25-35 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "Britain's Gold Standard Dilemma",
+                story: "The classical gold standard (1870s–1914) saw Britain's deficits supply global liquidity but drain assets, echoing Rome's imperial overstretch in the 3rd century with debased coins funding conquests. Relate to life: As Romans' diluted money hiked market prices, Britain's colonial strains weakened sterling, much like families today facing import costs from dollar weakness.",
+                data: {
+                  title: "Classical Gold Standard Era",
+                  stats: [
+                    { label: "Gold Standard Period", value: "1870-1914", note: "Pre-WWI stability" },
+                    { label: "British Empire Peak", value: "25% GDP", note: "Global economic share" },
+                    { label: "Sterling Crises", value: "Multiple", note: "Pre-war pressures" }
+                  ]
+                },
+                quiz: {
+                  question: "How did Britain's gold standard experience mirror Triffin's Dilemma?",
+                  options: [
+                    "A) By avoiding deficits through strict gold hoarding",
+                    "B) Imperial deficits for liquidity led to crises and asset drains",
+                    "C) Switching to fiat early eliminated all imbalances",
+                    "D) Global demand for pounds declined entirely"
+                  ],
+                  correct: 1,
+                  explanation: "Britain's role as reserve currency demanded deficits, but they sparked sterling crises pre-WWI, similar to Rome's debasement eroding trust. This prefigures Triffin's logic: Reserve status breaks systems without discipline. In 2025, U.S. deficits ($37 trillion debt) prop up global dollars short-term but invite pain, with GDP at 3.4% masking fragility. Older generations recall stable eras; younger ones face yuan challenges, inflating student debt ($1.8 trillion) and housing costs 40% above historical norms.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "The 1907 Banking Panic",
+                story: "The US Panic of 1907 arose from fragmented banks failing liquidity shocks, like tulip mania in 1630s Holland where speculation burst without central backing. Think relatable: As Dutch traders lost fortunes overnight, 1907 depositors queued in runs, echoing modern app-based banking glitches amid rate volatility.",
+                data: {
+                  title: "1907 Financial Crisis",
+                  stats: [
+                    { label: "Bank Failures", value: "25+", note: "Major institutions collapsed" },
+                    { label: "Stock Market Drop", value: "-50%", note: "Peak to trough decline" },
+                    { label: "GDP Contraction", value: "-12%", note: "Economic recession depth" }
+                  ]
+                },
+                quiz: {
+                  question: "What did the 1907 Panic expose, leading to the Fed's 1913 creation?",
+                  options: [
+                    "A) A surplus of gold eliminating all risks",
+                    "B) Fragmented system's inability to handle liquidity crises",
+                    "C) The Fed's pre-existence preventing panics",
+                    "D) Global trade balances stabilizing banks"
+                  ],
+                  correct: 1,
+                  explanation: "No central lender of last resort amplified runs, much like tulip bubbles popped from hype. This highlighted monetary breakage: Decentralized systems falter under stress. Though the Fed was born, it echoes today's vulnerabilities—reports flag borrowing risks amid higher leverage than 2008. With dollar at 97.34, fiat flexibility abuses prop deficits. Youth suffer: Gig economies and bubbles burst into crises, unlike boomers' post-Depression safeguards.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Fed's Great Depression Failure",
+                story: "The Fed's tight money in the Great Depression (1929–1939) deepened deflation, paralleling Britain's 1925 gold return at pre-WWI parity, which stifled growth and fueled unemployment. Relate personally: As Brits' overvalued pound hiked joblessness, Depression families scrimped on basics amid falling prices—similar to today's deflation fears from debt overload.",
+                data: {
+                  title: "Great Depression Monetary Policy",
+                  stats: [
+                    { label: "Money Supply Drop", value: "-30%", note: "1929-1933 contraction" },
+                    { label: "Bank Failures", value: "9,000+", note: "Institutions closed" },
+                    { label: "Unemployment Peak", value: "25%", note: "1933 jobless rate" }
+                  ]
+                },
+                quiz: {
+                  question: "How did the Fed fail in the Great Depression despite its creation?",
+                  options: [
+                    "A) By loosening policy to inflate away debts",
+                    "B) Tight money policies worsened deflation and downturn",
+                    "C) Reinstating fragmented banking pre-1907",
+                    "D) Eliminating all liquidity shocks successfully"
+                  ],
+                  correct: 1,
+                  explanation: "Gold adherence constrained expansion, amplifying the Crash like Britain's parity mistake post-WWI. This underscores system flaws: Anchors stabilize but limit growth, as fiat now over-flexes. In 2025, 3.4% GDP hides $37 trillion debt fragility, with yuan pushes threatening runs. Older folks had New Deal buffers; younger generations inherit austerity risks, widening gaps via volatile jobs and unpayable entitlements.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Historical Patterns of Reserve Systems",
+                story: "These echoes—from gold wobbles to panics—reinforce Triffin's pattern, like Spain's 16th-century silver floods inflating Europe but leading to decline. Think everyday: As Spaniards' wealth bought less, historical deficits propped liquidity short-term but drained long-term, akin to families' credit card binges today.",
+                data: {
+                  title: "Reserve Currency Patterns",
+                  stats: [
+                    { label: "Spanish Silver Era", value: "1500s-1600s", note: "Inflation despite wealth" },
+                    { label: "British Pound Era", value: "1870-1914", note: "Gold standard strains" },
+                    { label: "Dollar Era", value: "1944-Present", note: "Bretton Woods to fiat" }
+                  ]
+                },
+                quiz: {
+                  question: "What pattern do broader historical precedents reveal about monetary systems?",
+                  options: [
+                    "A) They thrive without deficits or anchors",
+                    "B) Reserve roles demand deficits that invite abuse and crises",
+                    "C) Fiat systems always constrain growth effectively",
+                    "D) Banking panics ended with the gold standard"
+                  ],
+                  correct: 1,
+                  explanation: "Gold standards faltered under overreach, much like Spain's influx masked weaknesses. Tied to Triffin, it shows breakage: Fiat invites excess without checks. Now, dollar primacy teeters with China's RMB acceleration, as vulnerabilities in valuations persist. This hits youth hardest: Short-term props delay reforms, saddling them with bubbles and de-dollarization spikes in costs.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "2025 Reform Risks and Opportunities",
+                story: "Proposed solutions like gold returns (echoed in Project 2025) face hurdles, as 1933's U.S. gold abandonment enabled recovery but sparked inflation fears—similar to Bretton Woods' 1971 end. Relate to now: Like FDR's shift aiding farms but risking savers, modern reforms could curb deficits but slow growth, amid banking risks.",
+                data: {
+                  title: "2025 Monetary System Risks",
+                  stats: [
+                    { label: "National Debt", value: "$37T", note: "Record debt levels" },
+                    { label: "Dollar Index", value: "97.34", note: "Current DXY level" },
+                    { label: "GDP Growth", value: "3.4%", note: "Masking fragility" }
+                  ]
+                },
+                quiz: {
+                  question: "What risks does the U.S. face absent reform in 2025?",
+                  options: [
+                    "A) Unlimited growth without debt concerns",
+                    "B) Self-inflicted crisis from deficits propping short-term but causing long-term pain",
+                    "C) Gold return solving all fiat abuses instantly",
+                    "D) Dollar primacy strengthening indefinitely"
+                  ],
+                  correct: 1,
+                  explanation: "Historical shifts stabilized prices but constrained booms, showing no easy fix—as gold returns limit fiat's abuse but growth. The broken system teeters like 1971, with yuan alternatives and debt at $37 trillion. Boomers often escaped with assets; Gen Z/millennials face long-term pain—higher taxes, eroded savings, and crises from unchecked leverage.",
+                  points: 10
+                }
+              }
+            ]
+          }
         }
       };
       

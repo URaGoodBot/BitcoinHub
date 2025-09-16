@@ -17,6 +17,7 @@ import { BitcoinQuestGame } from "./BitcoinQuestGame";
 import { TriffinDilemmaGame } from "./TriffinDilemmaGame";
 import { BrettonWoodsGame } from "./BrettonWoodsGame";
 import { GreatInflationGame } from "./GreatInflationGame";
+import { HistoricalEchoesGame } from "./HistoricalEchoesGame";
 
 interface LearningPath {
   id: string;
@@ -52,6 +53,7 @@ interface LearningPathsData {
   triffinDilemma: LearningPath;
   brettonWoodsCollapse: LearningPath;
   greatInflation: LearningPath;
+  historicalEchoes: LearningPath;
 }
 
 export function LearningPaths() {
@@ -177,6 +179,13 @@ export function LearningPaths() {
     } else if (selectedPath.id === 'great-inflation-quiz') {
       return (
         <GreatInflationGame 
+          gameData={selectedPath.gameData}
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'historical-echoes-quiz') {
+      return (
+        <HistoricalEchoesGame 
           gameData={selectedPath.gameData}
           onBack={handleBackToPaths}
         />

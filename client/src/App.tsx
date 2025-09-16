@@ -18,6 +18,7 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Learn} />
+        <Route path="/learn" component={Learn} />
         <Route path="/analytics" component={Dashboard} />
         <Route path="/news" component={NewsFeed} />
         <Route path="/web-resources" component={WebResources} />
