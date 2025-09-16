@@ -2820,6 +2820,195 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        fourthTurning: {
+          id: "fourth-turning-quiz",
+          title: "The Fourth Turning Comprehensive Quiz",
+          subtitle: "Monetary Crises, Generational Shifts, and the Broken Monetary System",
+          description: "In-depth quiz on Strauss and Howe's theory of historical cycles. For those who lived through the post-WWII boom, 1970s inflation, or 2008 crash—explore how generational archetypes navigate monetary crises and why younger generations face greater challenges in today's broken fiat system.",
+          color: "bg-purple-600",
+          icon: "🔄",
+          estimatedTime: "30-45 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "The Four Turnings Cycle",
+                story: "Strauss-Howe's saecula (80–100-year cycles) mirror seasons, with the Fourth Turning as 'winter' crises like the American Revolution (1773–1794), where colonial debts sparked rebellion and reset. Relate to life: As revolutionaries faced fiat-like script devaluation, modern families see savings shrink from endless printing.",
+                data: {
+                  title: "Generational Cycle Theory",
+                  stats: [
+                    { label: "Saeculum Length", value: "80-100 years", note: "Complete generational cycle" },
+                    { label: "Current Crisis Start", value: "2008", note: "Financial crisis beginning" },
+                    { label: "Expected End", value: "~2030", note: "Crisis resolution timeline" }
+                  ]
+                },
+                quiz: {
+                  question: "What defines the four turnings in the theory?",
+                  options: [
+                    "A) Endless highs without crises",
+                    "B) High (strength), Awakening (rebellion), Unraveling (decay), Crisis (transformation)",
+                    "C) Only awakenings and unravelings",
+                    "D) Crises leading to permanent collapse"
+                  ],
+                  correct: 1,
+                  explanation: "The cycle repeats: High builds institutions (post-WWII), Awakening rebels culturally (1960s), Unraveling prioritizes individualism (1980s–2000s), and Crisis resolves threats (2008–2030). Like Revolution's overhaul, today's monetary breakage—$37 trillion debt from Triffin-like deficits—fits the Crisis, eroding trust. Older generations rebuilt post-Depression; younger ones face austerity, with Gen Z's job disruptions amid 2.9% inflation, delaying independence unlike GI empowerment.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "Triffin Dilemma and Crisis Alignment",
+                story: "The Unraveling-to-Crisis shift in the 1920s–1930s saw deregulation fuel bubbles, crashing into Depression—paralleling Britain's imperial gold drains pre-WWI from liquidity demands. Think relatable: As 1920s speculators lost homes, 2008's housing bust echoed for families today facing tariff hikes.",
+                data: {
+                  title: "Unraveling to Crisis Transition",
+                  stats: [
+                    { label: "Unraveling Era", value: "1984-2008", note: "Individualism & deregulation" },
+                    { label: "Crisis Catalyst", value: "2008 Crash", note: "Financial system breakdown" },
+                    { label: "BRICS Challenge", value: "2025", note: "De-dollarization acceleration" }
+                  ]
+                },
+                quiz: {
+                  question: "How do Triffin Dilemma and Bretton Woods collapse align with the Fourth Turning?",
+                  options: [
+                    "A) They stabilized the High phase",
+                    "B) Reserve strains precipitate Unraveling decay into Crisis breakdowns",
+                    "C) They prevented fiat vulnerabilities",
+                    "D) Gold discipline avoided deficits entirely"
+                  ],
+                  correct: 1,
+                  explanation: "Triffin's conflict (deficits for liquidity undermining stability) led to 1971's Bretton Woods end, sowing Unraveling seeds (1984–2008) of debt growth, like Roaring Twenties' excesses. In 2025's Crisis, BRICS de-dollarization and tariffs accelerate distrust, with 3.4% GDP masking weaknesses. Boomers (Prophets) enjoyed Awakening abundance; Millennials (Heroes) resolve via innovation, but with bubbles eroding wages—unlike GIs' post-WWII rewards.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Great Inflation as Crisis Foreshadowing",
+                story: "The 1970s Great Inflation, a Unraveling harbinger, arose from fiat post-Bretton Woods, echoing Weimar's 1920s hyperinflation from war debts. Relate personally: As Germans' wheelbarrows of cash bought bread, '70s lines for gas hit workers—similar to now's pessimism amid job fears.",
+                data: {
+                  title: "1970s Fiat System Breakdown",
+                  stats: [
+                    { label: "Peak Inflation", value: "13.5%", note: "1980 under Carter" },
+                    { label: "Stagflation Era", value: "1970s", note: "High inflation + unemployment" },
+                    { label: "Current Echo", value: "2.9%", note: "2025 embedded inflation" }
+                  ]
+                },
+                quiz: {
+                  question: "How does the Great Inflation prefigure today's fiat issues in the Fourth Turning?",
+                  options: [
+                    "A) It showed fiat's endless stability",
+                    "B) Debasement as stealth tax signals Crisis reset via inflation or reform",
+                    "C) Gold return prevented spirals",
+                    "D) Deficits were eliminated post-1970s"
+                  ],
+                  correct: 1,
+                  explanation: "Fiat's lack of discipline fueled 13.5% peaks and stagflation, mini-crisis foreshadowing current excesses like post-COVID printing. In 2025, Fed's 25bp cut echoes 1960s tuning, with debt interest eclipsing defense amid 2.9% inflation. Gen X (Nomads) navigated cynically; Gen Z/Alpha (Artists/Nomads) endure AI disruptions and entitlements faltering by 2030s, forcing endurance without GI-like empowerment.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Generational Archetypes in Action",
+                story: "Generational archetypes cycle: Prophets spark change, Heroes resolve crises—like the Civil War (1860–1865), where debts funded Union victory, empowering Gilded Generation industrially. Think everyday: As war veterans rebuilt railroads, post-WWII GIs enjoyed suburbs—contrasting today's delayed milestones for youth.",
+                data: {
+                  title: "Current Generational Lineup",
+                  stats: [
+                    { label: "Prophets (Boomers)", value: "Born 1943-60", note: "Idealism & awakening" },
+                    { label: "Nomads (Gen X)", value: "Born 1961-81", note: "Cynicism & survival" },
+                    { label: "Heroes (Millennials)", value: "Born 1982-04", note: "Crisis resolution" }
+                  ]
+                },
+                quiz: {
+                  question: "What roles do generations play in the Fourth Turning?",
+                  options: [
+                    "A) All as Prophets in endless Awakenings",
+                    "B) Prophets (Boomers) ignite, Nomads (X) navigate, Heroes (Millennials) resolve, Artists (Z) adapt",
+                    "C) Crises empower only elders",
+                    "D) No archetypal differences"
+                  ],
+                  correct: 1,
+                  explanation: "Archetypes drive cycles: Boomers' idealism fueled Unraveling deregulation; Millennials heroically tackle Crisis. Unlike Civil War's industrial lift for youth, 2025's $37 trillion debt burdens Millennials with 8% lower homeownership, Gen Z with inflation-hit gigs—global fiat limiting expansions that absorbed past debts.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "Crisis Burdens vs Victory Dividends",
+                story: "Previous Crises like WWII/Depression scarred but rewarded GIs with Bretton Woods stability and New Deal gains, echoing Revolution's post-independence trade booms. Relate to now: As GIs' pensions buffered retirement, modern Social Security strains hit savers.",
+                data: {
+                  title: "Generational Economic Outcomes",
+                  stats: [
+                    { label: "GI Generation Rewards", value: "Post-WWII boom", note: "Victory dividends & growth" },
+                    { label: "Current Debt Burden", value: "$37T+", note: "Inherited by younger gens" },
+                    { label: "Millennial Homeownership", value: "-8%", note: "Below historical norms" }
+                  ]
+                },
+                quiz: {
+                  question: "How does this Crisis differ for future generations?",
+                  options: [
+                    "A) It empowers youth more than ever",
+                    "B) Global debt legacies burden them with austerity, unlike prior victory dividends",
+                    "C) No generational shifts from past",
+                    "D) Elders face the most pain today"
+                  ],
+                  correct: 1,
+                  explanation: "Past Crises had escape valves (expansions); today's interconnected fiat—strained by Triffin—channels pain downward, with BRICS alternatives risking volatility. GIs built solvent systems; Millennials/Z/Alpha inherit faltering entitlements, higher taxes, and bubbles—fostering resilience but risking burnout amid 3.4% GDP masking fragility.",
+                  points: 10
+                }
+              },
+              {
+                id: 6,
+                title: "Monetary Imbalances Signal Climax",
+                story: "Monetary imbalances as Crisis harbingers, like 1930s protectionism deepening Depression, parallel today's tariffs and de-dollarization. Think relatable: As Smoot-Hawley's retaliations hiked costs, 2025 tariffs add to household bills.",
+                data: {
+                  title: "2025 Crisis Indicators",
+                  stats: [
+                    { label: "Trade War Tariffs", value: "Multiple rounds", note: "Smoot-Hawley echo" },
+                    { label: "BRICS Alternatives", value: "Accelerating", note: "Dollar challenge" },
+                    { label: "Consumer Sentiment", value: "55.4", note: "Near recession levels" }
+                  ]
+                },
+                quiz: {
+                  question: "How do current imbalances signal Fourth Turning climax?",
+                  options: [
+                    "A) By ensuring permanent stability",
+                    "B) Deficits, inflation, and geopolitical tensions accelerate reset",
+                    "C) Gold discipline halts all risks",
+                    "D) BRICS strengthens dollar hegemony"
+                  ],
+                  correct: 1,
+                  explanation: "Like 1930s tariffs, 2025's fuel distrust, with BRICS blockchain efforts and debt at $37 trillion inviting hyperinflation or reform. Boomers deferred fixes; youth lead pivots like crypto, but with inequality spikes unlike post-Depression collective gains.",
+                  points: 10
+                }
+              },
+              {
+                id: 7,
+                title: "Renewal and Future Potential",
+                story: "Renewal in Fourth Turnings, like post-Civil War industrialization, demands overhaul—echoing Rome's reforms post-crises but with modern digital twists. Relate personally: As Gilded rebuilt amid rails, youth today innovate amid AI/climate.",
+                data: {
+                  title: "Post-Crisis Opportunities",
+                  stats: [
+                    { label: "Historical Pattern", value: "Crisis → Renewal", note: "Institutional rebuilding" },
+                    { label: "Youth Innovation", value: "AI/Crypto/Climate", note: "Modern solutions" },
+                    { label: "New High Era", value: "2030-2050", note: "Projected renewal period" }
+                  ]
+                },
+                quiz: {
+                  question: "What could future generations achieve post-Crisis?",
+                  options: [
+                    "A) Permanent unraveling without change",
+                    "B) Pioneer reforms like decentralized finance for a new High",
+                    "C) Reject all systemic overhauls",
+                    "D) Return to pure gold without hurdles"
+                  ],
+                  correct: 1,
+                  explanation: "Crises catalyze: GIs' New Deal/Marshall; today's youth could reform fiat via multilateral systems or sustainable policies, emerging builders by 2030–2050. Amid 2.9% inflation and Fed cuts, global strains demand youth-led heroism, contrasting deferred elder burdens.",
+                  points: 10
+                }
+              }
+            ]
+          }
         }
       };
       
