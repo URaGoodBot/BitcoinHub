@@ -16,6 +16,7 @@ import { EscapeRoomGame } from "./EscapeRoomGame";
 import { BitcoinQuestGame } from "./BitcoinQuestGame";
 import { TriffinDilemmaGame } from "./TriffinDilemmaGame";
 import { BrettonWoodsGame } from "./BrettonWoodsGame";
+import { GreatInflationGame } from "./GreatInflationGame";
 
 interface LearningPath {
   id: string;
@@ -50,6 +51,7 @@ interface LearningPathsData {
   bitcoinQuest: LearningPath;
   triffinDilemma: LearningPath;
   brettonWoodsCollapse: LearningPath;
+  greatInflation: LearningPath;
 }
 
 export function LearningPaths() {
@@ -168,6 +170,13 @@ export function LearningPaths() {
     } else if (selectedPath.id === 'bretton-woods-collapse-quiz') {
       return (
         <BrettonWoodsGame 
+          gameData={selectedPath.gameData}
+          onBack={handleBackToPaths}
+        />
+      );
+    } else if (selectedPath.id === 'great-inflation-quiz') {
+      return (
+        <GreatInflationGame 
           gameData={selectedPath.gameData}
           onBack={handleBackToPaths}
         />

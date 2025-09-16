@@ -2542,6 +2542,145 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        greatInflation: {
+          id: "great-inflation-quiz",
+          title: "The Great Inflation of the 1970s Quiz",
+          subtitle: "Fiat Money's Hidden Tax and Policy Failures",
+          description: "Interactive quiz exploring the Great Inflation of the 1970s. For those who endured gas shortages, wage freezes, and eroding paychecks—discover how fiat money acted as a 'hidden tax' and how policy failures created stagflation that echoes in today's economy.",
+          color: "bg-red-600",
+          icon: "💸",
+          estimatedTime: "20-30 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "The Fiat Money Unleashing",
+                story: "Post-1971 Bretton Woods collapse, the U.S. embraced pure fiat, allowing Fed accommodation for deficits—paralleling Roman Emperor Nero's 1st-century coin debasement to fund wars, sparking inflation that eroded trust. Relate to life: Like Romans paying more for bread from diluted silver, '70s families saw grocery bills soar amid oil shocks.",
+                data: {
+                  title: "Post-Gold Standard Era",
+                  stats: [
+                    { label: "Nixon Shock Year", value: "1971", note: "End of gold convertibility" },
+                    { label: "M2 Money Growth", value: "13%", note: "Average annual 1970s" },
+                    { label: "Peak Inflation", value: "13.5%", note: "1980 under Carter" }
+                  ]
+                },
+                quiz: {
+                  question: "What unleashed the Great Inflation after ditching gold?",
+                  options: [
+                    "A) Strict adherence to gold-backed discipline",
+                    "B) Fiat shift enabling loose policies clashing with shocks, yielding stagflation",
+                    "C) Global surpluses eliminating U.S. deficits",
+                    "D) Fed prioritizing unemployment over growth"
+                  ],
+                  correct: 1,
+                  explanation: "Without gold's anchor, Fed stimulus for growth and deficits collided with OPEC oil hikes and wage spirals, peaking inflation at 13.5% in 1980 while unemployment hit 10.8%—much like Rome's debasement funding excesses led to economic decay. This fiat failure echoes Triffin's Dilemma: Reserve status demands dollar supply via deficits, breaking the system. In 2025, post-COVID M2 surge (up ~40% 2020-2022) leaves embedded inflation at 2.9%, devaluing savings. Older generations had some asset protection; younger ones inherit debt burdens and volatile employment in an unanchored system.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "Policy Failures and Growth Focus",
+                story: "The Fed's 1970s focus on short-term growth ignored price stability, fueling spirals—similar to Weimar Germany's 1920s hyperinflation from war reparations printing, destroying currencies overnight. Think relatable: As Germans wheeled barrows of cash for loaves, '70s Americans faced eroding wages despite raises.",
+                data: {
+                  title: "Failed Monetary Policy",
+                  stats: [
+                    { label: "Fed Rate Volatility", value: "2-15%", note: "Wild swings through decade" },
+                    { label: "Real Wages Decline", value: "-9%", note: "1973-1979 purchasing power" },
+                    { label: "Unemployment Peak", value: "10.8%", note: "1982 recession aftermath" }
+                  ]
+                },
+                quiz: {
+                  question: "What was a core policy failure in the Great Inflation?",
+                  options: [
+                    "A) Overly tight monetary controls curbing deficits",
+                    "B) Prioritizing growth over stability in a fiat system without discipline",
+                    "C) Reinstating gold convertibility mid-decade",
+                    "D) Ignoring unemployment to focus on inflation"
+                  ],
+                  correct: 1,
+                  explanation: "Orthodox economics failed as fiat allowed unchecked accommodation, eroding trust like Weimar's printing turned savings to ash. Tied to Bretton Woods' end, it exposed fiat's flaw: No external check on overreach. Today, with $37 trillion debt and $1.1 trillion interest costs rivaling defense, the broken system risks stagflation redux via tariffs and printing. Younger generations bear the brunt: Higher leverage than 2008 bubbles threaten crises, forcing them into volatile gig work while inheriting monetary instability.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "Stagflation's Painful Reality",
+                story: "Stagflation combined high inflation with stagnation, a fiat byproduct—echoing Britain's post-WWI gold abandonment in 1919, leading to 1920s inflation from war debts. Relate personally: Like Brits' devalued pounds hiking import costs, '70s oil shocks amplified U.S. price surges.",
+                data: {
+                  title: "1970s Economic Pain",
+                  stats: [
+                    { label: "Inflation Rate", value: "7.1%", note: "Average 1970s" },
+                    { label: "Unemployment Rate", value: "6.2%", note: "Average 1970s" },
+                    { label: "Oil Price Shock", value: "300%", note: "1973-1974 increase" }
+                  ]
+                },
+                quiz: {
+                  question: "What defined the economic pain of the 1970s Great Inflation?",
+                  options: [
+                    "A) Low inflation paired with booming employment",
+                    "B) High inflation and unemployment from fiat shocks and spirals",
+                    "C) Surplus budgets eliminating currency debasement",
+                    "D) Global trust in the dollar strengthening savings"
+                  ],
+                  correct: 1,
+                  explanation: "Fiat's lack of discipline let shocks balloon into 13.5% inflation and high joblessness, much like Britain's post-gold debts fueled volatility. This underscores the monetary system's brokenness, as Triffin's curse persists without anchors. In 2025, the dollar's 10.1% YTD drop exacerbates import costs amid tariffs, embedding 2.9% inflation. Older folks had recovery cushions; youth face austerity alternatives—print more or cut, trapping them in bubbles like 2008 but leveraged higher.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "The Hidden Tax of Debasement",
+                story: "Fiat enabled unlimited creation as a 'hidden tax' via debasement—similar to Spain's 16th-century silver influx from colonies inflating Europe, leading to decline despite wealth. Think everyday: As Spaniards' riches bought less, '70s savers watched accounts shrink in real terms.",
+                data: {
+                  title: "Currency Debasement Impact",
+                  stats: [
+                    { label: "Real Interest Rates", value: "-5%", note: "Often negative in 1970s" },
+                    { label: "Savings Erosion", value: "40%", note: "Real value lost 1970-1980" },
+                    { label: "Dollar vs Gold", value: "-85%", note: "Purchasing power decline" }
+                  ]
+                },
+                quiz: {
+                  question: "How did fiat act as a stealth tax in the 1970s?",
+                  options: [
+                    "A) By increasing gold reserves for citizens",
+                    "B) Currency debasement eroding savings to fund deficits indirectly",
+                    "C) Through direct taxes replacing monetary expansion",
+                    "D) Stabilizing prices via strict supply controls"
+                  ],
+                  correct: 1,
+                  explanation: "Printing funded growth but taxed via inflation, like Spain's 'price revolution' masked imperial overstretch. Linked to Bretton Woods' fiat shift, it reveals the system's fracture: Endless dollars for global needs devalue domestically. Now, post-2020 printing legacies and 2.9% inflation hit amid $37 trillion debt, risking 1970s echoes. Younger people suffer most: Banking vulnerabilities (two 2025 failures costing FDIC millions) signal bubbles bursting into crises, while they inherit unstable money without gold's discipline.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "Fiat Vulnerabilities Persist",
+                story: "The era's bubbles and crises stemmed from liquidity floods—paralleling the 1929 Crash's easy credit under gold strains, bursting into Depression. Relate to now: Like '20s speculators losing fortunes, recent regional banks faltered from rate hikes. With vulnerabilities high, how does 1970s fiat vulnerability persist in 2025?",
+                data: {
+                  title: "2025 Fiat System Risks",
+                  stats: [
+                    { label: "National Debt", value: "$37T", note: "Record high debt levels" },
+                    { label: "Interest Costs", value: "$1.1T", note: "Annual debt service" },
+                    { label: "Dollar Decline", value: "-10.1%", note: "YTD weakness vs basket" }
+                  ]
+                },
+                quiz: {
+                  question: "How does 1970s fiat vulnerability persist in 2025?",
+                  options: [
+                    "A) Gold discipline prevents all bubbles",
+                    "B) Unlimited printing funds deficits but creates bubbles and inflation risks",
+                    "C) Deficits are easily grown out without austerity",
+                    "D) Banking systems are immune to leverage issues"
+                  ],
+                  correct: 1,
+                  explanation: "Fiat liquidity bred '70s asset inflations that popped, akin to 1929's credit boom under fixed rates. This ties to Triffin's ongoing dilemma: Broken system can't sustain without debasement or pain. In 2025, $1.1 trillion interest and dollar weakness (down 10.1% YTD) amplify risks, with bank failures echoing 2008 but leveraged higher. Boomers often escaped with assets; Gen Z/millennials inherit austerity threats, gig precarity, and a fiat trap like historical empires' falls.",
+                  points: 10
+                }
+              }
+            ]
+          }
         }
       };
       
