@@ -2403,6 +2403,145 @@ All this data is updated live in the dashboard above. Try asking about specific 
               }
             ]
           }
+        },
+        brettonWoodsCollapse: {
+          id: "bretton-woods-collapse-quiz",
+          title: "Bretton Woods Collapse Quiz",
+          subtitle: "Echoes of Fiscal Overreach and Protectionism in Today's Economy",
+          description: "Interactive quiz exploring the Bretton Woods system collapse and its parallels to today's economic challenges. For those who witnessed the turbulent 1970s—gas lines, double-digit inflation—discover how fiscal excesses and protectionism unraveled the post-WWII monetary order.",
+          color: "bg-amber-600",
+          icon: "🏛️",
+          estimatedTime: "20-30 min",
+          isGame: true,
+          gameData: {
+            levels: [
+              {
+                id: 1,
+                title: "The Overvalued Dollar Crisis",
+                story: "Recall the 1960s: U.S. inflation climbed from loose Fed policies funding Vietnam (over $168 billion) and Great Society programs, overvaluing the dollar and hurting exports while Europe/Japan hoarded unredeemable dollars—echoing Weimar Germany's post-WWI reparations fueling hyperinflation. Relate to everyday life: Like a family budget strained by war taxes in the '60s, today's deficits from similar spending create trade gaps, raising import costs that squeeze household budgets.",
+                data: {
+                  title: "1960s Monetary Pressures",
+                  stats: [
+                    { label: "Vietnam War Cost", value: "$168B", note: "Equivalent to $900B today" },
+                    { label: "Gold Reserves Lost", value: "50%", note: "From 20,000 to 10,000 tons" },
+                    { label: "Inflation Rate", value: "2-6%", note: "Rising through the decade" }
+                  ]
+                },
+                quiz: {
+                  question: "What caused the fundamental imbalance that led to Bretton Woods' eventual collapse?",
+                  options: [
+                    "A) Strict U.S. export controls boosted domestic production",
+                    "B) U.S. inflation from war and fiscal spending overvalued the dollar, creating surpluses abroad",
+                    "C) Europe and Japan refused to use dollars for trade",
+                    "D) The Fed hoarded gold to stabilize the system"
+                  ],
+                  correct: 1,
+                  explanation: "Surpluses of U.S. dollars from aid, military outlays, and investments flooded markets, making redemption impossible without crisis, much like Weimar's printing press devalued the mark. This overvaluation slashed U.S. competitiveness, akin to Britain's post-Napoleonic trade woes. In 2025, fiscal expansions and tariffs reignite inflation (2.9% annual), with Project 2025's unfunded tax cuts ballooning deficits—echoing 1960s indiscipline. Older generations felt the '70s aftermath; younger ones inherit today's unanchored system.",
+                  points: 10
+                }
+              },
+              {
+                id: 2,
+                title: "Desperate Measures Backfire",
+                story: "By the late 1960s, desperate tariffs and capital controls (e.g., U.S. interest equalization tax) aimed to stem gold outflows but backfired, accelerating speculation—similar to the Smoot-Hawley tariffs of 1930 that deepened the Great Depression by sparking global retaliation. Think relatable: Just as '30s tariffs hiked consumer prices during hard times, modern ones could add $2,000 yearly to household costs per estimates.",
+                data: {
+                  title: "Failed Policy Responses",
+                  stats: [
+                    { label: "Interest Equalization Tax", value: "1963-1974", note: "Failed to stop capital outflows" },
+                    { label: "Import Surcharge", value: "10%", note: "Nixon's 1971 emergency measure" },
+                    { label: "Capital Controls", value: "Multiple", note: "Voluntary then mandatory limits" }
+                  ]
+                },
+                quiz: {
+                  question: "How did tariffs and capital controls affect the Bretton Woods system in the late 1960s?",
+                  options: [
+                    "A) They stabilized exchange rates by encouraging gold inflows",
+                    "B) Tariffs and controls worsened imbalances, hastening the shift to floating rates",
+                    "C) They eliminated U.S. deficits entirely",
+                    "D) Foreign nations adopted them to support the dollar"
+                  ],
+                  correct: 1,
+                  explanation: "These stopgaps fueled distrust, leading to the 1971 Nixon Shock and full collapse by 1973, much like Smoot-Hawley's trade wars. Without compromise on domestic policies, the system buckled. Today, 2025 tariffs (projected to cut GDP growth by 0.5–0.9pp) and protectionism mirror this, risking retaliation amid 3.4% Q3 growth. The Fed's impending 25bp cut echoes futile '60s fine-tuning. This burdens younger generations: They inherit a de-dollarization threat (e.g., BRICS alternatives) from policy rigidity.",
+                  points: 10
+                }
+              },
+              {
+                id: 3,
+                title: "The Great Inflation Unleashed",
+                story: "The system's end ushered in the 1970s 'Great Inflation,' with rates hitting double digits by 1979 from floating exchanges and oil shocks, paralleling post-WWI Britain's inflation after ditching gold in 1919 for war debts. Relate personally: Like '70s wage-price spirals eroding purchasing power for retirees, today's inflation risks from fiscal overreach hit savers hard.",
+                data: {
+                  title: "1970s Economic Turbulence",
+                  stats: [
+                    { label: "Peak Inflation", value: "13.5%", note: "1980 under Carter" },
+                    { label: "Oil Price Shock", value: "300%", note: "1973-1974 increase" },
+                    { label: "Dollar Devaluation", value: "40%", note: "Against major currencies" }
+                  ]
+                },
+                quiz: {
+                  question: "What was a key outcome of Bretton Woods' collapse in the 1970s?",
+                  options: [
+                    "A) Immediate return to the gold standard",
+                    "B) Shift to floating rates and surging inflation from unresolved imbalances",
+                    "C) Elimination of all global trade deficits",
+                    "D) U.S. exports booming without tariffs"
+                  ],
+                  correct: 1,
+                  explanation: "Ending fixed rates in 1973 unleashed volatility, with inflation averaging 7.1% in the '70s, akin to Britain's post-gold woes inflating away debts. This stemmed from unaddressed fiscal strains. In 2025, similar twin deficits (fiscal and trade) under Project 2025's deregulation could inflate further, with consumer sentiment at 55.4 amid job fears—reminiscent of '70s malaise. Younger people suffer most: Facing 2.9% inflation eroding entry-level pay, they contend with housing costs 40% above historical norms.",
+                  points: 10
+                }
+              },
+              {
+                id: 4,
+                title: "Structural Flaws and De-dollarization",
+                story: "Structural flaws, like the USD's dual role as national and reserve currency, clashed with sovereign goals, leading to gold drains—echoing the Roman Empire's 3rd-century coin debasement to fund excesses, causing economic decline. Think everyday: As Romans saw bread prices soar from diluted currency, modern deficits risk 'sudden stops' in capital, hiking mortgage rates.",
+                data: {
+                  title: "Modern De-dollarization Risks",
+                  stats: [
+                    { label: "BRICS Trade Share", value: "32%", note: "Growing non-dollar trade" },
+                    { label: "Dollar as Reserves", value: "58%", note: "Down from 70% peak" },
+                    { label: "Central Bank Gold", value: "+33%", note: "Purchases since 2010" }
+                  ]
+                },
+                quiz: {
+                  question: "Why do parallels to Bretton Woods warn of risks in 2025's economy?",
+                  options: [
+                    "A) The U.S. can sustain deficits indefinitely without consequences",
+                    "B) Fiscal overreach and tariffs could accelerate de-dollarization and borrowing cost spikes",
+                    "C) Global demand for dollars has vanished entirely",
+                    "D) The Fed's rate cuts will eliminate all imbalances"
+                  ],
+                  correct: 1,
+                  explanation: "Incompatible USD roles and conflicting policies depleted reserves, much like Rome's debasement. Today, Project 2025's tax cuts without offsets mirror this, potentially ballooning deficits and inviting BRICS-led de-dollarization—risking capital flight like the 1971 gold run. With the dollar down 10% YTD from policies, the broken system lacks anchors. This impacts youth disproportionately: They face higher future taxes and volatile jobs in a tariff-hit economy, while inheriting unstable money.",
+                  points: 10
+                }
+              },
+              {
+                id: 5,
+                title: "Policy Rigidity and Collapse",
+                story: "The 1971 suspension of gold convertibility stemmed from U.S. refusal to adjust internal policies, prompting a rethink of monetary stability—similar to the 1931 sterling crisis where Britain abandoned gold amid deficits, worsening the Depression. Relate to now: Like '30s unemployment from policy rigidity, 2025's 'stasis' could tip into slowdowns affecting workers. With consumer fears high, how does fiscal indiscipline in Bretton Woods parallel today's challenges?",
+                data: {
+                  title: "2025 Economic Warning Signs",
+                  stats: [
+                    { label: "Consumer Sentiment", value: "55.4", note: "Near recessionary levels" },
+                    { label: "Core Inflation", value: "3.1%", note: "Above Fed target" },
+                    { label: "Projected Deficit", value: "$2T+", note: "Under Project 2025" }
+                  ]
+                },
+                quiz: {
+                  question: "How does fiscal indiscipline in Bretton Woods parallel today's economic challenges?",
+                  options: [
+                    "A) It shows deficits always lead to immediate prosperity",
+                    "B) Unfunded expansions overload the system, risking inflation and capital disruptions",
+                    "C) Protectionism strengthened the original system long-term",
+                    "D) The collapse had no lasting inflationary effects"
+                  ],
+                  correct: 1,
+                  explanation: "Overreach without discipline collapsed fixed rates, leading to '70s volatility, akin to 1931's fallout. In 2025, with 3.1% core inflation and Fed cuts amid tariffs, Project 2025 echoes this, threatening 'sudden stops.' Older folks remember buffered recoveries; younger generations bear the brunt via eroded entitlements, gig work precarity, and a fiat system broken by endless imbalances—trapping them like Latin America's post-boom debt cycles.",
+                  points: 10
+                }
+              }
+            ]
+          }
         }
       };
       
