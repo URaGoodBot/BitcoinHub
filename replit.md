@@ -78,7 +78,18 @@ Preferred communication style: Simple, everyday language.
 - **CoinPaprika**: On-chain metrics
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
-## Recent Updates (August 2025)
+## Recent Updates (September 2025)
+- **House Stock Watcher Congressional Crypto Tracker**: New Politics page with comprehensive Congressional trading data integration
+  - Real-time tracking of crypto-related stock trades by U.S. House Representatives
+  - Smart filtering system categorizing trades as Direct Crypto, Related, or Infrastructure
+  - Party breakdown statistics with accurate Democrat/Republican/Independent classification
+  - Top crypto traders ranking with trade counts and estimated values
+  - Bitcoin impact scoring system (1-10 scale) for trade relevance analysis
+  - 30-minute data caching with manual refresh capability
+  - Transparent fallback system showing demo data when upstream service is unavailable
+  - Mobile-responsive design with proper navigation integration
+
+## Previous Updates (August 2025)
 - **Truflation Integration**: Added real-time US inflation data widget with 5-minute auto-refresh placed alongside Fed Watch Tool
   - Shows current Truflation rate (2.16%) vs BLS official rate comparison
   - Daily updates vs monthly government reports (45 days ahead)
