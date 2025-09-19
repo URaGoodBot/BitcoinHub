@@ -8,6 +8,7 @@ import { getLatestNews } from "./api/newsapi";
 import { getRealTreasuryData } from "./api/realTreasury";
 import { getFedWatchData, getFinancialMarketData } from "./api/financial";
 import { getMarketSentiment } from "./api/sentiment";
+import { getWSBSentimentData } from "./api/wallstreetbets-sentiment";
 import { getLegislationData, refreshLegislationData } from "./api/legislation";
 import { getInflationData } from "./api/inflation";
 import { getCoinglassIndicators } from "./api/coinglass-indicators";
@@ -367,6 +368,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching market sentiment:", error);
       res.status(500).json({ message: "Failed to fetch market sentiment analysis" });
+    }
+  });
+
+  // WallStreetBets sentiment analysis
+  app.get(`${apiPrefix}/sentiment/wallstreetbets`, async (req, res) => {
+    try {
+      const data = await getWSBSentimentData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching WallStreetBets sentiment:", error);
+      res.status(500).json({ message: "Failed to fetch WallStreetBets sentiment analysis" });
     }
   });
 
