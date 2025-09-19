@@ -417,7 +417,7 @@ const WebResources = () => {
                 variant="outline" 
                 size="sm" 
                 className="text-indigo-700 border-indigo-300 hover:bg-indigo-100 dark:text-indigo-300 dark:border-indigo-700"
-                onClick={() => window.open('https://www.coinglass.com/pro/i/BullMarketTop', '_blank')}
+                onClick={() => window.open('https://www.coinglass.com/bull-market-peak-signals', '_blank')}
               >
                 <ExternalLink className="h-3 w-3 mr-1" />
                 View Indicators
