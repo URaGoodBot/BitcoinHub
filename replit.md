@@ -79,6 +79,13 @@ Preferred communication style: Simple, everyday language.
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (September 2025)
+- **Comprehensive World Bank Liquidity Expansion**: Added sophisticated global liquidity analysis with 20+ economic indicators
+  - **Backend Enhancement**: Integrated 20+ new World Bank indicators across 4 categories (Liquidity, Debasement, Capital Flows, Financial Stress)
+  - **New Liquidity Tab**: Added dedicated tab in World Bank Economic Widget with color-coded sections for enhanced user experience
+  - **Real 2024 Data**: Credit to Private Sector (147.31%), GDP Deflator (3.76%), US Money Supply (99.23%), FDI Inflows (1.27%)
+  - **Bitcoin Investment Thesis**: Clear connections between global liquidity conditions and Bitcoin adoption drivers
+  - **4 Analysis Categories**: Global Liquidity Conditions (blue), Currency Debasement Signals (orange), Capital Flow Patterns (green), Bitcoin Liquidity Drivers (orange)
+  - **24-hour caching** with robust error handling for optimal performance and data reliability
 - **WallStreetBets Sentiment Feature Removed**: Completely eliminated WSB sentiment tracker due to Reddit API access restrictions (403 errors)
   - User requirement: Only real data allowed, no sample/fake/demo data under any circumstances
   - Removed `server/api/wallstreetbets-sentiment.ts`, `client/src/components/WSBSentimentWidget.tsx`
