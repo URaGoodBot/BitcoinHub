@@ -22,11 +22,17 @@ interface GlobalEconomicData {
   lastUpdated: string;
   usIndicators: EconomicIndicator[];
   globalIndicators: EconomicIndicator[];
+  liquidityIndicators: EconomicIndicator[];
+  debasementIndicators: EconomicIndicator[];
+  capitalFlowIndicators: EconomicIndicator[];
+  financialStressIndicators: EconomicIndicator[];
   keyMetrics: {
     usgdp: EconomicIndicator | null;
     inflation: EconomicIndicator | null;
     unemployment: EconomicIndicator | null;
     moneySupply: EconomicIndicator | null;
+    m2Growth: EconomicIndicator | null;
+    fiscalBalance: EconomicIndicator | null;
   };
 }
 
@@ -67,6 +73,16 @@ function formatValue(value: number | null, unit: string): string {
   // For percentages
   if (unit === '%' || unit.includes('%')) {
     return `${value.toFixed(2)}%`;
+  }
+  
+  // For exchange rates
+  if (unit === 'LCU/USD') {
+    return `${value.toFixed(4)} ${unit}`;
+  }
+  
+  // For months
+  if (unit === 'months') {
+    return `${value.toFixed(1)} ${unit}`;
   }
   
   // For other units or no unit
@@ -161,10 +177,11 @@ export function WorldBankEconomicWidget({ className = '' }: WorldBankEconomicWid
           </div>
         ) : economicData ? (
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
               <TabsTrigger value="us" data-testid="tab-us">US Economy</TabsTrigger>
               <TabsTrigger value="global" data-testid="tab-global">Global</TabsTrigger>
+              <TabsTrigger value="liquidity" data-testid="tab-liquidity">Liquidity</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="mt-4">
@@ -302,6 +319,215 @@ export function WorldBankEconomicWidget({ className = '' }: WorldBankEconomicWid
                       </div>
                     </div>
                   ))}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+
+            <TabsContent value="liquidity" className="mt-4">
+              <ScrollArea className="h-80">
+                <div className="space-y-6">
+                  {/* Liquidity Conditions */}
+                  {economicData.liquidityIndicators.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-base mb-3 flex items-center text-blue-600 dark:text-blue-400">
+                        <DollarSign className="h-4 w-4 mr-2" />
+                        Global Liquidity Conditions
+                      </h3>
+                      <div className="space-y-2">
+                        {economicData.liquidityIndicators.map((indicator, index) => (
+                          <div key={indicator.id} className="flex items-center justify-between p-3 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20" data-testid={`liquidity-indicator-${index}`}>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{indicator.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {indicator.date} • {indicator.description}
+                              </p>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className="font-semibold text-sm">
+                                {formatValue(indicator.value, indicator.unit)}
+                              </p>
+                              {indicator.change !== null && (
+                                <div className={`flex items-center text-xs ${getChangeColor(indicator.change)}`}>
+                                  {getChangeIcon(indicator.change)}
+                                  <span className="ml-1">{formatChange(indicator.change)}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Currency Debasement Signals */}
+                  {economicData.debasementIndicators.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-base mb-3 flex items-center text-orange-600 dark:text-orange-400">
+                        <AlertCircle className="h-4 w-4 mr-2" />
+                        Currency Debasement Signals
+                      </h3>
+                      <div className="space-y-2">
+                        {economicData.debasementIndicators.map((indicator, index) => (
+                          <div key={indicator.id} className="flex items-center justify-between p-3 border rounded-lg bg-orange-50/50 dark:bg-orange-950/20" data-testid={`debasement-indicator-${index}`}>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{indicator.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {indicator.date} • {indicator.description}
+                              </p>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className="font-semibold text-sm">
+                                {formatValue(indicator.value, indicator.unit)}
+                              </p>
+                              {indicator.change !== null && (
+                                <div className={`flex items-center text-xs ${getChangeColor(indicator.change)}`}>
+                                  {getChangeIcon(indicator.change)}
+                                  <span className="ml-1">{formatChange(indicator.change)}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Capital Flow Patterns */}
+                  {economicData.capitalFlowIndicators.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-base mb-3 flex items-center text-green-600 dark:text-green-400">
+                        <TrendingUp className="h-4 w-4 mr-2" />
+                        Capital Flow Patterns
+                      </h3>
+                      <div className="space-y-2">
+                        {economicData.capitalFlowIndicators.map((indicator, index) => (
+                          <div key={indicator.id} className="flex items-center justify-between p-3 border rounded-lg bg-green-50/50 dark:bg-green-950/20" data-testid={`capital-flow-indicator-${index}`}>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{indicator.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {indicator.date} • {indicator.description}
+                              </p>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className="font-semibold text-sm">
+                                {formatValue(indicator.value, indicator.unit)}
+                              </p>
+                              {indicator.change !== null && (
+                                <div className={`flex items-center text-xs ${getChangeColor(indicator.change)}`}>
+                                  {getChangeIcon(indicator.change)}
+                                  <span className="ml-1">{formatChange(indicator.change)}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Financial System Stress */}
+                  {economicData.financialStressIndicators.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-base mb-3 flex items-center text-red-600 dark:text-red-400">
+                        <AlertCircle className="h-4 w-4 mr-2" />
+                        Financial System Stress
+                      </h3>
+                      <div className="space-y-2">
+                        {economicData.financialStressIndicators.map((indicator, index) => (
+                          <div key={indicator.id} className="flex items-center justify-between p-3 border rounded-lg bg-red-50/50 dark:bg-red-950/20" data-testid={`financial-stress-indicator-${index}`}>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{indicator.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {indicator.date} • {indicator.description}
+                              </p>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className="font-semibold text-sm">
+                                {formatValue(indicator.value, indicator.unit)}
+                              </p>
+                              {indicator.change !== null && (
+                                <div className={`flex items-center text-xs ${getChangeColor(indicator.change)}`}>
+                                  {getChangeIcon(indicator.change)}
+                                  <span className="ml-1">{formatChange(indicator.change)}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bitcoin Liquidity Analysis */}
+                  <div>
+                    <h3 className="font-semibold text-base mb-3 flex items-center text-orange-500">
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Bitcoin Liquidity Drivers
+                    </h3>
+                    <div className="space-y-2">
+                      {/* Available liquidity indicators */}
+                      {economicData.liquidityIndicators.length > 0 && (
+                        <div className="p-3 border-2 border-orange-200 dark:border-orange-800 rounded-lg bg-orange-50/30 dark:bg-orange-950/10">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium text-sm">{economicData.liquidityIndicators[0].name}</p>
+                              <p className="text-xs text-muted-foreground">Credit expansion drives risk appetite for Bitcoin</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold text-orange-600 dark:text-orange-400">
+                                {formatValue(economicData.liquidityIndicators[0].value, economicData.liquidityIndicators[0].unit)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Debasement signals */}
+                      {economicData.debasementIndicators.length > 0 && (
+                        <div className="p-3 border-2 border-orange-200 dark:border-orange-800 rounded-lg bg-orange-50/30 dark:bg-orange-950/10">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium text-sm">GDP Deflator</p>
+                              <p className="text-xs text-muted-foreground">Broad inflation signals currency debasement</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold text-orange-600 dark:text-orange-400">
+                                {economicData.debasementIndicators.find(i => i.name === 'Global GDP Deflator') ? 
+                                  formatValue(economicData.debasementIndicators.find(i => i.name === 'Global GDP Deflator')!.value, economicData.debasementIndicators.find(i => i.name === 'Global GDP Deflator')!.unit) : 
+                                  'N/A'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* US Money Supply */}
+                      {economicData.keyMetrics.moneySupply && (
+                        <div className="p-3 border-2 border-orange-200 dark:border-orange-800 rounded-lg bg-orange-50/30 dark:bg-orange-950/10">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium text-sm">US Money Supply</p>
+                              <p className="text-xs text-muted-foreground">Broad money expansion relative to GDP</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold text-orange-600 dark:text-orange-400">
+                                {formatValue(economicData.keyMetrics.moneySupply.value, economicData.keyMetrics.moneySupply.unit)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bitcoin thesis explanation */}
+                      <div className="p-3 border border-dashed border-orange-300 dark:border-orange-700 rounded-lg bg-orange-50/20 dark:bg-orange-950/10">
+                        <div className="text-center">
+                          <p className="text-xs text-muted-foreground">
+                            <strong>Bitcoin Thesis:</strong> Credit expansion ({economicData.liquidityIndicators.length > 0 ? `${economicData.liquidityIndicators[0].value?.toFixed(1)}%` : 'N/A'}) + Currency debasement + Low real yields = Increased Bitcoin adoption as digital store of value
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </ScrollArea>
             </TabsContent>

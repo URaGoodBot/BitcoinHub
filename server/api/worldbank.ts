@@ -40,17 +40,23 @@ interface GlobalEconomicData {
   lastUpdated: string;
   usIndicators: EconomicIndicator[];
   globalIndicators: EconomicIndicator[];
+  liquidityIndicators: EconomicIndicator[];
+  debasementIndicators: EconomicIndicator[];
+  capitalFlowIndicators: EconomicIndicator[];
+  financialStressIndicators: EconomicIndicator[];
   keyMetrics: {
     usgdp: EconomicIndicator | null;
     inflation: EconomicIndicator | null;
     unemployment: EconomicIndicator | null;
     moneySupply: EconomicIndicator | null;
+    m2Growth: EconomicIndicator | null;
+    fiscalBalance: EconomicIndicator | null;
   };
 }
 
 // Key economic indicators relevant to Bitcoin and crypto markets
 const ECONOMIC_INDICATORS = {
-  // US Indicators
+  // Core US Indicators
   US_GDP: 'NY.GDP.MKTP.CD',                    // GDP (current US$)
   US_GDP_GROWTH: 'NY.GDP.MKTP.KD.ZG',          // GDP growth (annual %)
   US_INFLATION: 'FP.CPI.TOTL.ZG',              // Inflation, consumer prices (annual %)
@@ -58,13 +64,39 @@ const ECONOMIC_INDICATORS = {
   US_INTEREST_RATE: 'FR.INR.RINR',             // Real interest rate (%)
   US_MONEY_SUPPLY: 'FM.LBL.BMNY.GD.ZS',       // Broad money (% of GDP)
   US_DEBT_TO_GDP: 'GC.DOD.TOTL.GD.ZS',        // Central government debt, total (% of GDP)
-  US_CURRENCY_SUPPLY: 'FM.LBL.MQMY.GD.ZS',    // Money and quasi money (M2) as % of GDP
   
-  // Global Indicators
+  // Core Global Indicators
   GLOBAL_GDP: 'NY.GDP.MKTP.CD',                // World GDP
   GLOBAL_INFLATION: 'FP.CPI.TOTL.ZG',          // Global inflation
   GLOBAL_TRADE: 'NE.TRD.GNFS.ZS',             // Trade (% of GDP)
-  GLOBAL_FDI: 'BX.KLT.DINV.WD.GD.ZS',         // Foreign direct investment, net inflows (% of GDP)
+
+  // Global Liquidity Conditions
+  GLOBAL_M2_GROWTH: 'FM.LBL.MQMY.ZG',         // Money and quasi money (M2) growth (annual %)
+  GLOBAL_M2_GDP: 'FM.LBL.MQMY.GD.ZS',         // Money and quasi money (M2) as % of GDP
+  GLOBAL_CREDIT_PRIVATE: 'FS.AST.PRVT.GD.ZS', // Domestic credit to private sector (% of GDP)
+  GLOBAL_CREDIT_DOMESTIC: 'FS.AST.DOMS.GD.ZS', // Domestic credit provided by financial sector (% of GDP)
+  GLOBAL_LENDING_RATE: 'FR.INR.LEND',         // Lending interest rate (%)
+  GLOBAL_DEPOSIT_RATE: 'FR.INR.DPST',         // Deposit interest rate (%)
+
+  // Currency Debasement Signals
+  GLOBAL_GDP_DEFLATOR: 'NY.GDP.DEFL.KD.ZG',   // GDP deflator (annual %)
+  GLOBAL_FISCAL_BALANCE: 'GC.BAL.CASH.GD.ZS', // Central government cash surplus/deficit (% of GDP)
+  GLOBAL_GOV_EXPENSE: 'GC.XPN.TOTL.GD.ZS',    // Expense (% of GDP)
+  GLOBAL_GOV_REVENUE: 'GC.REV.XGRT.GD.ZS',    // Revenue, excluding grants (% of GDP)
+  GLOBAL_EXCHANGE_RATE: 'PA.NUS.FCRF',        // Official exchange rate (LCU per US$, period average)
+
+  // Capital Flow Patterns
+  GLOBAL_CURRENT_ACCOUNT: 'BN.CAB.XOKA.GD.ZS', // Current account balance (% of GDP)
+  GLOBAL_RESERVES_TOTAL: 'FI.RES.TOTL.CD',    // Total reserves including gold (current US$)
+  GLOBAL_RESERVES_MONTHS: 'FI.RES.TOTL.MO',   // Total reserves in months of imports
+  GLOBAL_FDI_INFLOWS: 'BX.KLT.DINV.WD.GD.ZS', // Foreign direct investment, net inflows (% of GDP)
+  GLOBAL_PORTFOLIO_EQUITY: 'BX.PEF.TOTL.CD',  // Portfolio equity, net inflows (BoP, current US$)
+  GLOBAL_REMITTANCES: 'BX.TRF.PWKR.DT.GD.ZS', // Personal remittances, received (% of GDP)
+
+  // Financial System Stress
+  GLOBAL_NPL_RATIO: 'FB.AST.NPER.ZS',         // Bank nonperforming loans to total gross loans (%)
+  GLOBAL_BANK_ZSCORE: 'GFDD.SI.01',           // Bank Z-score
+  GLOBAL_BANK_LIQUIDITY: 'GFDD.LI.02',        // Bank liquid reserves to bank assets ratio (%)
 };
 
 // Countries of interest
@@ -143,13 +175,29 @@ function getIndicatorUnit(indicatorCode: string, originalUnit: string): string {
     return 'USD';
   }
   
+  // Reserves and portfolio flows use current US dollars
+  if (indicatorCode.includes('FI.RES.TOTL.CD') || indicatorCode.includes('BX.PEF.TOTL.CD')) {
+    return 'USD';
+  }
+  
+  // Exchange rate indicators
+  if (indicatorCode.includes('PA.NUS.FCRF')) {
+    return 'LCU/USD';
+  }
+  
+  // Months indicators
+  if (indicatorCode.includes('FI.RES.TOTL.MO')) {
+    return 'months';
+  }
+  
   // Percentage indicators
   if (indicatorCode.includes('.ZG') || indicatorCode.includes('.ZS')) {
     return '%';
   }
   
   // Interest rate indicators
-  if (indicatorCode.includes('FR.INR') || indicatorCode.includes('RINR')) {
+  if (indicatorCode.includes('FR.INR') || indicatorCode.includes('RINR') || 
+      indicatorCode.includes('LEND') || indicatorCode.includes('DPST')) {
     return '%';
   }
   
@@ -203,10 +251,10 @@ export async function getWorldBankEconomicData(): Promise<GlobalEconomicData> {
     return economicDataCache;
   }
   
-  console.log('🔄 Fetching fresh World Bank economic data...');
+  console.log('🔄 Fetching comprehensive World Bank economic data...');
   
   try {
-    // Fetch US economic indicators
+    // Fetch core US economic indicators
     const [
       usGdpData,
       usGdpGrowthData,
@@ -225,7 +273,7 @@ export async function getWorldBankEconomicData(): Promise<GlobalEconomicData> {
       fetchWorldBankData(COUNTRIES.US, ECONOMIC_INDICATORS.US_DEBT_TO_GDP, 3)
     ]);
 
-    // Fetch global indicators
+    // Fetch core global indicators
     const [
       globalGdpData,
       globalInflationData,
@@ -236,7 +284,67 @@ export async function getWorldBankEconomicData(): Promise<GlobalEconomicData> {
       fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_TRADE, 3)
     ]);
 
-    // Format indicators
+    // Fetch global liquidity indicators
+    const [
+      m2GrowthData,
+      m2GdpData,
+      creditPrivateData,
+      creditDomesticData,
+      lendingRateData,
+      depositRateData
+    ] = await Promise.all([
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_M2_GROWTH, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_M2_GDP, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_CREDIT_PRIVATE, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_CREDIT_DOMESTIC, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_LENDING_RATE, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_DEPOSIT_RATE, 3)
+    ]);
+
+    // Fetch debasement indicators
+    const [
+      gdpDeflatorData,
+      fiscalBalanceData,
+      govExpenseData,
+      govRevenueData,
+      exchangeRateData
+    ] = await Promise.all([
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_GDP_DEFLATOR, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_FISCAL_BALANCE, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_GOV_EXPENSE, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_GOV_REVENUE, 3),
+      fetchWorldBankData(COUNTRIES.US, ECONOMIC_INDICATORS.GLOBAL_EXCHANGE_RATE, 3) // USD exchange rate
+    ]);
+
+    // Fetch capital flow indicators
+    const [
+      currentAccountData,
+      reservesTotalData,
+      reservesMonthsData,
+      fdiInflowsData,
+      portfolioEquityData,
+      remittancesData
+    ] = await Promise.all([
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_CURRENT_ACCOUNT, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_RESERVES_TOTAL, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_RESERVES_MONTHS, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_FDI_INFLOWS, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_PORTFOLIO_EQUITY, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_REMITTANCES, 3)
+    ]);
+
+    // Fetch financial stress indicators
+    const [
+      nplRatioData,
+      bankZScoreData,
+      bankLiquidityData
+    ] = await Promise.all([
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_NPL_RATIO, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_BANK_ZSCORE, 3),
+      fetchWorldBankData(COUNTRIES.WORLD, ECONOMIC_INDICATORS.GLOBAL_BANK_LIQUIDITY, 3)
+    ]);
+
+    // Format core indicators
     const usGdp = formatIndicator(usGdpData, 'US GDP', 'United States Gross Domestic Product (current US$)');
     const usGdpGrowth = formatIndicator(usGdpGrowthData, 'US GDP Growth', 'United States GDP growth rate (annual %)');
     const usInflation = formatIndicator(usInflationData, 'US Inflation', 'United States consumer price inflation (annual %)');
@@ -249,33 +357,74 @@ export async function getWorldBankEconomicData(): Promise<GlobalEconomicData> {
     const globalInflation = formatIndicator(globalInflationData, 'Global Inflation', 'World consumer price inflation (annual %)');
     const globalTrade = formatIndicator(globalTradeData, 'Global Trade', 'World trade as percentage of GDP');
 
-    // Build US indicators array
+    // Format liquidity indicators
+    const m2Growth = formatIndicator(m2GrowthData, 'Global M2 Growth', 'Money supply expansion rate - key Bitcoin liquidity driver');
+    const m2Gdp = formatIndicator(m2GdpData, 'Global M2/GDP', 'Money supply relative to economic output - liquidity abundance');
+    const creditPrivate = formatIndicator(creditPrivateData, 'Credit to Private Sector', 'Credit expansion to private sector - risk appetite proxy');
+    const creditDomestic = formatIndicator(creditDomesticData, 'Domestic Credit', 'Total domestic credit by financial sector');
+    const lendingRate = formatIndicator(lendingRateData, 'Global Lending Rates', 'Cost of borrowing - liquidity accessibility');
+    const depositRate = formatIndicator(depositRateData, 'Global Deposit Rates', 'Savings yield vs inflation - Bitcoin opportunity cost');
+
+    // Format debasement indicators
+    const gdpDeflator = formatIndicator(gdpDeflatorData, 'Global GDP Deflator', 'Broad price level changes - monetary debasement signal');
+    const fiscalBalance = formatIndicator(fiscalBalanceData, 'Global Fiscal Balance', 'Government budget surplus/deficit - monetization pressure');
+    const govExpense = formatIndicator(govExpenseData, 'Government Spending', 'Government expenditure as % of GDP - fiscal expansion');
+    const govRevenue = formatIndicator(govRevenueData, 'Government Revenue', 'Tax revenue capacity vs spending needs');
+    const exchangeRate = formatIndicator(exchangeRateData, 'USD Exchange Rate', 'Local currency vs USD - devaluation indicator');
+
+    // Format capital flow indicators
+    const currentAccount = formatIndicator(currentAccountData, 'Current Account Balance', 'External funding needs - currency vulnerability');
+    const reservesTotal = formatIndicator(reservesTotalData, 'Total Reserves', 'Foreign exchange reserves including gold');
+    const reservesMonths = formatIndicator(reservesMonthsData, 'Import Cover', 'Reserve adequacy in months of imports');
+    const fdiInflows = formatIndicator(fdiInflowsData, 'FDI Inflows', 'Foreign direct investment - long-term capital');
+    const portfolioEquity = formatIndicator(portfolioEquityData, 'Portfolio Flows', 'Equity portfolio flows - risk sentiment indicator');
+    const remittances = formatIndicator(remittancesData, 'Remittances', 'Cross-border personal transfers - crypto adoption driver');
+
+    // Format financial stress indicators
+    const nplRatio = formatIndicator(nplRatioData, 'Non-Performing Loans', 'Banking system health - crisis probability');
+    const bankZScore = formatIndicator(bankZScoreData, 'Bank Z-Score', 'Banking system stability - default probability');
+    const bankLiquidity = formatIndicator(bankLiquidityData, 'Bank Liquidity', 'Banking sector liquid reserves ratio');
+
+    // Build indicator arrays
     const usIndicators: EconomicIndicator[] = [
-      usGdp,
-      usGdpGrowth,
-      usInflation,
-      usUnemployment,
-      usInterestRate,
-      usMoneySupply,
-      usDebt
+      usGdp, usGdpGrowth, usInflation, usUnemployment, usInterestRate, usMoneySupply, usDebt
     ].filter((indicator): indicator is EconomicIndicator => indicator !== null);
 
-    // Build global indicators array
     const globalIndicators: EconomicIndicator[] = [
-      globalGdp,
-      globalInflation,
-      globalTrade
+      globalGdp, globalInflation, globalTrade
+    ].filter((indicator): indicator is EconomicIndicator => indicator !== null);
+
+    const liquidityIndicators: EconomicIndicator[] = [
+      m2Growth, m2Gdp, creditPrivate, creditDomestic, lendingRate, depositRate
+    ].filter((indicator): indicator is EconomicIndicator => indicator !== null);
+
+    const debasementIndicators: EconomicIndicator[] = [
+      gdpDeflator, fiscalBalance, govExpense, govRevenue, exchangeRate
+    ].filter((indicator): indicator is EconomicIndicator => indicator !== null);
+
+    const capitalFlowIndicators: EconomicIndicator[] = [
+      currentAccount, reservesTotal, reservesMonths, fdiInflows, portfolioEquity, remittances
+    ].filter((indicator): indicator is EconomicIndicator => indicator !== null);
+
+    const financialStressIndicators: EconomicIndicator[] = [
+      nplRatio, bankZScore, bankLiquidity
     ].filter((indicator): indicator is EconomicIndicator => indicator !== null);
 
     const economicData: GlobalEconomicData = {
       lastUpdated: new Date().toISOString(),
       usIndicators,
       globalIndicators,
+      liquidityIndicators,
+      debasementIndicators,
+      capitalFlowIndicators,
+      financialStressIndicators,
       keyMetrics: {
         usgdp: usGdp,
         inflation: usInflation,
         unemployment: usUnemployment,
-        moneySupply: usMoneySupply
+        moneySupply: usMoneySupply,
+        m2Growth: m2Growth,
+        fiscalBalance: fiscalBalance
       }
     };
 
@@ -283,7 +432,7 @@ export async function getWorldBankEconomicData(): Promise<GlobalEconomicData> {
     economicDataCache = economicData;
     lastEconomicUpdate = now;
 
-    console.log(`✅ World Bank economic data retrieved: ${usIndicators.length} US indicators, ${globalIndicators.length} global indicators`);
+    console.log(`✅ Comprehensive World Bank data retrieved: ${usIndicators.length} US, ${globalIndicators.length} global, ${liquidityIndicators.length} liquidity, ${debasementIndicators.length} debasement, ${capitalFlowIndicators.length} capital flow, ${financialStressIndicators.length} stress indicators`);
     
     return economicData;
 
@@ -295,11 +444,17 @@ export async function getWorldBankEconomicData(): Promise<GlobalEconomicData> {
       lastUpdated: new Date().toISOString(),
       usIndicators: [],
       globalIndicators: [],
+      liquidityIndicators: [],
+      debasementIndicators: [],
+      capitalFlowIndicators: [],
+      financialStressIndicators: [],
       keyMetrics: {
         usgdp: null,
         inflation: null,
         unemployment: null,
-        moneySupply: null
+        moneySupply: null,
+        m2Growth: null,
+        fiscalBalance: null
       }
     };
 
