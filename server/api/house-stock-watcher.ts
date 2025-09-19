@@ -632,18 +632,46 @@ function inferPartyFromName(politicianName: string): string {
   
   const nameLower = politicianName.toLowerCase();
   
-  // Comprehensive list based on current and recent politicians
+  // Comprehensive list based on current members of Congress
   const republicans = [
     'vern buchanan', 'buchanan', 'scott', 'cruz', 'rubio', 'graham', 'mcconnell', 'paul', 
     'cotton', 'hawley', 'desantis', 'abbott', 'greene', 'gaetz', 'boebert', 'jordan', 
     'mccarthy', 'scalise', 'ron johnson', 'johnson', 'kennedy', 'blackburn', 'cornyn',
-    'barrasso', 'thune', 'capito', 'collins', 'murkowski', 'tillis', 'cassidy'
+    'barrasso', 'thune', 'capito', 'collins', 'murkowski', 'tillis', 'cassidy',
+    // Current politicians from the data
+    'marjorie taylor greene', 'taylor greene', 'james comer', 'comer', 'pete sessions', 
+    'sessions', 'rudy yakym', 'yakym', 'mike kelly', 'kelly', 'rob bresnahan', 'bresnahan',
+    // Additional current Republicans
+    'kevin mccarthy', 'steve scalise', 'elise stefanik', 'tom emmer', 'jim jordan',
+    'byron donalds', 'matt gaetz', 'lauren boebert', 'andy biggs', 'chip roy',
+    'thomas massie', 'dan crenshaw', 'greg abbott', 'ron desantis',
+    // Republicans from debug logs
+    'michael r. turner', 'turner', 'thomas j. rooney', 'rooney', 'markwayne mullin', 'mullin',
+    'laurel lee', 'thomas h. kean jr.', 'kean', 'august lee pfluger', 'pfluger',
+    'virginia foxx', 'foxx', 'neal patrick dunn', 'dunn', 'kevin hern', 'hern',
+    'max miller', 'richard w. allen', 'allen', 'lance gooden', 'gooden',
+    'michael patrick guest', 'guest', 'greg steube', 'steube', 'victoria spartz', 'spartz',
+    'robert e. latta', 'latta', 'maria elvira salazar', 'salazar', 'mark dr green', 'green',
+    'david joyce', 'joyce', 'john mcguire', 'mcguire'
   ];
   
   const democrats = [
     'pelosi', 'schumer', 'warren', 'sanders', 'wyden', 'carper', 'blumenthal', 'harris', 
     'feinstein', 'durbin', 'klobuchar', 'booker', 'gillibrand', 'menendez', 'cardin',
-    'bennet', 'murphy', 'coons', 'peters', 'stabenow', 'brown', 'casey', 'warner'
+    'bennet', 'murphy', 'coons', 'peters', 'stabenow', 'brown', 'casey', 'warner',
+    // Current politicians from the data
+    'josh gottheimer', 'gottheimer', 'jonathan jackson', 'jackson',
+    // Additional current Democrats
+    'nancy pelosi', 'chuck schumer', 'hakeem jeffries', 'alexandria ocasio-cortez',
+    'aoc', 'rashida tlaib', 'ilhan omar', 'ayanna pressley', 'pramila jayapal',
+    'katherine clark', 'jamie raskin', 'adam schiff', 'jerry nadler', 'maxine waters',
+    'ro khanna', 'katie porter', 'elizabeth warren', 'bernie sanders', 'joe biden',
+    // Democrats from debug logs
+    'suzan k. delbene', 'delbene', 'earl blumenauer', 'blumenauer', 'jared moskowitz', 'moskowitz',
+    'thomas suozzi', 'suozzi', 'debbie wasserman schultz', 'wasserman schultz', 'wasserman',
+    'morgan mcgarvey', 'mcgarvey', 'donald beyer jr', 'donald sternoff beyer', 'beyer',
+    'kathy manning', 'manning', 'jake auchincloss', 'auchincloss', 'lloyd doggett', 'doggett',
+    'greg landsman', 'landsman', 'chellie pingree', 'pingree', 'debbie dingell', 'dingell'
   ];
   
   for (const rep of republicans) {
@@ -654,5 +682,6 @@ function inferPartyFromName(politicianName: string): string {
     if (nameLower.includes(dem)) return 'Democrat';
   }
   
-  return 'Independent';
+  // Default to Unknown instead of Independent for better tracking
+  return 'Unknown';
 }
