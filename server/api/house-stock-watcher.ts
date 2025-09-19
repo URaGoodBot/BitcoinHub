@@ -110,51 +110,20 @@ async function getApifyCongressionalData(): Promise<HouseStockData> {
     // Initialize Apify client
     const client = new ApifyClient({ token: apiToken });
 
-    // Use the free Web Scraper with Capitol Trades - works with $5 monthly credits
+    // Use the free Congressional Trading Data Scraper - works with $5 monthly credits
+    const currentDate = new Date();
+    const startDate = new Date(currentDate.getFullYear() - 1, 0, 1); // Start of last year
+    
     const runInput = {
-      startUrls: [
-        { 
-          url: "https://www.capitoltrades.com/trades?txDate=365d" // Get last year of trades
-        }
-      ],
-      pageFunction: `async function pageFunction(context) {
-        const { page, request } = context;
-        
-        // Wait for the page to load
-        await page.waitForSelector('table tbody tr', { timeout: 10000 });
-        
-        // Extract trade data from the table
-        const trades = await page.evaluate(() => {
-          const rows = Array.from(document.querySelectorAll('table tbody tr'));
-          return rows.map(row => {
-            const cells = row.querySelectorAll('td');
-            if (cells.length < 8) return null;
-            
-            return {
-              politician: cells[0]?.textContent?.trim() || '',
-              issuer: cells[1]?.textContent?.trim() || '',
-              published: cells[2]?.textContent?.trim() || '',
-              traded: cells[3]?.textContent?.trim() || '',
-              filedAfter: cells[4]?.textContent?.trim() || '',
-              owner: cells[5]?.textContent?.trim() || '',
-              type: cells[6]?.textContent?.trim() || '',
-              size: cells[7]?.textContent?.trim() || '',
-              price: cells[8]?.textContent?.trim() || ''
-            };
-          }).filter(trade => trade !== null);
-        });
-        
-        return trades;
-      }`,
-      maxRequestsPerCrawl: 10, // Limit to conserve credits
-      maxPagesPerCrawl: 5,
-      proxyConfiguration: { useApifyProxy: true }
+      Start_Date: startDate.toISOString().split('T')[0], // Format: YYYY-MM-DD
+      End_Date: currentDate.toISOString().split('T')[0], // Today's date
+      Max_Results: 500 // Limit to conserve credits while getting good coverage
     };
 
-    console.log('Running Apify Free Web Scraper with Capitol Trades...');
+    console.log('Running Apify Congressional Trading Data Scraper with input:', runInput);
     
-    // Run the free Web Scraper and get results
-    const run = await client.actor('apify/web-scraper').call(runInput);
+    // Run the Congressional Trading Data Scraper using actor ID from GitHub repo
+    const run = await client.actor('xxCgm38ifv9HcLl9z').call(runInput);
 
     if (!run.defaultDatasetId) {
       throw new Error('No dataset returned from Apify scraper');
@@ -169,47 +138,20 @@ async function getApifyCongressionalData(): Promise<HouseStockData> {
 
     console.log(`✓ Apify Congressional trades retrieved: ${items.length} recent trades`);
 
-    // Transform Apify Web Scraper data format to our standardized format
-    const allTrades: CongressionalTrade[] = [];
-    
-    // Process each page result from the web scraper
-    items.forEach((item: any) => {
-      if (Array.isArray(item)) {
-        // Handle array of trades from pageFunction
-        item.forEach((trade: any) => {
-          if (trade && trade.politician) {
-            allTrades.push({
-              representative: trade.politician || 'Unknown',
-              district: 'Unknown', // Capitol Trades doesn't provide district info easily
-              party: inferPartyFromName(trade.politician || ''),
-              trade_date: trade.traded || trade.transaction_date || '',
-              disclosure_date: trade.published || trade.disclosure_date || '',
-              ticker: extractTicker(trade.issuer || ''),
-              asset_description: trade.issuer || 'Unknown Asset',
-              transaction_type: normalizeTransactionType(trade.type || ''),
-              amount: trade.size || '$1,000 - $15,000',
-              cap_gains_over_200_usd: false,
-              ptr_link: '#'
-            });
-          }
-        });
-      } else if (item && item.politician) {
-        // Handle single trade object
-        allTrades.push({
-          representative: item.politician || 'Unknown',
-          district: 'Unknown',
-          party: inferPartyFromName(item.politician || ''),
-          trade_date: item.traded || item.transaction_date || '',
-          disclosure_date: item.published || item.disclosure_date || '',
-          ticker: extractTicker(item.issuer || ''),
-          asset_description: item.issuer || 'Unknown Asset',
-          transaction_type: normalizeTransactionType(item.type || ''),
-          amount: item.size || '$1,000 - $15,000',
-          cap_gains_over_200_usd: false,
-          ptr_link: '#'
-        });
-      }
-    });
+    // Transform Congressional Trading Data Scraper format to our standardized format
+    const allTrades: CongressionalTrade[] = items.map((item: any) => ({
+      representative: item.Politician || item.politician || item.member_name || 'Unknown',
+      district: item.District || item.district || item.state || 'Unknown',
+      party: inferPartyFromName(item.Politician || item.politician || item.member_name || ''),
+      trade_date: item.Transaction_Date || item.transaction_date || item.traded || '',
+      disclosure_date: item.Disclosure_Date || item.disclosure_date || item.filed || '',
+      ticker: item.Ticker || item.ticker || item.symbol || extractTicker(item.Asset || item.asset || ''),
+      asset_description: item.Asset || item.asset || item.company || 'Unknown Asset',
+      transaction_type: normalizeTransactionType(item.Transaction_Type || item.transaction_type || item.type || ''),
+      amount: item.Amount || item.amount || item.size || '$1,000 - $15,000',
+      cap_gains_over_200_usd: false,
+      ptr_link: item.Link || item.link || item.url || '#'
+    }));
 
     return processCongressionalData(allTrades, false);
     
