@@ -79,6 +79,11 @@ Preferred communication style: Simple, everyday language.
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (September 2025)
+- **WallStreetBets Sentiment Feature Removed**: Completely eliminated WSB sentiment tracker due to Reddit API access restrictions (403 errors)
+  - User requirement: Only real data allowed, no sample/fake/demo data under any circumstances
+  - Removed `server/api/wallstreetbets-sentiment.ts`, `client/src/components/WSBSentimentWidget.tsx`
+  - Cleaned up all imports and route references to maintain clean codebase
+  - Application now contains only authentic data from verified sources
 - **Real Congressional Trading Data Integration**: Completely replaced demo data with authentic Congressional trading data
   - Multi-tier real data sources: House Stock Watcher → Finnhub → FMP → Senate Stock Watcher GitHub repository
   - 8,350 real Congressional trades with 421 crypto-relevant trades from authentic sources
