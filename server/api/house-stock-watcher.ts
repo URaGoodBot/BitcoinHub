@@ -137,21 +137,25 @@ async function getApifyCongressionalData(): Promise<HouseStockData> {
     }
 
     console.log(`✓ Apify Congressional trades retrieved: ${items.length} recent trades`);
+    
 
     // Transform Congressional Trading Data Scraper format to our standardized format
-    const allTrades: CongressionalTrade[] = items.map((item: any) => ({
-      representative: item.Politician || item.politician || item.member_name || 'Unknown',
-      district: item.District || item.district || item.state || 'Unknown',
-      party: inferPartyFromName(item.Politician || item.politician || item.member_name || ''),
-      trade_date: item.Transaction_Date || item.transaction_date || item.traded || '',
-      disclosure_date: item.Disclosure_Date || item.disclosure_date || item.filed || '',
-      ticker: item.Ticker || item.ticker || item.symbol || extractTicker(item.Asset || item.asset || ''),
-      asset_description: item.Asset || item.asset || item.company || 'Unknown Asset',
-      transaction_type: normalizeTransactionType(item.Transaction_Type || item.transaction_type || item.type || ''),
-      amount: item.Amount || item.amount || item.size || '$1,000 - $15,000',
-      cap_gains_over_200_usd: false,
-      ptr_link: item.Link || item.link || item.url || '#'
-    }));
+    const allTrades: CongressionalTrade[] = items.map((item: any) => {
+      const fullName = `${item.First_Name || ''} ${item.Last_Name || ''}`.trim();
+      return {
+        representative: fullName || 'Unknown',
+        district: item.State_District || item.district || 'Unknown',
+        party: inferPartyFromName(fullName),
+        trade_date: item.Date || item.transaction_date || '',
+        disclosure_date: item.Notification_Date || item.disclosure_date || '',
+        ticker: item.Ticker || extractTicker(item.Asset || ''),
+        asset_description: item.Asset || 'Unknown Asset',
+        transaction_type: normalizeTransactionType(item.Transaction_Type || ''),
+        amount: item.Amount_Range || item.amount || '$1,000 - $15,000',
+        cap_gains_over_200_usd: item.Capital_Gains_Over_200 === 'Yes',
+        ptr_link: '#'
+      };
+    });
 
     return processCongressionalData(allTrades, false);
     
@@ -623,17 +627,32 @@ async function getRealCongressionalData(): Promise<HouseStockData> {
 }
 
 // Helper function to infer party from senator name (basic implementation)
-function inferPartyFromName(senatorName: string): string {
-  // This is a simplified approach - in production you'd want a proper lookup
-  const democraticSenators = ['Ron L Wyden', 'Thomas R Carper', 'Richard Blumenthal'];
-  const republicanSenators = ['Pat Roberts'];
+function inferPartyFromName(politicianName: string): string {
+  if (!politicianName) return 'Unknown';
   
-  if (democraticSenators.some(name => senatorName.includes(name.split(' ')[0]))) {
-    return 'Democrat';
-  }
-  if (republicanSenators.some(name => senatorName.includes(name.split(' ')[0]))) {
-    return 'Republican';
+  const nameLower = politicianName.toLowerCase();
+  
+  // Comprehensive list based on current and recent politicians
+  const republicans = [
+    'vern buchanan', 'buchanan', 'scott', 'cruz', 'rubio', 'graham', 'mcconnell', 'paul', 
+    'cotton', 'hawley', 'desantis', 'abbott', 'greene', 'gaetz', 'boebert', 'jordan', 
+    'mccarthy', 'scalise', 'ron johnson', 'johnson', 'kennedy', 'blackburn', 'cornyn',
+    'barrasso', 'thune', 'capito', 'collins', 'murkowski', 'tillis', 'cassidy'
+  ];
+  
+  const democrats = [
+    'pelosi', 'schumer', 'warren', 'sanders', 'wyden', 'carper', 'blumenthal', 'harris', 
+    'feinstein', 'durbin', 'klobuchar', 'booker', 'gillibrand', 'menendez', 'cardin',
+    'bennet', 'murphy', 'coons', 'peters', 'stabenow', 'brown', 'casey', 'warner'
+  ];
+  
+  for (const rep of republicans) {
+    if (nameLower.includes(rep)) return 'Republican';
   }
   
-  return 'Unknown';
+  for (const dem of democrats) {
+    if (nameLower.includes(dem)) return 'Democrat';
+  }
+  
+  return 'Independent';
 }
