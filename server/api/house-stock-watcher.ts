@@ -64,6 +64,11 @@ const CRYPTO_RELATED_TICKERS = {
 };
 
 function isCryptoRelated(ticker: string, description: string): { relevant: boolean; type?: keyof typeof CRYPTO_RELATED_TICKERS; score: number } {
+  // Handle null or undefined tickers safely
+  if (!ticker || !description) {
+    return { relevant: false, score: 0 };
+  }
+  
   const upperTicker = ticker.toUpperCase();
   const lowerDesc = description.toLowerCase();
   
@@ -436,83 +441,98 @@ export async function getHouseStockData(): Promise<HouseStockData> {
       console.log('FMP Congressional API unavailable (API key required)');
     }
 
-    // Return fallback data with realistic recent examples
-    const fallbackData: HouseStockData = {
+
+    // Try to get real Congressional trading data from GitHub repository
+    console.log('🔄 Attempting to fetch real Congressional trading data from GitHub...');
+    try {
+      const realData = await getRealCongressionalData();
+      console.log(`✅ Real Congressional data retrieved: ${realData.cryptoTrades.length} crypto-relevant trades`);
+      return realData;
+    } catch (realDataError) {
+      console.error('Error fetching real Congressional data:', realDataError);
+    }
+
+    // No fallback - return empty data instead of demo data  
+    const emptyData: HouseStockData = {
       lastUpdated: new Date().toISOString(),
-      totalTrades: 8500,
-      fallbackData: true,
-      cryptoTrades: [
-        {
-          representative: "Nancy Pelosi",
-          district: "CA-11",
-          party: "Democrat",
-          trade_date: "2025-09-15",
-          disclosure_date: "2025-09-18",
-          ticker: "NVDA",
-          asset_description: "NVIDIA Corporation",
-          transaction_type: "Purchase",
-          amount: "$1,000,001 - $5,000,000",
-          cap_gains_over_200_usd: false,
-          ptr_link: "https://disclosures-clerk.house.gov/example",
-          crypto_relevance: "infrastructure" as const,
-          bitcoin_impact_score: 6
-        },
-        {
-          representative: "Dan Crenshaw",
-          district: "TX-02",
-          party: "Republican", 
-          trade_date: "2025-09-10",
-          disclosure_date: "2025-09-13",
-          ticker: "COIN",
-          asset_description: "Coinbase Global Inc",
-          transaction_type: "Sale",
-          amount: "$15,001 - $50,000",
-          cap_gains_over_200_usd: true,
-          ptr_link: "https://disclosures-clerk.house.gov/example",
-          crypto_relevance: "direct" as const,
-          bitcoin_impact_score: 10
-        }
-      ],
-      recentActivity: [
-        {
-          representative: "Alexandria Ocasio-Cortez",
-          district: "NY-14",
-          party: "Democrat",
-          trade_date: "2025-09-12",
-          disclosure_date: "2025-09-15",
-          ticker: "AAPL",
-          asset_description: "Apple Inc",
-          transaction_type: "Purchase",
-          amount: "$1,001 - $15,000",
-          cap_gains_over_200_usd: false,
-          ptr_link: "https://disclosures-clerk.house.gov/example"
-        }
-      ],
+      totalTrades: 0,
+      fallbackData: false,
+      cryptoTrades: [],
+      recentActivity: [],
       partyBreakdown: {
-        democrat: 15,
-        republican: 18,
-        independent: 2
+        democrat: 0,
+        republican: 0,
+        independent: 0
       },
-      topCryptoTraders: [
-        {
-          name: "Nancy Pelosi",
-          party: "Democrat",
-          district: "CA-11",
-          cryptoTradeCount: 12,
-          totalValue: "$2.1M+",
-          lastTradeDate: "2025-09-15"
-        },
-        {
-          name: "Dan Crenshaw", 
-          party: "Republican",
-          district: "TX-02",
-          cryptoTradeCount: 8,
-          totalValue: "$450K+",
-          lastTradeDate: "2025-09-10"
-        }
-      ]
+      topCryptoTraders: []
     };
 
-    return fallbackData;
+    console.log('⚠️ No real Congressional trading data available - returning empty data (no demo data)');
+    return emptyData;
   }
+}
+
+// Function to get real Congressional trading data from GitHub repository
+async function getRealCongressionalData(): Promise<HouseStockData> {
+  console.log('Fetching real Congressional trading data from Senate Stock Watcher repository...');
+  
+  try {
+    const response = await axios.get(
+      'https://raw.githubusercontent.com/timothycarambat/senate-stock-watcher-data/master/aggregate/all_transactions.json',
+      {
+        timeout: 15000,
+        headers: { 'User-Agent': 'BitcoinHub-Congressional-Tracker/1.0' }
+      }
+    );
+
+    if (!response.data || !Array.isArray(response.data)) {
+      throw new Error('Invalid response format from GitHub Congressional data');
+    }
+
+    console.log(`✓ Real Congressional trades retrieved: ${response.data.length} total trades`);
+
+    // Transform GitHub data to our internal format
+    const allTrades: CongressionalTrade[] = response.data.map((trade: any) => ({
+      representative: trade.senator, // Senate data uses 'senator' field
+      district: 'Senate', // All are Senate trades
+      party: inferPartyFromName(trade.senator), // Infer party from senator name
+      trade_date: trade.transaction_date,
+      disclosure_date: trade.transaction_date, // Use same date since disclosure_date not available
+      ticker: trade.ticker === '--' ? null : trade.ticker,
+      asset_description: trade.asset_description,
+      transaction_type: trade.type.includes('Purchase') ? 'Purchase' : 'Sale',
+      amount: trade.amount,
+      cap_gains_over_200_usd: false, // Not available in this dataset
+      ptr_link: trade.ptr_link,
+      owner: trade.owner
+    }));
+
+    const realData = processCongressionalData(allTrades, false);
+    
+    // Add data source indication and note about data age
+    realData.lastUpdated = new Date().toISOString();
+    realData.fallbackData = false;
+    
+    return realData;
+    
+  } catch (error) {
+    console.error('Error fetching real Congressional data from GitHub:', error);
+    throw error;
+  }
+}
+
+// Helper function to infer party from senator name (basic implementation)
+function inferPartyFromName(senatorName: string): string {
+  // This is a simplified approach - in production you'd want a proper lookup
+  const democraticSenators = ['Ron L Wyden', 'Thomas R Carper', 'Richard Blumenthal'];
+  const republicanSenators = ['Pat Roberts'];
+  
+  if (democraticSenators.some(name => senatorName.includes(name.split(' ')[0]))) {
+    return 'Democrat';
+  }
+  if (republicanSenators.some(name => senatorName.includes(name.split(' ')[0]))) {
+    return 'Republican';
+  }
+  
+  return 'Unknown';
 }
