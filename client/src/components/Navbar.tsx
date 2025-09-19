@@ -92,34 +92,39 @@ const Navbar = () => {
             </Link>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
               <Link href="/">
-                <a className={`${isActiveLink('/') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                <span className={`${isActiveLink('/') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
                   Learn
-                </a>
+                </span>
               </Link>
               <Link href="/analytics">
-                <a className={`${isActiveLink('/analytics') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                <span className={`${isActiveLink('/analytics') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
                   Analytics
-                </a>
+                </span>
               </Link>
               <Link href="/news">
-                <a className={`${isActiveLink('/news') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                <span className={`${isActiveLink('/news') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
                   News
-                </a>
+                </span>
               </Link>
               <Link href="/web-resources">
-                <a className={`${isActiveLink('/web-resources') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                <span className={`${isActiveLink('/web-resources') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
                   Web Resources
-                </a>
+                </span>
               </Link>
               <Link href="/legislation">
-                <a className={`${isActiveLink('/legislation') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                <span className={`${isActiveLink('/legislation') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
                   Legislation
-                </a>
+                </span>
+              </Link>
+              <Link href="/politics">
+                <span className={`${isActiveLink('/politics') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
+                  Politics
+                </span>
               </Link>
               <Link href="/indicators">
-                <a className={`${isActiveLink('/indicators') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium`}>
+                <span className={`${isActiveLink('/indicators') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
                   Indicators
-                </a>
+                </span>
               </Link>
             </div>
           </div>
@@ -253,34 +258,39 @@ const Navbar = () => {
         <div className="sm:hidden border-t border-muted/20" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link href="/">
-              <a className={`${isActiveLink('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              <span className={`${isActiveLink('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 Dashboard
-              </a>
+              </span>
             </Link>
             <Link href="/news">
-              <a className={`${isActiveLink('/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              <span className={`${isActiveLink('/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 News
-              </a>
+              </span>
             </Link>
             <Link href="/learn">
-              <a className={`${isActiveLink('/learn') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              <span className={`${isActiveLink('/learn') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 Learn
-              </a>
+              </span>
             </Link>
             <Link href="/web-resources">
-              <a className={`${isActiveLink('/web-resources') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              <span className={`${isActiveLink('/web-resources') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 Web Resources
-              </a>
+              </span>
             </Link>
             <Link href="/legislation">
-              <a className={`${isActiveLink('/legislation') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              <span className={`${isActiveLink('/legislation') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 Legislation
-              </a>
+              </span>
+            </Link>
+            <Link href="/politics">
+              <span className={`${isActiveLink('/politics') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
+                Politics
+              </span>
             </Link>
             <Link href="/indicators">
-              <a className={`${isActiveLink('/indicators') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium`}>
+              <span className={`${isActiveLink('/indicators') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 Indicators
-              </a>
+              </span>
             </Link>
           </div>
         </div>
