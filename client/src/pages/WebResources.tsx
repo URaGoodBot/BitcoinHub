@@ -29,6 +29,11 @@ const WebResources = () => {
     refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes
   });
 
+  const { data: bullMarketData, isLoading: bullMarketLoading } = useQuery({
+    queryKey: ['/api/indicators/bull-market-signals', refreshKey],
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+  });
+
   const handleRefreshAll = () => {
     setRefreshKey(prev => prev + 1);
   };
@@ -424,40 +429,48 @@ const WebResources = () => {
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-semibold text-indigo-900 dark:text-indigo-100">Market Peak Analysis</h4>
                 <Badge variant="secondary" className="text-xs">
-                  30+ Indicators
+                  {bullMarketLoading ? 'Loading...' : bullMarketData?.totalIndicators || '30+'} Indicators
                 </Badge>
               </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Total Indicators:</span>
-                  <span className="font-medium text-indigo-900 dark:text-indigo-100">
-                    30+ Bull Market Signals
-                  </span>
+              {bullMarketLoading ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Current Signal:</span>
-                  <span className="font-medium text-green-600">
-                    Hold (Early Bull Market)
-                  </span>
+              ) : (
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Total Indicators:</span>
+                    <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                      {bullMarketData?.totalIndicators || 30} Bull Market Signals
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Current Signal:</span>
+                    <span className={`font-medium ${
+                      bullMarketData?.overallSignal === 'Sell' ? 'text-red-600' : 'text-green-600'
+                    }`}>
+                      {bullMarketData?.overallSignal || 'Hold'} {bullMarketData?.overallSignal === 'Hold' ? '(Early Bull Market)' : '(Peak Warning)'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Indicators Hit:</span>
+                    <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                      {bullMarketData?.totalHit || 0} of {bullMarketData?.totalIndicators || 30} ({bullMarketData?.sellPercentage?.toFixed(1) || '0'}%)
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">Last Updated:</span>
+                    <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                      {bullMarketData?.updateTime ? new Date(bullMarketData.updateTime).toLocaleTimeString() : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="pt-2">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                      Comprehensive analysis of {bullMarketData?.totalIndicators || 30}+ technical indicators to identify potential bull market peaks and optimal exit points based on historical patterns.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Indicators Hit:</span>
-                  <span className="font-medium text-indigo-900 dark:text-indigo-100">
-                    8 of 30 (27%)
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Update Frequency:</span>
-                  <span className="font-medium text-indigo-900 dark:text-indigo-100">
-                    Every 5 minutes
-                  </span>
-                </div>
-                <div className="pt-2">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                    Comprehensive analysis of 30+ technical indicators to identify potential bull market peaks and optimal exit points based on historical patterns.
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
             <div className="text-xs text-center text-indigo-600 dark:text-indigo-400 pt-2 border-t border-indigo-200/50">
               Powered by CoinGlass • Professional trading indicators
