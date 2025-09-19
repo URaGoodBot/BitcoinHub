@@ -11,6 +11,7 @@ import { getMarketSentiment } from "./api/sentiment";
 import { getLegislationData, refreshLegislationData } from "./api/legislation";
 import { getInflationData } from "./api/inflation";
 import { getCoinglassIndicators } from "./api/coinglass-indicators";
+import { getWorldBankEconomicData, getSpecificIndicator, getIndicatorTimeSeries } from "./api/worldbank";
 import { z } from "zod";
 import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -423,6 +424,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching Bitcoin chart data:", error);
       res.status(500).json({ message: "Failed to fetch Bitcoin chart data" });
+    }
+  });
+
+  // World Bank Open Data API routes
+  app.get(`${apiPrefix}/worldbank/economic-data`, async (req, res) => {
+    try {
+      const data = await getWorldBankEconomicData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching World Bank economic data:", error);
+      res.status(500).json({ message: "Failed to fetch World Bank economic data" });
+    }
+  });
+
+  app.get(`${apiPrefix}/worldbank/indicator/:country/:indicator`, async (req, res) => {
+    try {
+      const { country, indicator } = req.params;
+      const years = parseInt(req.query.years as string) || 10;
+      const data = await getSpecificIndicator(country, indicator, years);
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching World Bank specific indicator:", error);
+      res.status(500).json({ message: "Failed to fetch World Bank indicator" });
+    }
+  });
+
+  app.get(`${apiPrefix}/worldbank/timeseries/:country/:indicator`, async (req, res) => {
+    try {
+      const { country, indicator } = req.params;
+      const years = parseInt(req.query.years as string) || 20;
+      const data = await getIndicatorTimeSeries(country, indicator, years);
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching World Bank time series:", error);
+      res.status(500).json({ message: "Failed to fetch World Bank time series" });
     }
   });
 

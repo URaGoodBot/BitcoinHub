@@ -10,6 +10,7 @@ import FedWatchTool from "@/components/FedWatchTool";
 import TreasuryWidget from "@/components/TreasuryWidget";
 import TreasuryFiscalWidget from "@/components/TreasuryFiscalWidget";
 import { InflationWidget } from "@/components/InflationWidget";
+import { WorldBankEconomicWidget } from "@/components/WorldBankEconomicWidget";
 
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
@@ -127,6 +128,11 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <TreasuryFiscalWidget />
         <InflationWidget />
+      </div>
+      
+      {/* World Bank Economic Data */}
+      <div className="mb-6">
+        <WorldBankEconomicWidget />
       </div>
       
       {/* Market Summary and AI Prediction */}
