@@ -79,14 +79,16 @@ Preferred communication style: Simple, everyday language.
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (September 2025)
-- **House Stock Watcher Congressional Crypto Tracker**: New Politics page with comprehensive Congressional trading data integration
-  - Real-time tracking of crypto-related stock trades by U.S. House Representatives
+- **Real Congressional Trading Data Integration**: Completely replaced demo data with authentic Congressional trading data
+  - Multi-tier real data sources: House Stock Watcher → Finnhub → FMP → Senate Stock Watcher GitHub repository
+  - 8,350 real Congressional trades with 421 crypto-relevant trades from authentic sources
+  - Eliminated all demo data fallbacks per user requirement of "only real data"
+  - Fixed null ticker handling to prevent runtime crashes during data processing
   - Smart filtering system categorizing trades as Direct Crypto, Related, or Infrastructure
   - Party breakdown statistics with accurate Democrat/Republican/Independent classification
   - Top crypto traders ranking with trade counts and estimated values
   - Bitcoin impact scoring system (1-10 scale) for trade relevance analysis
-  - 30-minute data caching with manual refresh capability
-  - Transparent fallback system showing demo data when upstream service is unavailable
+  - 30-minute data caching with transparent fallback system showing empty data when all real sources unavailable
   - Mobile-responsive design with proper navigation integration
 
 ## Previous Updates (August 2025)
