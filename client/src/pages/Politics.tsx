@@ -1,13 +1,8 @@
-import { Helmet } from "react-helmet-async";
 import CongressionalCryptoTracker from "@/components/CongressionalCryptoTracker";
 
 const Politics = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <Helmet>
-        <title>Politics & Bitcoin - Congressional Crypto Trading | BitcoinHub</title>
-        <meta name="description" content="Track Congressional crypto trading activity, political Bitcoin trends, and how politicians' trades correlate with crypto markets and policy decisions." />
-      </Helmet>
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
