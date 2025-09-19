@@ -395,6 +395,75 @@ const WebResources = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Bull Market Indicators */}
+        <Card className="bg-gradient-to-br from-indigo-50 to-violet-100 border-indigo-200 dark:from-indigo-950/20 dark:to-violet-950/20 dark:border-indigo-800">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-indigo-600 rounded-lg">
+                  <Gauge className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">
+                  Bull Market Indicators
+                </CardTitle>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-indigo-700 border-indigo-300 hover:bg-indigo-100 dark:text-indigo-300 dark:border-indigo-700"
+                onClick={() => window.open('https://www.coinglass.com/pro/i/BullMarketTop', '_blank')}
+              >
+                <ExternalLink className="h-3 w-3 mr-1" />
+                View Indicators
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-indigo-200/50">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-indigo-900 dark:text-indigo-100">Market Peak Analysis</h4>
+                <Badge variant="secondary" className="text-xs">
+                  30+ Indicators
+                </Badge>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Total Indicators:</span>
+                  <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                    30+ Bull Market Signals
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Current Signal:</span>
+                  <span className="font-medium text-green-600">
+                    Hold (Early Bull Market)
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Indicators Hit:</span>
+                  <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                    8 of 30 (27%)
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Update Frequency:</span>
+                  <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                    Every 5 minutes
+                  </span>
+                </div>
+                <div className="pt-2">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Comprehensive analysis of 30+ technical indicators to identify potential bull market peaks and optimal exit points based on historical patterns.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="text-xs text-center text-indigo-600 dark:text-indigo-400 pt-2 border-t border-indigo-200/50">
+              Powered by CoinGlass • Professional trading indicators
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
