@@ -8,6 +8,7 @@ import { BitcoinMarketData } from "@/lib/types";
 import AIAnalysis from "@/components/AIAnalysis";
 import FedWatchTool from "@/components/FedWatchTool";
 import TreasuryWidget from "@/components/TreasuryWidget";
+import TreasuryFiscalWidget from "@/components/TreasuryFiscalWidget";
 import { InflationWidget } from "@/components/InflationWidget";
 
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
@@ -117,9 +118,14 @@ const Dashboard = () => {
       <GlobalMarketIndicators />
       
       {/* Financial Indicators Dashboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <FedWatchTool />
         <TreasuryWidget />
+      </div>
+      
+      {/* Enhanced Treasury & Economic Data */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <TreasuryFiscalWidget />
         <InflationWidget />
       </div>
       

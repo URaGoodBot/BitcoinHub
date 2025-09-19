@@ -450,6 +450,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get(`${apiPrefix}/financial/treasury-fiscal`, async (_req, res) => {
+    try {
+      const { getTreasuryFiscalData } = await import("./api/treasury-fiscal");
+      const treasuryFiscalData = await getTreasuryFiscalData();
+      res.json(treasuryFiscalData);
+    } catch (error) {
+      console.error("Error fetching Treasury Fiscal data:", error);
+      res.status(500).json({ message: "Failed to fetch Treasury Fiscal data" });
+    }
+  });
+
   app.get(`${apiPrefix}/financial/markets`, async (_req, res) => {
     try {
       const { getFinancialMarketData } = await import("./api/financial");
