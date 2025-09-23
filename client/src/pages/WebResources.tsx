@@ -444,26 +444,6 @@ const WebResources = () => {
                       {bullMarketData?.totalIndicators || 30} Bull Market Signals
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Current Signal:</span>
-                    <span className={`font-medium ${
-                      bullMarketData?.overallSignal === 'Sell' ? 'text-red-600' : 'text-green-600'
-                    }`}>
-                      {bullMarketData?.overallSignal || 'Hold'} {bullMarketData?.overallSignal === 'Hold' ? '(Early Bull Market)' : '(Peak Warning)'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Indicators Hit:</span>
-                    <span className="font-medium text-indigo-900 dark:text-indigo-100">
-                      {bullMarketData?.totalHit || 0} of {bullMarketData?.totalIndicators || 30} ({bullMarketData?.sellPercentage?.toFixed(1) || '0'}%)
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Last Updated:</span>
-                    <span className="font-medium text-indigo-900 dark:text-indigo-100">
-                      {bullMarketData?.updateTime ? new Date(bullMarketData.updateTime).toLocaleTimeString() : 'N/A'}
-                    </span>
-                  </div>
                   <div className="pt-2">
                     <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
                       Comprehensive analysis of {bullMarketData?.totalIndicators || 30}+ technical indicators to identify potential bull market peaks and optimal exit points based on historical patterns.
