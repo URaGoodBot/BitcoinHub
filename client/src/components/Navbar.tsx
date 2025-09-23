@@ -116,11 +116,6 @@ const Navbar = () => {
                   Legislation
                 </span>
               </Link>
-              <Link href="/politics">
-                <span className={`${isActiveLink('/politics') ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'} px-1 pt-1 font-medium cursor-pointer`}>
-                  Politics
-                </span>
-              </Link>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -275,11 +270,6 @@ const Navbar = () => {
             <Link href="/legislation">
               <span className={`${isActiveLink('/legislation') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 Legislation
-              </span>
-            </Link>
-            <Link href="/politics">
-              <span className={`${isActiveLink('/politics') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
-                Politics
               </span>
             </Link>
           </div>

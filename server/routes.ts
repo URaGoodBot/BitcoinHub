@@ -498,16 +498,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get(`${apiPrefix}/politics/congressional-trades`, async (_req, res) => {
-    try {
-      const { getHouseStockData } = await import("./api/house-stock-watcher");
-      const houseStockData = await getHouseStockData();
-      res.json(houseStockData);
-    } catch (error) {
-      console.error("Error fetching Congressional trading data:", error);
-      res.status(500).json({ message: "Failed to fetch Congressional trading data" });
-    }
-  });
 
   app.get(`${apiPrefix}/financial/markets`, async (_req, res) => {
     try {
