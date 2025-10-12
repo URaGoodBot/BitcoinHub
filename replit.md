@@ -78,6 +78,17 @@ Preferred communication style: Simple, everyday language.
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (October 2025)
+- **Multi-Timeframe AI Price Predictions**: Enhanced AI trend predictions with comprehensive 4-timeframe analysis (1 month, 3 months, 6 months, 1 year)
+  - **Grok AI Integration**: Advanced predictions powered by Grok xAI analyzing 30+ market indicators
+  - **Comprehensive Analysis**: Each timeframe includes target price, best/worst case scenarios, probability scores, key drivers, and risks
+  - **Market Intelligence**: Overall sentiment, market regime classification, risk/reward ratios, and volatility outlook
+  - **Strategic Insights**: AI-generated actionable insights for traders and investors
+  - **Key Events Calendar**: Upcoming events with impact assessment (Bitcoin halving, Fed decisions, etc.)
+  - **Robust Fallback System**: Technical analysis-based predictions when AI unavailable or rate-limited
+  - **Real-Time Data**: Live Bitcoin market data from CoinGecko with technical indicators (RSI, MACD, SMA, volatility)
+  - **15-Minute Caching**: Optimized performance with intelligent cache management
+  - **Tabbed Interface**: Clean UI with separate tabs for each timeframe showing detailed predictions
+  - **Security Enhancement**: Admin password moved to environment variable for better security
 - **Removed Non-Functional AI Chat Features**: Completely removed SiteChatbot and BitcoinWhitepaperChat components that were not working properly
   - Deleted SiteChatbot floating chat interface from Layout.tsx
   - Removed BitcoinWhitepaperChat standalone component (was unused)
