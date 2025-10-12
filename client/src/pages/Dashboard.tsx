@@ -16,6 +16,8 @@ import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
 import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 import AITrendPrediction from "@/components/AITrendPrediction";
+import WhaleAlerts from "@/components/WhaleAlerts";
+import OptionsFlow from "@/components/OptionsFlow";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -141,7 +143,11 @@ const Dashboard = () => {
         <AITrendPrediction />
       </div>
       
-
+      {/* Whale Alerts and Options Flow Analysis */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <WhaleAlerts />
+        <OptionsFlow />
+      </div>
       
       {/* AI-powered Technical Analysis */}
       <AIAnalysis 

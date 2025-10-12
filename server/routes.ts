@@ -12,6 +12,8 @@ import { getLegislationData, refreshLegislationData } from "./api/legislation";
 import { getInflationData } from "./api/inflation";
 import { getCoinglassIndicators } from "./api/coinglass-indicators";
 import { getWorldBankEconomicData, getSpecificIndicator, getIndicatorTimeSeries } from "./api/worldbank";
+import { getCachedWhaleAlerts } from "./api/whale-alerts";
+import { getCachedOptionsFlow } from "./api/options-flow";
 import { z } from "zod";
 import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -461,6 +463,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch World Bank time series" });
     }
   });
+
+  // Whale Alerts
+  app.get(`${apiPrefix}/whale-alerts`, getCachedWhaleAlerts);
+
+  // Options Flow
+  app.get(`${apiPrefix}/options-flow`, getCachedOptionsFlow);
 
   // News
   app.get(`${apiPrefix}/news`, async (req, res) => {
