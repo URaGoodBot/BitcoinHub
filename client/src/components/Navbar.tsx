@@ -249,17 +249,17 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link href="/">
               <span className={`${isActiveLink('/') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
-                Dashboard
+                Learn
+              </span>
+            </Link>
+            <Link href="/analytics">
+              <span className={`${isActiveLink('/analytics') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
+                Analytics
               </span>
             </Link>
             <Link href="/news">
               <span className={`${isActiveLink('/news') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
                 News
-              </span>
-            </Link>
-            <Link href="/learn">
-              <span className={`${isActiveLink('/learn') ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted'} block px-3 py-2 rounded-md text-base font-medium cursor-pointer`}>
-                Learn
               </span>
             </Link>
             <Link href="/web-resources">
