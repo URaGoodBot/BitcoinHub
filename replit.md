@@ -33,7 +33,6 @@ Preferred communication style: Simple, everyday language.
 - **Educational Platform**: Structured modules, mixed content (videos, readings, quizzes), progress tracking.
 - **AI-Powered Analysis**: Market sentiment, technical indicators, pattern recognition, trading signals.
 - **Financial Data Integration**: Real-time Fed Watch Tool, US 10-Year Treasury, Global Market Indicators (DXY, Gold, S&P 500, VIX), Truflation US Inflation Index.
-- **AI Assistant Chatbot**: Interactive Grok xAI-powered assistant providing real-time answers based on platform data and market context.
 - **Crypto Catalysts Tracker**: Monitors key crypto events with probability scoring and market impact analysis.
 - **Admin System**: Password-protected admin panel for legislation data updates.
 - **Meme Section**: Image-centric platform with file uploads and user interaction.
@@ -78,7 +77,14 @@ Preferred communication style: Simple, everyday language.
 - **CoinPaprika**: On-chain metrics
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
-## Recent Updates (September 2025)
+## Recent Updates (October 2025)
+- **Removed Non-Functional AI Chat Features**: Completely removed SiteChatbot and BitcoinWhitepaperChat components that were not working properly
+  - Deleted SiteChatbot floating chat interface from Layout.tsx
+  - Removed BitcoinWhitepaperChat standalone component (was unused)
+  - Cleaned up API endpoints: /api/site-chat and /api/whitepaper-chat
+  - Deleted server/api/openai-chat.ts file
+  - Application remains stable with all other AI features (market analysis, indicators, sentiment analysis) fully functional
+  - Maintains strict adherence to "real data only" policy by removing non-functional demo features
 - **Comprehensive World Bank Liquidity Expansion**: Added sophisticated global liquidity analysis with 20+ economic indicators
   - **Backend Enhancement**: Integrated 20+ new World Bank indicators across 4 categories (Liquidity, Debasement, Capital Flows, Financial Stress)
   - **New Liquidity Tab**: Added dedicated tab in World Bank Economic Widget with color-coded sections for enhanced user experience
@@ -103,7 +109,7 @@ Preferred communication style: Simple, everyday language.
   - 30-minute data caching with transparent fallback system showing empty data when all real sources unavailable
   - Mobile-responsive design with proper navigation integration
 
-## Previous Updates (August 2025)
+## Previous Updates (September 2025)
 - **Truflation Integration**: Added real-time US inflation data widget with 5-minute auto-refresh placed alongside Fed Watch Tool
   - Shows current Truflation rate (2.16%) vs BLS official rate comparison
   - Daily updates vs monthly government reports (45 days ahead)
