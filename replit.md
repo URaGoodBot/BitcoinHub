@@ -38,6 +38,8 @@ Preferred communication style: Simple, everyday language.
 - **Meme Section**: Image-centric platform with file uploads and user interaction.
 - **AI-Powered Trading Indicators**: Comprehensive analysis of 30+ technical indicators with live Bitcoin data, price predictions, and topping analysis using Grok AI.
 - **Live Market Analysis**: Real-time AI interpretation of technical indicators with specific price targets and market condition analysis.
+- **Whale Movement Alerts**: Real-time tracking of large Bitcoin transactions (≥100 BTC) from Blockchain.com, with transaction classification (exchange flows, large transfers) and significance scoring.
+- **Options Flow Analysis**: Live Bitcoin options market data from Deribit including put-call ratios, open interest distribution, net delta exposure, implied volatility, and AI-generated flow insights.
 
 ### Core Architectural Decisions
 - Full-stack React/TypeScript with Node.js Express.
@@ -78,6 +80,17 @@ Preferred communication style: Simple, everyday language.
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (October 2025)
+- **Whale Movement Alerts & Options Flow Analysis**: Comprehensive market intelligence features for tracking institutional activity
+  - **Whale Alerts**: Real-time monitoring of large Bitcoin transactions (≥100 BTC) from Blockchain.com free API
+  - **Transaction Classification**: Automatic identification of exchange inflows (bearish), outflows (bullish), and large transfers
+  - **Significance Scoring**: High (≥1000 BTC), Medium (500-999 BTC), Low (100-499 BTC) classification system
+  - **Options Flow**: Live Deribit options data with put-call ratios, open interest, net delta, and implied volatility
+  - **Market Sentiment**: AI-powered analysis determining bullish/bearish/neutral positioning from options flow
+  - **Flow Insights**: Real-time interpretation of options market signals and institutional positioning
+  - **Top Contracts**: Display of most active options by 24h volume with detailed Greeks and IV metrics
+  - **2-Minute Whale Updates**: Auto-refresh whale transactions every 2 minutes with persistent data source footer
+  - **5-Minute Options Updates**: Options flow data refreshes every 5 minutes from Deribit public API
+  - **Zero API Keys Required**: Both features use free public APIs (Blockchain.com + Deribit)
 - **Multi-Timeframe AI Price Predictions**: Enhanced AI trend predictions with comprehensive 4-timeframe analysis (1 month, 3 months, 6 months, 1 year)
   - **Grok AI Integration**: Advanced predictions powered by Grok xAI analyzing 30+ market indicators
   - **Comprehensive Analysis**: Each timeframe includes target price, best/worst case scenarios, probability scores, key drivers, and risks
