@@ -3128,8 +3128,10 @@ All this data is updated live in the dashboard above. Try asking about specific 
     try {
       const { password, data } = req.body;
       
-      // Simple password protection - in production, use proper authentication
-      if (password !== 'HodlMyBeer21Admin') {
+      // Use environment variable for admin password, fallback to default (not recommended for production)
+      const adminPassword = process.env.ADMIN_PASSWORD || 'HodlMyBeer21Admin';
+      
+      if (password !== adminPassword) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
@@ -3206,6 +3208,22 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
 
+
+  // Multi-timeframe AI predictions endpoint
+  app.get(`${apiPrefix}/ai/multi-timeframe-predictions`, async (req, res) => {
+    try {
+      const { getCachedMultiTimeframePredictions } = await import('./api/ai-predictions.js');
+      
+      const predictions = await getCachedMultiTimeframePredictions();
+      res.json(predictions);
+    } catch (error) {
+      console.error("Error fetching multi-timeframe predictions:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch multi-timeframe predictions",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
 
   // Last updated timestamp
   app.get(`${apiPrefix}/last-updated`, (req, res) => {

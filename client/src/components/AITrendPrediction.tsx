@@ -1,158 +1,53 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Brain, TrendingUp, TrendingDown, Activity, Target, Zap } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Brain, TrendingUp, TrendingDown, Activity, Target, Calendar, AlertTriangle, Zap, BarChart3, TrendingUpDown } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/lib/utils";
 
-interface TrendPrediction {
-  direction: 'bullish' | 'bearish' | 'neutral';
-  confidence: number;
+interface TimeframePrediction {
   timeframe: string;
+  duration: string;
   targetPrice: number;
-  reasoning: string[];
-  signals: {
-    name: string;
-    value: string;
-    signal: 'bullish' | 'bearish' | 'neutral';
-    weight: number;
-  }[];
+  lowEstimate: number;
+  highEstimate: number;
+  probability: number;
+  keyDrivers: string[];
+  risks: string[];
+  technicalOutlook: string;
+}
+
+interface MultiTimeframePredictions {
+  currentPrice: number;
+  timestamp: string;
+  predictions: {
+    oneMonth: TimeframePrediction;
+    threeMonth: TimeframePrediction;
+    sixMonth: TimeframePrediction;
+    oneYear: TimeframePrediction;
+  };
+  overallSentiment: 'bullish' | 'bearish' | 'neutral';
+  confidenceScore: number;
+  marketRegime: string;
+  volatilityOutlook: string;
+  riskRewardRatio: number;
+  keyEvents: Array<{
+    date: string;
+    event: string;
+    impact: 'high' | 'medium' | 'low';
+  }>;
+  aiInsights: string[];
 }
 
 const AITrendPrediction = () => {
-  const { data: bitcoinData, isLoading } = useQuery({
-    queryKey: ["/api/bitcoin/market-data"],
-    refetchInterval: 60000,
+  const [activeTab, setActiveTab] = useState("1m");
+
+  const { data: predictions, isLoading } = useQuery<MultiTimeframePredictions>({
+    queryKey: ["/api/ai/multi-timeframe-predictions"],
+    refetchInterval: 15 * 60 * 1000, // Refresh every 15 minutes
   });
-
-  const currentPrice = (bitcoinData as any)?.current_price?.usd || 0;
-  const priceChange24h = (bitcoinData as any)?.price_change_percentage_24h || 0;
-  const volume24h = (bitcoinData as any)?.total_volume?.usd || 0;
-  const high24h = (bitcoinData as any)?.high_24h?.usd || 0;
-  const low24h = (bitcoinData as any)?.low_24h?.usd || 0;
-  const marketCap = (bitcoinData as any)?.market_cap?.usd || 0;
-
-  // AI-powered trend analysis algorithm
-  const generateTrendPrediction = (): TrendPrediction => {
-    const signals: Array<{
-      name: string;
-      value: string;
-      signal: 'bullish' | 'bearish' | 'neutral';
-      weight: number;
-    }> = [];
-    let bullishScore = 0;
-    let bearishScore = 0;
-
-    // Price momentum analysis
-    if (priceChange24h > 3) {
-      signals.push({ name: "Strong Momentum", value: `+${priceChange24h.toFixed(2)}%`, signal: 'bullish' as const, weight: 25 });
-      bullishScore += 25;
-    } else if (priceChange24h > 1) {
-      signals.push({ name: "Positive Momentum", value: `+${priceChange24h.toFixed(2)}%`, signal: 'bullish' as const, weight: 15 });
-      bullishScore += 15;
-    } else if (priceChange24h < -3) {
-      signals.push({ name: "Strong Decline", value: `${priceChange24h.toFixed(2)}%`, signal: 'bearish' as const, weight: 25 });
-      bearishScore += 25;
-    } else if (priceChange24h < -1) {
-      signals.push({ name: "Negative Momentum", value: `${priceChange24h.toFixed(2)}%`, signal: 'bearish' as const, weight: 15 });
-      bearishScore += 15;
-    } else {
-      signals.push({ name: "Sideways Action", value: `${priceChange24h.toFixed(2)}%`, signal: 'neutral' as const, weight: 10 });
-    }
-
-    // Volume analysis
-    const avgVolume = 85e9; // Estimated average daily volume
-    const volumeRatio = volume24h / avgVolume;
-    if (volumeRatio > 1.5) {
-      signals.push({ name: "High Volume", value: `${(volumeRatio * 100).toFixed(0)}%`, signal: (priceChange24h > 0 ? 'bullish' : 'bearish') as 'bullish' | 'bearish', weight: 20 });
-      if (priceChange24h > 0) bullishScore += 20;
-      else bearishScore += 20;
-    } else if (volumeRatio < 0.7) {
-      signals.push({ name: "Low Volume", value: `${(volumeRatio * 100).toFixed(0)}%`, signal: 'neutral' as const, weight: 10 });
-    } else {
-      signals.push({ name: "Normal Volume", value: `${(volumeRatio * 100).toFixed(0)}%`, signal: 'neutral' as const, weight: 5 });
-    }
-
-    // Support/Resistance analysis
-    const range24h = high24h - low24h;
-    const positionInRange = (currentPrice - low24h) / range24h;
-    
-    if (positionInRange > 0.8) {
-      signals.push({ name: "Near Resistance", value: "80%+", signal: 'bearish' as const, weight: 15 });
-      bearishScore += 15;
-    } else if (positionInRange < 0.2) {
-      signals.push({ name: "Near Support", value: "20%-", signal: 'bullish' as const, weight: 15 });
-      bullishScore += 15;
-    } else {
-      signals.push({ name: "Mid-Range", value: `${(positionInRange * 100).toFixed(0)}%`, signal: 'neutral' as const, weight: 5 });
-    }
-
-    // Market cap momentum (artificial but realistic analysis)
-    const mcChange = priceChange24h; // Market cap change approximates price change
-    if (Math.abs(mcChange) > 2) {
-      signals.push({ name: "Market Cap Shift", value: `${mcChange.toFixed(1)}%`, signal: (mcChange > 0 ? 'bullish' : 'bearish') as 'bullish' | 'bearish', weight: 10 });
-      if (mcChange > 0) bullishScore += 10;
-      else bearishScore += 10;
-    }
-
-    // Technical pattern recognition (simplified)
-    if (currentPrice > (high24h + low24h) / 2 && priceChange24h > 0) {
-      signals.push({ name: "Bullish Pattern", value: "Detected", signal: 'bullish' as const, weight: 15 });
-      bullishScore += 15;
-    } else if (currentPrice < (high24h + low24h) / 2 && priceChange24h < 0) {
-      signals.push({ name: "Bearish Pattern", value: "Detected", signal: 'bearish' as const, weight: 15 });
-      bearishScore += 15;
-    }
-
-    // Determine overall direction and confidence
-    const totalScore = bullishScore + bearishScore;
-    const netScore = bullishScore - bearishScore;
-    
-    let direction: 'bullish' | 'bearish' | 'neutral';
-    let confidence: number;
-    let targetPrice: number;
-    let reasoning: string[];
-
-    if (Math.abs(netScore) < 10) {
-      direction = 'neutral';
-      confidence = 60 + Math.random() * 20; // 60-80%
-      targetPrice = currentPrice * (1 + (Math.random() - 0.5) * 0.02); // ±1% random walk
-      reasoning = [
-        "Market showing consolidation patterns",
-        "Low conviction signals from multiple indicators",
-        "Expecting range-bound movement short term"
-      ];
-    } else if (netScore > 0) {
-      direction = 'bullish';
-      confidence = Math.min(95, 60 + (netScore / totalScore) * 35);
-      const upwardTarget = currentPrice * (1 + 0.03 + (confidence / 100) * 0.05); // 3-8% target
-      targetPrice = upwardTarget;
-      reasoning = [
-        "Multiple bullish indicators converging",
-        `Strong ${bullishScore > bearishScore * 2 ? 'momentum' : 'technical'} signals detected`,
-        "Market structure favoring upward movement"
-      ];
-    } else {
-      direction = 'bearish';
-      confidence = Math.min(95, 60 + (Math.abs(netScore) / totalScore) * 35);
-      const downwardTarget = currentPrice * (1 - 0.03 - (confidence / 100) * 0.05); // -3% to -8% target
-      targetPrice = downwardTarget;
-      reasoning = [
-        "Bearish signals dominating analysis",
-        `${bearishScore > bullishScore * 2 ? 'Strong' : 'Moderate'} selling pressure detected`,
-        "Risk factors outweighing bullish catalysts"
-      ];
-    }
-
-    return {
-      direction,
-      confidence: Math.round(confidence),
-      timeframe: "24-48h",
-      targetPrice,
-      reasoning,
-      signals
-    };
-  };
 
   if (isLoading) {
     return (
@@ -160,44 +55,130 @@ const AITrendPrediction = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5" />
-            AI Trend Prediction
+            AI Multi-Timeframe Predictions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
+            <div className="h-24 bg-muted rounded"></div>
             <div className="h-20 bg-muted rounded"></div>
             <div className="h-16 bg-muted rounded"></div>
-            <div className="h-12 bg-muted rounded"></div>
           </div>
         </CardContent>
       </Card>
     );
   }
 
-  const prediction = generateTrendPrediction();
-  
-  const getDirectionIcon = (direction: string) => {
-    switch (direction) {
+  if (!predictions) {
+    return null;
+  }
+
+  const getDirectionIcon = (sentiment: string) => {
+    switch (sentiment) {
       case 'bullish': return <TrendingUp className="h-4 w-4 text-[hsl(var(--positive))]" />;
       case 'bearish': return <TrendingDown className="h-4 w-4 text-[hsl(var(--negative))]" />;
       default: return <Activity className="h-4 w-4 text-yellow-500" />;
     }
   };
 
-  const getDirectionColor = (direction: string) => {
-    switch (direction) {
+  const getDirectionColor = (sentiment: string) => {
+    switch (sentiment) {
       case 'bullish': return 'text-[hsl(var(--positive))]';
       case 'bearish': return 'text-[hsl(var(--negative))]';
       default: return 'text-yellow-600';
     }
   };
 
-  const getSignalColor = (signal: string) => {
-    switch (signal) {
-      case 'bullish': return 'text-[hsl(var(--positive))] bg-green-500/10 border-green-500/20';
-      case 'bearish': return 'text-[hsl(var(--negative))] bg-red-500/10 border-red-500/20';
-      default: return 'text-yellow-600 bg-yellow-500/10 border-yellow-500/20';
+  const getImpactColor = (impact: string) => {
+    switch (impact) {
+      case 'high': return 'bg-red-500/10 text-red-500 border-red-500/20';
+      case 'medium': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'low': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      default: return 'bg-muted text-muted-foreground';
     }
+  };
+
+  const renderPredictionCard = (prediction: TimeframePrediction, currentPrice: number) => {
+    const priceChange = ((prediction.targetPrice - currentPrice) / currentPrice) * 100;
+    const upside = ((prediction.highEstimate - currentPrice) / currentPrice) * 100;
+    const downside = ((prediction.lowEstimate - currentPrice) / currentPrice) * 100;
+
+    return (
+      <div className="space-y-6">
+        {/* Price Targets */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="text-center p-4 bg-muted/30 rounded-lg border border-muted/20">
+            <div className="text-xs text-muted-foreground mb-1">Target Price</div>
+            <div className="text-2xl font-bold font-mono">{formatCurrency(prediction.targetPrice)}</div>
+            <div className={`text-sm font-medium mt-1 ${priceChange >= 0 ? 'text-[hsl(var(--positive))]' : 'text-[hsl(var(--negative))]'}`}>
+              {formatPercentage(priceChange)}
+            </div>
+          </div>
+
+          <div className="text-center p-4 bg-green-500/5 rounded-lg border border-green-500/20">
+            <div className="text-xs text-muted-foreground mb-1">Best Case</div>
+            <div className="text-xl font-bold font-mono text-[hsl(var(--positive))]">{formatCurrency(prediction.highEstimate)}</div>
+            <div className="text-sm text-[hsl(var(--positive))] mt-1">
+              +{formatPercentage(upside)}
+            </div>
+          </div>
+
+          <div className="text-center p-4 bg-red-500/5 rounded-lg border border-red-500/20">
+            <div className="text-xs text-muted-foreground mb-1">Worst Case</div>
+            <div className="text-xl font-bold font-mono text-[hsl(var(--negative))]">{formatCurrency(prediction.lowEstimate)}</div>
+            <div className="text-sm text-[hsl(var(--negative))] mt-1">
+              {formatPercentage(downside)}
+            </div>
+          </div>
+        </div>
+
+        {/* Probability & Technical Outlook */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Prediction Confidence</span>
+            <span className="text-sm font-mono">{prediction.probability}%</span>
+          </div>
+          <Progress value={prediction.probability} className="h-2" />
+          
+          <div className="p-3 bg-muted/30 rounded-lg border border-muted/20">
+            <div className="text-xs text-muted-foreground mb-1">Technical Outlook</div>
+            <p className="text-sm">{prediction.technicalOutlook}</p>
+          </div>
+        </div>
+
+        {/* Key Drivers */}
+        <div className="space-y-3">
+          <h4 className="font-medium flex items-center gap-2 text-sm">
+            <Zap className="h-4 w-4 text-[hsl(var(--positive))]" />
+            Key Bullish Drivers
+          </h4>
+          <div className="space-y-2">
+            {prediction.keyDrivers.map((driver, index) => (
+              <div key={index} className="flex items-start gap-2 text-sm p-2 bg-green-500/5 rounded border border-green-500/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--positive))] mt-1.5 flex-shrink-0" />
+                <span className="text-muted-foreground">{driver}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Risks */}
+        <div className="space-y-3">
+          <h4 className="font-medium flex items-center gap-2 text-sm">
+            <AlertTriangle className="h-4 w-4 text-[hsl(var(--negative))]" />
+            Key Risks
+          </h4>
+          <div className="space-y-2">
+            {prediction.risks.map((risk, index) => (
+              <div key={index} className="flex items-start gap-2 text-sm p-2 bg-red-500/5 rounded border border-red-500/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--negative))] mt-1.5 flex-shrink-0" />
+                <span className="text-muted-foreground">{risk}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -205,86 +186,114 @@ const AITrendPrediction = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="h-5 w-5" />
-          AI Trend Prediction
+          AI Multi-Timeframe Predictions
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Main Prediction */}
-        <div className="text-center space-y-3">
-          <div className="flex items-center justify-center gap-2">
-            {getDirectionIcon(prediction.direction)}
-            <span className={`text-2xl font-bold capitalize ${getDirectionColor(prediction.direction)}`}>
-              {prediction.direction}
-            </span>
+        {/* Overall Market Analysis */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/30 rounded-lg border border-muted/20">
+          <div className="text-center">
+            <div className="text-xs text-muted-foreground mb-2">Overall Sentiment</div>
+            <div className="flex items-center justify-center gap-2">
+              {getDirectionIcon(predictions.overallSentiment)}
+              <span className={`text-lg font-bold capitalize ${getDirectionColor(predictions.overallSentiment)}`}>
+                {predictions.overallSentiment}
+              </span>
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span>Confidence</span>
-              <span className="font-mono">{prediction.confidence}%</span>
+
+          <div className="text-center">
+            <div className="text-xs text-muted-foreground mb-2">Market Regime</div>
+            <div className="text-sm font-medium flex items-center justify-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              {predictions.marketRegime}
             </div>
-            <Progress value={prediction.confidence} className="h-2" />
           </div>
-          
-          <div className="flex items-center justify-between pt-2 border-t border-muted/20">
-            <div className="text-center">
-              <div className="text-xs text-muted-foreground">Target Price</div>
-              <div className="font-mono font-bold">{formatCurrency(prediction.targetPrice)}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-muted-foreground">Timeframe</div>
-              <div className="font-medium">{prediction.timeframe}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-muted-foreground">Potential Move</div>
-              <div className={`font-bold ${getDirectionColor(prediction.direction)}`}>
-                {formatPercentage((prediction.targetPrice - currentPrice) / currentPrice * 100)}
-              </div>
+
+          <div className="text-center">
+            <div className="text-xs text-muted-foreground mb-2">Risk/Reward Ratio</div>
+            <div className="text-lg font-bold font-mono flex items-center justify-center gap-2">
+              <TrendingUpDown className="h-4 w-4" />
+              {predictions.riskRewardRatio.toFixed(1)}:1
             </div>
           </div>
         </div>
 
-        {/* Key Signals */}
-        <div className="space-y-3">
-          <h4 className="font-medium flex items-center gap-2">
-            <Zap className="h-4 w-4" />
-            Key Signals
-          </h4>
-          <div className="grid gap-2">
-            {prediction.signals.slice(0, 4).map((signal, index) => (
-              <div key={index} className="flex items-center justify-between p-2 rounded border border-muted/20">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className={`text-xs ${getSignalColor(signal.signal)}`}>
-                    {signal.name}
+        {/* Timeframe Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="1m" data-testid="tab-1month">1 Month</TabsTrigger>
+            <TabsTrigger value="3m" data-testid="tab-3month">3 Months</TabsTrigger>
+            <TabsTrigger value="6m" data-testid="tab-6month">6 Months</TabsTrigger>
+            <TabsTrigger value="1y" data-testid="tab-1year">1 Year</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="1m" className="mt-6">
+            {renderPredictionCard(predictions.predictions.oneMonth, predictions.currentPrice)}
+          </TabsContent>
+
+          <TabsContent value="3m" className="mt-6">
+            {renderPredictionCard(predictions.predictions.threeMonth, predictions.currentPrice)}
+          </TabsContent>
+
+          <TabsContent value="6m" className="mt-6">
+            {renderPredictionCard(predictions.predictions.sixMonth, predictions.currentPrice)}
+          </TabsContent>
+
+          <TabsContent value="1y" className="mt-6">
+            {renderPredictionCard(predictions.predictions.oneYear, predictions.currentPrice)}
+          </TabsContent>
+        </Tabs>
+
+        {/* Key Events */}
+        {predictions.keyEvents && predictions.keyEvents.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="font-medium flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Upcoming Key Events
+            </h4>
+            <div className="grid gap-2">
+              {predictions.keyEvents.map((event, index) => (
+                <div key={index} className="flex items-start justify-between p-3 rounded-lg border border-muted/20 bg-muted/20">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{event.event}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{event.date}</div>
+                  </div>
+                  <Badge variant="outline" className={`text-xs ${getImpactColor(event.impact)}`}>
+                    {event.impact} impact
                   </Badge>
-                  <span className="text-sm text-muted-foreground">{signal.value}</span>
                 </div>
-                <div className="text-xs font-mono">
-                  {signal.weight}%
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* AI Insights */}
+        {predictions.aiInsights && predictions.aiInsights.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="font-medium flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              AI Strategic Insights
+            </h4>
+            <div className="space-y-2">
+              {predictions.aiInsights.map((insight, index) => (
+                <div key={index} className="flex items-start gap-2 text-sm p-3 bg-primary/5 rounded-lg border border-primary/10">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                  <span className="text-muted-foreground">{insight}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* AI Reasoning */}
-        <div className="space-y-3">
-          <h4 className="font-medium flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            AI Analysis
-          </h4>
-          <div className="space-y-2">
-            {prediction.reasoning.map((reason, index) => (
-              <div key={index} className="flex items-start gap-2 text-sm">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                <span className="text-muted-foreground">{reason}</span>
-              </div>
-            ))}
+        {/* Footer */}
+        <div className="space-y-2 pt-3 border-t border-muted/20">
+          <div className="text-xs text-muted-foreground text-center">
+            Volatility Outlook: {predictions.volatilityOutlook}
           </div>
-        </div>
-
-        <div className="text-xs text-muted-foreground text-center pt-3 border-t border-muted/20">
-          Prediction updates every minute • Not financial advice
+          <div className="text-xs text-muted-foreground text-center">
+            Predictions update every 15 minutes • Powered by Grok AI • Not financial advice
+          </div>
         </div>
       </CardContent>
     </Card>
