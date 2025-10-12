@@ -327,8 +327,41 @@ Return ONLY valid JSON with this exact structure (no markdown, no code blocks):
       currentPrice = marketData.currentPrice;
       currentChange = marketData.change24h;
     } catch (dataError) {
-      console.error('Failed to fetch market data for fallback, using defaults:', dataError);
-      currentPrice = 60000; // Default fallback price
+      console.error('Failed to fetch market data for fallback, trying alternative sources:', dataError);
+      
+      // Try CryptoCompare first
+      try {
+        const response = await fetch('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD');
+        if (response.ok) {
+          const data = await response.json();
+          currentPrice = data.RAW?.BTC?.USD?.PRICE || 0;
+          currentChange = data.RAW?.BTC?.USD?.CHANGEPCT24HOUR || 0;
+          console.log(`✓ Fetched fallback price from CryptoCompare: $${currentPrice.toLocaleString()}`);
+        }
+      } catch (ccError) {
+        console.error('CryptoCompare failed for fallback:', ccError);
+      }
+      
+      // If CryptoCompare failed, try CoinGecko simple
+      if (!currentPrice || currentPrice === 0) {
+        try {
+          const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+          if (response.ok) {
+            const data = await response.json();
+            currentPrice = data.bitcoin?.usd || 0;
+            currentChange = data.bitcoin?.usd_24h_change || 0;
+            console.log(`✓ Fetched fallback price from CoinGecko: $${currentPrice.toLocaleString()}`);
+          }
+        } catch (cgError) {
+          console.error('CoinGecko also failed for fallback:', cgError);
+        }
+      }
+      
+      // Last resort: use default but warn
+      if (!currentPrice || currentPrice === 0) {
+        currentPrice = 60000;
+        console.warn('⚠️ All price sources failed, using default fallback price: $60,000');
+      }
     }
     
     // Determine sentiment from recent price action
@@ -451,9 +484,74 @@ const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 export async function getCachedMultiTimeframePredictions(): Promise<MultiTimeframePredictions> {
   const now = Date.now();
   
+  // Always get fresh current price from CryptoCompare (more reliable, different rate limit)
+  let currentPrice = 0;
+  try {
+    const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD');
+    if (response.ok) {
+      const data = await response.json();
+      currentPrice = data.USD || 0;
+    }
+  } catch (error) {
+    console.error('Failed to fetch current price for predictions:', error);
+  }
+  
+  // If CryptoCompare fails, try CoinGecko simple endpoint
+  if (!currentPrice || currentPrice === 0) {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+      if (response.ok) {
+        const data = await response.json();
+        currentPrice = data.bitcoin?.usd || 0;
+      }
+    } catch (error) {
+      console.error('CoinGecko also failed, will use cached price');
+    }
+  }
+  
   if (cachedPredictions && (now - cacheTimestamp) < CACHE_DURATION) {
-    console.log('📊 Returning cached multi-timeframe predictions');
-    return cachedPredictions;
+    // If we couldn't fetch a new price, use the cached one
+    if (!currentPrice || currentPrice === 0) {
+      console.log('📊 Returning cached predictions (price fetch failed, using cached price)');
+      return cachedPredictions;
+    }
+    
+    console.log(`📊 Returning cached predictions with updated price: $${currentPrice.toLocaleString()} (was $${cachedPredictions.currentPrice.toLocaleString()})`);
+    
+    // Update the cached predictions with new current price and recalculate targets
+    const priceRatio = currentPrice / cachedPredictions.currentPrice;
+    
+    return {
+      ...cachedPredictions,
+      currentPrice,
+      timestamp: new Date().toISOString(),
+      predictions: {
+        oneMonth: {
+          ...cachedPredictions.predictions.oneMonth,
+          targetPrice: Math.round(cachedPredictions.predictions.oneMonth.targetPrice * priceRatio),
+          lowEstimate: Math.round(cachedPredictions.predictions.oneMonth.lowEstimate * priceRatio),
+          highEstimate: Math.round(cachedPredictions.predictions.oneMonth.highEstimate * priceRatio)
+        },
+        threeMonth: {
+          ...cachedPredictions.predictions.threeMonth,
+          targetPrice: Math.round(cachedPredictions.predictions.threeMonth.targetPrice * priceRatio),
+          lowEstimate: Math.round(cachedPredictions.predictions.threeMonth.lowEstimate * priceRatio),
+          highEstimate: Math.round(cachedPredictions.predictions.threeMonth.highEstimate * priceRatio)
+        },
+        sixMonth: {
+          ...cachedPredictions.predictions.sixMonth,
+          targetPrice: Math.round(cachedPredictions.predictions.sixMonth.targetPrice * priceRatio),
+          lowEstimate: Math.round(cachedPredictions.predictions.sixMonth.lowEstimate * priceRatio),
+          highEstimate: Math.round(cachedPredictions.predictions.sixMonth.highEstimate * priceRatio)
+        },
+        oneYear: {
+          ...cachedPredictions.predictions.oneYear,
+          targetPrice: Math.round(cachedPredictions.predictions.oneYear.targetPrice * priceRatio),
+          lowEstimate: Math.round(cachedPredictions.predictions.oneYear.lowEstimate * priceRatio),
+          highEstimate: Math.round(cachedPredictions.predictions.oneYear.highEstimate * priceRatio)
+        }
+      }
+    };
   }
   
   console.log('🔄 Generating fresh multi-timeframe predictions...');
