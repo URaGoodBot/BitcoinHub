@@ -32,6 +32,7 @@ Preferred communication style: Simple, everyday language.
 - **AI-Powered Analysis**: Market sentiment, technical indicators, pattern recognition, trading signals, price predictions, topping analysis.
 - **Financial Data Integration**: Real-time Fed Watch Tool, US 10-Year Treasury, Global Market Indicators (DXY, Gold, S&P 500, VIX), Truflation US Inflation Index, World Bank Liquidity Expansion.
 - **Crypto Catalysts Tracker**: Monitors key crypto events with probability scoring and market impact analysis.
+- **US Crypto Legislation Tracker**: Comprehensive congressional bill tracking covering October & November 2025 with AI-powered updates, passage probability analysis, and major legislative milestones (CLARITY Act, BITCOIN Act, GENIUS Act).
 - **Admin System**: Password-protected panel for legislation data updates.
 - **Meme Section**: Image-centric platform with file uploads and user interaction.
 - **Whale Movement Alerts**: Real-time tracking of large Bitcoin transactions (≥100 BTC) with classification and significance scoring.
