@@ -181,7 +181,7 @@ const Legislation = () => {
             <div className="flex items-center gap-3">
               <Scale className="h-8 w-8 text-primary" />
               <div>
-                <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation - September 2025</h1>
+                <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation - October & November 2025</h1>
                 <p className="text-muted-foreground">Track congressional bills affecting cryptocurrency with AI-powered updates</p>
               </div>
             </div>
