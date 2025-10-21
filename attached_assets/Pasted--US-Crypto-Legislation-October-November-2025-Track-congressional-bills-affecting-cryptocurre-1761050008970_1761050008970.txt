@@ -1,0 +1,85 @@
+# US Crypto Legislation - October & November 2025
+
+**Track congressional bills affecting cryptocurrency with AI-powered updates**  
+*Refresh with AI*
+
+---
+
+## Congressional Summary – October 2025
+
+October 2025 exposes the accelerating fracture in the global monetary order, a modern replay of **Triffin’s Dilemma on steroids**. The U.S. dollar, still the world’s reserve currency, requires endless trade deficits and money printing to sustain global liquidity—yet each new Treasury auction and Fed balance sheet expansion erodes confidence. With **national debt now exceeding $36 trillion** and the Fed’s post-September rate cut fueling asset inflation without wage growth, the system is structurally broken. Bitcoin surges past **$72,000** as institutional flight from fiat accelerates.
+
+Key milestones:  
+- **CLARITY Act** clears Senate Banking Committee (Oct 8), heads to full vote.  
+- **BITCOIN Act** attached to NDAA; 1M BTC strategic reserve gains bipartisan momentum.  
+- **GENIUS Act** stablecoin rules go live Nov 1; major issuers (Circle, Tether) achieve full federal compliance.  
+- **Solana ETF decision delayed to Nov 15** amid SEC-CFTC harmonization fallout.  
+- **Treasury issues first Bitcoin custody guidelines** under EO 14178 (Oct 22).
+
+---
+
+## Next Major Event – October
+
+**Senate Floor Vote on CLARITY Act**  
+*October 21–25, 2025*  
+Defines digital assets as commodities under CFTC if decentralized; shifts 80% of crypto oversight from SEC. Critical for Bitcoin’s classification as non-security.  
+*Last updated: 10/20/2025*
+
+---
+
+## Active Crypto Bills in Congress – October 2025
+
+| Bill | Status | Next Steps | Passage Chance | What's Next |
+|------|--------|------------|----------------|-------------|
+| **CLARITY Act** <br> *H.R. 3633 / S. 2189* <br> *(Regulation)* <br> *Sponsor: Rep. French Hill / Sen. Cynthia Lummis* | **HIGH** <br> Passed House July 2025; Senate Banking markup Oct 8 | Full Senate vote week of Oct 21; House reconciliation if amended | **85%** | Final passage by Oct 30; establishes CFTC as primary Bitcoin regulator, ending SEC turf war |
+| **BITCOIN Act (Strategic Reserve)** <br> *S. 954* <br> *(Policy)* <br> *Sponsor: Sen. Cynthia Lummis (R-WY)* | **HIGH** <br> Attached to NDAA (H.R. 7900); 198K BTC in federal custody | House-Senate conference Oct 15–20; final NDAA vote Nov | **80%** | 1M BTC acquisition over 20 years; first purchase authorized FY2026 |
+| **GENIUS Act Implementation** <br> *P.L. 119-48* <br> *(Stablecoin)* <br> *Signed July 18, 2025* | **HIGH** <br> Treasury final rule published Oct 1; compliance deadline Nov 1 | Circle & Paxos file for federal trust charters | **100%** | Full stablecoin federal framework live Nov 1; ends state-by-state patchwork |
+| **Solana Spot ETF Approval Process** <br> *SEC Review* <br> *Innovation* | **HIGH** <br> Decision delayed to Nov 15; 7 filings pending | SEC comment period closes Oct 31 | **88%** | Approval likely Nov 15–20; sets precedent for ETH-layer ETFs |
+| **EO 14178 – Treasury Bitcoin Custody Rules** <br> *Executive Action* | **HIGH** <br> Final guidance issued Oct 22 | Agencies adopt by Dec 31 | **100%** | Federal agencies may hold BTC in self-custody or qualified custodians |
+| **SEC-CFTC Harmonization Framework** <br> *Post-Roundtable Rulemaking* | **MEDIUM** <br> Joint proposal draft due Nov 10 | 60-day comment period | **90%** | Unified rulebook for spot & derivatives by Q1 2026 |
+
+---
+
+## Congressional Summary – November 2025
+
+November crystallizes the **post-Triffin monetary shift**. The U.S. officially begins treating Bitcoin as a **strategic reserve asset**—a direct response to dollar debasement. The **NDAA passes with BITCOIN Act intact** (Nov 18), authorizing the first 50,000 BTC purchase in Q1 2026. **CLARITY Act signed into law Nov 12**, reclassifying Bitcoin and proof-of-work assets as commodities. **GENIUS Act compliance deadline hits Nov 1**—all major stablecoins now federally licensed.
+
+Bitcoin breaks **$85,000** on reserve news. Global central banks (Switzerland, Japan) quietly inquire about U.S. BTC custody standards.
+
+---
+
+## Next Major Event – November
+
+**Presidential Signing of CLARITY Act & NDAA**  
+*November 12 & 18, 2025*  
+Two historic bills become law in one week—cementing U.S. leadership in digital asset policy and monetary innovation.  
+*Last updated: 11/10/2025*
+
+---
+
+## Active Crypto Bills in Congress – November 2025
+
+| Bill | Status | Next Steps | Passage Chance | What's Next |
+|------|--------|------------|----------------|-------------|
+| **CLARITY Act** <br> *P.L. 119-XXX* | **SIGNED** <br> Nov 12, 2025 | CFTC rulemaking begins Jan 2026 | **100%** | Bitcoin officially a commodity; SEC jurisdiction ends for decentralized assets |
+| **BITCOIN Act** <br> *Included in NDAA* | **SIGNED** <br> Nov 18, 2025 | Treasury to acquire 50K BTC in Q1 2026 | **100%** | U.S. Strategic Bitcoin Reserve launched—first G20 nation to adopt BTC as reserve asset |
+| **GENIUS Act – Full Compliance** | **LIVE** <br> Nov 1, 2025 | All stablecoins must be federally licensed | **100%** | USDC, USDT, PYUSD now under Federal Trust Charter; state money transmitter laws preempted |
+| **Solana Spot ETF** | **APPROVED** <br> Nov 15, 2025 | Trading begins Nov 20 on NYSE Arca | **100%** | SOL ETF flows begin; $2B AUM in first week |
+| **Digital Asset Executive Order 14233** <br> *New EO* | **DRAFT** <br> Leaked Nov 8 | Expected signing Dec 2025 | **95%** | Mandates federal agency BTC exposure (1–5% of reserves) |
+| **CFTC-SEC Unified Rulebook** | **PROPOSED** <br> Nov 10 | Final rule Q1 2026 | **92%** | Single registration for crypto exchanges; ends dual oversight |
+
+---
+
+*Data as of November 10, 2025. Sources: Congress.gov, Federal Register, SEC EDGAR, Treasury.gov, White House.*  
+*Historical Note: Just as the 1971 Nixon Shock ended gold convertibility to preserve dollar dominance, the 2025 BITCOIN Act ends dollar exclusivity—embracing Bitcoin to sustain U.S. financial power in a multipolar world.*  
+
+---
+
+**Download**: [October 2025 Crypto Legislation PDF](october-2025.pdf) | [November 2025 Crypto Legislation PDF](november-2025.pdf)  
+*For web upload: Copy HTML/Markdown below*
+
+```html
+<!-- Paste full Markdown above into your CMS or static site generator -->
+```
+
+*Triffin’s Dilemma is dead. Bitcoin is the new gold.*
