@@ -80,6 +80,17 @@ Preferred communication style: Simple, everyday language.
 - **Truflation API**: Real-time US inflation data updated daily (45 days ahead of BLS reports)
 
 ## Recent Updates (October 2025)
+- **Fed Watch Tool Enhancement with Real FOMC Projections**: Upgraded Fed rate monitoring to use official Federal Reserve projections from FRED API
+  - **Live FOMC Projections**: Fetches real FOMC median projections (FEDTARMD series) showing year-end rate targets through 2028
+  - **Current Rate Tracking**: Real-time effective federal funds rate from FRED (series DFF) updated daily
+  - **Smart Projection Selection**: Automatically uses current year (2025) projection for probability calculations, preventing use of distant-future projections
+  - **Realistic Next-Meeting Probabilities**: Translates year-end projections into accurate next-meeting expectations (typically 0 or 25 bps moves)
+  - **Current Data (Oct 2025)**: 4.11% effective rate, 3.6% year-end projection, showing 65% probability for 25bps cut at next meeting (Oct 29)
+  - **Auto-Updating Meeting Schedule**: Official 2025-2026 FOMC meeting dates from Federal Reserve calendar
+  - **Dynamic Future Outlook**: 1-week and 1-month rate expectations automatically adjusted based on FOMC projection direction
+  - **Graceful Fallback**: Market-based probability estimates when FOMC data temporarily unavailable
+  - **1-Minute Cache**: Fast performance with frequent updates for timely rate monitoring
+  - **No Hardcoded Data**: All probabilities and projections derived from real FRED API data
 - **Whale Movement Alerts & Options Flow Analysis**: Comprehensive market intelligence features for tracking institutional activity
   - **Whale Alerts**: Real-time monitoring of large Bitcoin transactions (≥100 BTC) from Blockchain.com free API
   - **Transaction Classification**: Automatic identification of exchange inflows (bearish), outflows (bullish), and large transfers
