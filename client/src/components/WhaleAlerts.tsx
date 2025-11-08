@@ -160,52 +160,64 @@ export default function WhaleAlerts() {
               </div>
             </div>
 
-            {/* Transaction List */}
-            <div className="space-y-3 max-h-[500px] overflow-y-auto">
-              {data.transactions.map((tx, index) => (
-                <div
-                  key={tx.hash}
-                  data-testid={`whale-tx-${index}`}
-                  className="p-3 border rounded-lg hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <TransactionTypeIcon type={tx.type} />
-                      <TransactionTypeBadge type={tx.type} />
-                      <SignificanceBadge significance={tx.significance} />
-                    </div>
-                    <div className="text-xs text-muted-foreground" data-testid={`whale-time-${index}`}>
-                      {formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold" data-testid={`whale-amount-${index}`}>
-                        {tx.amount.toFixed(2)} BTC
-                      </span>
-                      <span className="text-sm text-muted-foreground" data-testid={`whale-usd-${index}`}>
-                        ${tx.amountUSD.toLocaleString()}
-                      </span>
+            {/* Last 20 Whale Transactions */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-orange-500" />
+                  Last 20 Whale Transactions
+                </h3>
+                <Badge variant="outline" className="bg-orange-500/10 text-orange-500 border-orange-500/20">
+                  {data.transactions.length} of 20
+                </Badge>
+              </div>
+              
+              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2" data-testid="whale-transactions-list">
+                {data.transactions.map((tx, index) => (
+                  <div
+                    key={tx.hash}
+                    data-testid={`whale-tx-${index}`}
+                    className="p-3 border rounded-lg hover:bg-accent/50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <TransactionTypeIcon type={tx.type} />
+                        <TransactionTypeBadge type={tx.type} />
+                        <SignificanceBadge significance={tx.significance} />
+                      </div>
+                      <div className="text-xs text-muted-foreground" data-testid={`whale-time-${index}`}>
+                        {formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })}
+                      </div>
                     </div>
                     
-                    <div className="text-xs text-muted-foreground space-y-1">
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium">From:</span>
-                        <code className="bg-muted px-1 rounded" data-testid={`whale-from-${index}`}>
-                          {truncateAddress(tx.from)}
-                        </code>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold" data-testid={`whale-amount-${index}`}>
+                          {tx.amount.toFixed(2)} BTC
+                        </span>
+                        <span className="text-sm text-muted-foreground" data-testid={`whale-usd-${index}`}>
+                          ${tx.amountUSD.toLocaleString()}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium">To:</span>
-                        <code className="bg-muted px-1 rounded" data-testid={`whale-to-${index}`}>
-                          {truncateAddress(tx.to)}
-                        </code>
+                      
+                      <div className="text-xs text-muted-foreground space-y-1">
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">From:</span>
+                          <code className="bg-muted px-1 rounded" data-testid={`whale-from-${index}`}>
+                            {truncateAddress(tx.from)}
+                          </code>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">To:</span>
+                          <code className="bg-muted px-1 rounded" data-testid={`whale-to-${index}`}>
+                            {truncateAddress(tx.to)}
+                          </code>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             <div className="mt-4 text-xs text-center text-muted-foreground">
