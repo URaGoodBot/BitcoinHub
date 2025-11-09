@@ -15,7 +15,7 @@ const DonationContext = createContext<DonationContextType | undefined>(undefined
 export function DonationProvider({ children }: { children: React.ReactNode }) {
   const [hasDonated, setHasDonated] = useState(false);
   const [memesPosted, setMemesPosted] = useState(0);
-  const donationAddress = "bc1q2hglmlutz959c30s9cc83p7edvnmrj536dgsx2";
+  const donationAddress = "bc1qakn7jw6wjuhr3t5mpgjaw5ppnsp7gwt4534php";
 
   // Load donation status from localStorage
   useEffect(() => {

@@ -9,7 +9,7 @@ export function DonationButton() {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   
-  const donationAddress = "bc1q2hglmlutz959c30s9cc83p7edvnmrj536dgsx2";
+  const donationAddress = "bc1qakn7jw6wjuhr3t5mpgjaw5ppnsp7gwt4534php";
 
   const copyToClipboard = async () => {
     try {
