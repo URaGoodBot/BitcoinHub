@@ -14,6 +14,7 @@ import { getCoinglassIndicators } from "./api/coinglass-indicators";
 import { getWorldBankEconomicData, getSpecificIndicator, getIndicatorTimeSeries } from "./api/worldbank";
 import { getCachedWhaleAlerts } from "./api/whale-alerts";
 import { getCachedOptionsFlow } from "./api/options-flow";
+import { getLiquidityData } from "./api/liquidity";
 import { z } from "zod";
 import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
@@ -469,6 +470,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Options Flow
   app.get(`${apiPrefix}/options-flow`, getCachedOptionsFlow);
+
+  // Liquidity Tracker (FRED Money Supply Indicators)
+  app.get(`${apiPrefix}/liquidity`, async (_req, res) => {
+    try {
+      const data = await getLiquidityData();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching liquidity data:", error);
+      res.status(500).json({ message: "Failed to fetch liquidity data" });
+    }
+  });
 
   // News
   app.get(`${apiPrefix}/news`, async (req, res) => {
