@@ -109,17 +109,43 @@ let liquidityCache: {
 
 const CACHE_DURATION = 10 * 60 * 1000;
 
+function getObservationLimit(frequency: 'Daily' | 'Weekly' | 'Monthly'): number {
+  switch (frequency) {
+    case 'Daily': return 400;
+    case 'Weekly': return 80;
+    case 'Monthly': return 24;
+    default: return 100;
+  }
+}
+
+function getSeriesFrequency(seriesId: string): 'Daily' | 'Weekly' | 'Monthly' {
+  const frequencyMap: Record<string, 'Daily' | 'Weekly' | 'Monthly'> = {
+    'M2SL': 'Monthly',
+    'M1SL': 'Monthly',
+    'RRPONTSYD': 'Daily',
+    'WTREGEN': 'Weekly',
+    'WALCL': 'Weekly',
+    'WRESBAL': 'Weekly',
+    'CURRCIR': 'Monthly',
+    'BOGMBASE': 'Monthly'
+  };
+  return frequencyMap[seriesId] || 'Monthly';
+}
+
 async function fetchFREDSeries(seriesId: string): Promise<{ value: number; previousValue: number; date: string } | null> {
   try {
+    const frequency = getSeriesFrequency(seriesId);
+    const limit = getObservationLimit(frequency);
+    
     const response = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
       params: {
         series_id: seriesId,
         api_key: process.env.FRED_API_KEY,
         file_type: 'json',
-        limit: 30,
+        limit: limit,
         sort_order: 'desc'
       },
-      timeout: 10000
+      timeout: 15000
     });
 
     if (response.data?.observations) {
@@ -129,20 +155,47 @@ async function fetchFREDSeries(seriesId: string): Promise<{ value: number; previ
 
       if (validObs.length >= 2) {
         const latest = validObs[0];
-        
         const latestDate = new Date(latest.date);
-        const oneYearAgo = new Date(latestDate);
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
         
         const previousObs = validObs.find((obs: any) => {
           const obsDate = new Date(obs.date);
           const diffDays = Math.abs((latestDate.getTime() - obsDate.getTime()) / (1000 * 60 * 60 * 24));
           return diffDays >= 350 && diffDays <= 380;
-        }) || validObs[validObs.length - 1];
+        });
+
+        if (!previousObs) {
+          console.warn(`No valid YoY comparator found for ${seriesId}, using oldest available observation`);
+          const oldestObs = validObs[validObs.length - 1];
+          const oldestDate = new Date(oldestObs.date);
+          const daysDiff = Math.abs((latestDate.getTime() - oldestDate.getTime()) / (1000 * 60 * 60 * 24));
+          
+          if (daysDiff < 300) {
+            console.warn(`Insufficient historical data for ${seriesId} (only ${Math.round(daysDiff)} days), skipping YoY calculation`);
+            return null;
+          }
+          
+          const previousValue = parseFloat(oldestObs.value);
+          if (previousValue === 0) {
+            console.warn(`Zero previousValue for ${seriesId}, skipping`);
+            return null;
+          }
+          
+          return {
+            value: parseFloat(latest.value),
+            previousValue: previousValue,
+            date: latest.date
+          };
+        }
+
+        const previousValue = parseFloat(previousObs.value);
+        if (previousValue === 0) {
+          console.warn(`Zero previousValue for ${seriesId}, skipping`);
+          return null;
+        }
 
         return {
           value: parseFloat(latest.value),
-          previousValue: parseFloat(previousObs.value),
+          previousValue: previousValue,
           date: latest.date
         };
       }
