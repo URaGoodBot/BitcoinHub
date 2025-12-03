@@ -18,6 +18,7 @@ import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 import AITrendPrediction from "@/components/AITrendPrediction";
 import WhaleAlerts from "@/components/WhaleAlerts";
 import OptionsFlow from "@/components/OptionsFlow";
+import LiquidityTracker from "@/components/LiquidityTracker";
 
 const Dashboard = () => {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -135,6 +136,11 @@ const Dashboard = () => {
       {/* World Bank Economic Data */}
       <div className="mb-6">
         <WorldBankEconomicWidget />
+      </div>
+      
+      {/* FRED Liquidity Tracker */}
+      <div className="mb-6">
+        <LiquidityTracker />
       </div>
       
       {/* Market Summary and AI Prediction */}
