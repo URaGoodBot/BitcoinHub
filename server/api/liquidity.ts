@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getBitcoinPrice } from './coingecko';
 
 export interface LiquidityIndicator {
   seriesId: string;
@@ -9,6 +10,8 @@ export interface LiquidityIndicator {
   previousValue: number;
   yoyChange: number;
   yoyChangePercent: number;
+  momChange?: number;
+  momChangePercent?: number;
   date: string;
   frequency: 'Daily' | 'Weekly' | 'Monthly' | 'Quarterly';
   unit: string;
@@ -17,6 +20,12 @@ export interface LiquidityIndicator {
   isAnomaly: boolean;
   anomalyThreshold: number;
   category: 'core' | 'velocity' | 'policy' | 'fed_holdings';
+  historicalPeak?: {
+    value: number;
+    displayValue: string;
+    date: string;
+    percentFromPeak: number;
+  };
 }
 
 export interface DerivedMetric {
@@ -29,17 +38,32 @@ export interface DerivedMetric {
   isAnomaly: boolean;
   anomalyThreshold: number;
   formula: string;
+  alertType?: 'stack_sats' | 'caution' | 'warning';
+  alertMessage?: string;
+}
+
+export interface BitcoinOverlay {
+  btcPrice: number;
+  btcPriceFormatted: string;
+  btc24hChange: number;
+  m2BtcRatio: number;
+  m2BtcRatioFormatted: string;
+  m2BtcHistoricalAvg: number;
+  isDebasementSignal: boolean;
+  debasementMessage: string;
 }
 
 export interface LiquidityData {
   indicators: LiquidityIndicator[];
   derivedMetrics: DerivedMetric[];
+  bitcoinOverlay: BitcoinOverlay | null;
   anomalies: LiquidityIndicator[];
   summary: {
     totalIndicators: number;
     anomalyCount: number;
     overallSignal: 'bullish' | 'bearish' | 'neutral';
     signalReasons: string[];
+    stackSatsAlert: boolean;
     lastUpdated: string;
   };
 }
@@ -54,6 +78,22 @@ interface SeriesConfig {
   anomalyThreshold: number;
   category: 'core' | 'velocity' | 'policy' | 'fed_holdings';
 }
+
+const HISTORICAL_PEAKS: Record<string, { value: number; date: string; rawUnit: 'billions' | 'millions' | 'percent' | 'index' }> = {
+  'M2SL': { value: 21722.0, date: '2022-04-01', rawUnit: 'billions' },
+  'M1SL': { value: 20629.0, date: '2022-03-01', rawUnit: 'billions' },
+  'RRPONTSYD': { value: 2553.716, date: '2022-12-30', rawUnit: 'billions' },
+  'WTREGEN': { value: 1781129, date: '2022-05-04', rawUnit: 'millions' },
+  'WALCL': { value: 8965487, date: '2022-04-13', rawUnit: 'millions' },
+  'WRESBAL': { value: 4277655, date: '2021-12-15', rawUnit: 'millions' },
+  'CURRCIR': { value: 2354.342, date: '2024-10-01', rawUnit: 'billions' },
+  'BOGMBASE': { value: 6413.1, date: '2022-04-01', rawUnit: 'billions' },
+  'M2V': { value: 2.192, date: '1997-10-01', rawUnit: 'index' },
+  'M1V': { value: 10.674, date: '2007-10-01', rawUnit: 'index' },
+  'FEDFUNDS': { value: 5.33, date: '2023-08-01', rawUnit: 'percent' },
+  'TREAST': { value: 5772449, date: '2022-06-01', rawUnit: 'millions' },
+  'WSHOMCB': { value: 2739893, date: '2022-05-25', rawUnit: 'millions' }
+};
 
 const LIQUIDITY_SERIES: SeriesConfig[] = [
   {
@@ -234,7 +274,14 @@ function formatDisplayValue(valueInBillions: number, rawUnit: 'billions' | 'mill
   }
 }
 
-async function fetchFREDSeries(seriesId: string, frequency: 'Daily' | 'Weekly' | 'Monthly' | 'Quarterly'): Promise<{ value: number; previousValue: number; date: string } | null> {
+interface FREDSeriesResult {
+  value: number;
+  previousValue: number;
+  momPreviousValue?: number;
+  date: string;
+}
+
+async function fetchFREDSeries(seriesId: string, frequency: 'Daily' | 'Weekly' | 'Monthly' | 'Quarterly'): Promise<FREDSeriesResult | null> {
   try {
     const limit = getObservationLimit(frequency);
     
@@ -267,6 +314,21 @@ async function fetchFREDSeries(seriesId: string, frequency: 'Daily' | 'Weekly' |
           return diffDays >= (targetDays - tolerance) && diffDays <= (targetDays + tolerance);
         });
 
+        let momPreviousObs = null;
+        if (frequency === 'Monthly') {
+          momPreviousObs = validObs.find((obs: any) => {
+            const obsDate = new Date(obs.date);
+            const diffDays = Math.abs((latestDate.getTime() - obsDate.getTime()) / (1000 * 60 * 60 * 24));
+            return diffDays >= 25 && diffDays <= 35;
+          });
+        } else if (frequency === 'Weekly') {
+          momPreviousObs = validObs.find((obs: any) => {
+            const obsDate = new Date(obs.date);
+            const diffDays = Math.abs((latestDate.getTime() - obsDate.getTime()) / (1000 * 60 * 60 * 24));
+            return diffDays >= 28 && diffDays <= 35;
+          });
+        }
+
         if (!previousObs) {
           console.warn(`No valid YoY comparator found for ${seriesId}, using oldest available`);
           const oldestObs = validObs[validObs.length - 1];
@@ -284,6 +346,7 @@ async function fetchFREDSeries(seriesId: string, frequency: 'Daily' | 'Weekly' |
           return {
             value: parseFloat(latest.value),
             previousValue: previousValue,
+            momPreviousValue: momPreviousObs ? parseFloat(momPreviousObs.value) : undefined,
             date: latest.date
           };
         }
@@ -294,6 +357,7 @@ async function fetchFREDSeries(seriesId: string, frequency: 'Daily' | 'Weekly' |
         return {
           value: parseFloat(latest.value),
           previousValue: previousValue,
+          momPreviousValue: momPreviousObs ? parseFloat(momPreviousObs.value) : undefined,
           date: latest.date
         };
       }
@@ -305,7 +369,49 @@ async function fetchFREDSeries(seriesId: string, frequency: 'Daily' | 'Weekly' |
   }
 }
 
-function calculateDerivedMetrics(indicators: LiquidityIndicator[]): DerivedMetric[] {
+async function fetchBitcoinOverlay(m2Value: number): Promise<BitcoinOverlay | null> {
+  try {
+    const btcData = await getBitcoinPrice();
+    
+    if (!btcData || !btcData.usd) return null;
+    
+    const btcPrice = btcData.usd;
+    const btc24hChange = btcData.usd_24h_change || 0;
+    
+    const m2InTrillions = m2Value / 1000;
+    const m2BtcRatio = (m2InTrillions * 1e12) / btcPrice;
+    
+    const historicalAvgRatio = 250000000;
+    const isDebasementSignal = m2BtcRatio > historicalAvgRatio * 1.2;
+    
+    let debasementMessage = '';
+    if (m2BtcRatio > historicalAvgRatio * 1.5) {
+      debasementMessage = 'Extreme debasement asymmetry detected - strong BTC accumulation signal';
+    } else if (m2BtcRatio > historicalAvgRatio * 1.2) {
+      debasementMessage = 'Elevated M2/BTC ratio suggests fiat debasement - consider accumulation';
+    } else if (m2BtcRatio < historicalAvgRatio * 0.8) {
+      debasementMessage = 'BTC potentially overvalued relative to M2 - exercise caution';
+    } else {
+      debasementMessage = 'M2/BTC ratio in normal range';
+    }
+    
+    return {
+      btcPrice,
+      btcPriceFormatted: `$${btcPrice.toLocaleString('en-US', { maximumFractionDigits: 0 })}`,
+      btc24hChange,
+      m2BtcRatio,
+      m2BtcRatioFormatted: `${(m2BtcRatio / 1e6).toFixed(2)}M`,
+      m2BtcHistoricalAvg: historicalAvgRatio,
+      isDebasementSignal,
+      debasementMessage
+    };
+  } catch (error) {
+    console.error('Error fetching Bitcoin overlay:', error);
+    return null;
+  }
+}
+
+function calculateDerivedMetrics(indicators: LiquidityIndicator[], netLiquidityThreshold: number = 3000): DerivedMetric[] {
   const derived: DerivedMetric[] = [];
   
   const fedBS = indicators.find(i => i.seriesId === 'WALCL');
@@ -317,7 +423,8 @@ function calculateDerivedMetrics(indicators: LiquidityIndicator[]): DerivedMetri
   
   if (fedBS && tga && rrp) {
     const netLiquidity = fedBS.value - tga.value - rrp.value;
-    const isAnomaly = netLiquidity < 2000;
+    const isAnomaly = netLiquidity < netLiquidityThreshold;
+    const isStackSats = netLiquidity < 3000;
     
     derived.push({
       id: 'net_liquidity',
@@ -325,10 +432,12 @@ function calculateDerivedMetrics(indicators: LiquidityIndicator[]): DerivedMetri
       shortName: 'Net Liq',
       value: netLiquidity,
       displayValue: formatDisplayValue(netLiquidity, 'billions'),
-      description: 'Fed BS - TGA - RRP. Effective reserves measure. Low levels (<$2T) precede risk-off moves.',
+      description: 'Fed BS - TGA - RRP. Effective reserves measure. Levels <$3T signal risk-off & BTC accumulation opportunity.',
       isAnomaly,
-      anomalyThreshold: 2000,
-      formula: 'Fed Total Assets - TGA - RRP'
+      anomalyThreshold: netLiquidityThreshold,
+      formula: 'Fed Total Assets - TGA - RRP',
+      alertType: isStackSats ? 'stack_sats' : undefined,
+      alertMessage: isStackSats ? '🟠 Stack Sats Alert: Net Liquidity below $3T threshold!' : undefined
     });
   }
   
@@ -376,7 +485,7 @@ export async function getLiquidityData(): Promise<LiquidityData> {
     return liquidityCache.data;
   }
 
-  console.log('🔄 Fetching fresh FRED liquidity data (13 indicators + derived metrics)...');
+  console.log('🔄 Fetching fresh FRED liquidity data (13 indicators + derived metrics + BTC overlay)...');
 
   const indicators: LiquidityIndicator[] = [];
   const anomalies: LiquidityIndicator[] = [];
@@ -390,10 +499,32 @@ export async function getLiquidityData(): Promise<LiquidityData> {
       
       const yoyChange = normalizedValue - normalizedPrevValue;
       const yoyChangePercent = ((normalizedValue - normalizedPrevValue) / normalizedPrevValue) * 100;
+      
+      let momChange: number | undefined;
+      let momChangePercent: number | undefined;
+      if (data.momPreviousValue !== undefined) {
+        const normalizedMomPrev = normalizeToTrueValue(data.momPreviousValue, series.rawUnit);
+        momChange = normalizedValue - normalizedMomPrev;
+        momChangePercent = ((normalizedValue - normalizedMomPrev) / normalizedMomPrev) * 100;
+      }
+      
       const isAnomaly = Math.abs(yoyChangePercent) > series.anomalyThreshold;
 
       const displayUnit = series.rawUnit === 'percent' ? '%' : 
                          series.rawUnit === 'index' ? 'Index' : 'Billions USD';
+
+      let historicalPeak: LiquidityIndicator['historicalPeak'];
+      const peakData = HISTORICAL_PEAKS[series.seriesId];
+      if (peakData) {
+        const peakNormalized = normalizeToTrueValue(peakData.value, peakData.rawUnit);
+        const percentFromPeak = ((normalizedValue - peakNormalized) / peakNormalized) * 100;
+        historicalPeak = {
+          value: peakNormalized,
+          displayValue: formatDisplayValue(peakNormalized, peakData.rawUnit),
+          date: peakData.date,
+          percentFromPeak
+        };
+      }
 
       const indicator: LiquidityIndicator = {
         seriesId: series.seriesId,
@@ -404,6 +535,8 @@ export async function getLiquidityData(): Promise<LiquidityData> {
         previousValue: normalizedPrevValue,
         yoyChange,
         yoyChangePercent,
+        momChange,
+        momChangePercent,
         date: data.date,
         frequency: series.frequency,
         unit: displayUnit,
@@ -411,7 +544,8 @@ export async function getLiquidityData(): Promise<LiquidityData> {
         description: series.description,
         isAnomaly,
         anomalyThreshold: series.anomalyThreshold,
-        category: series.category
+        category: series.category,
+        historicalPeak
       };
 
       indicators.push(indicator);
@@ -438,11 +572,13 @@ export async function getLiquidityData(): Promise<LiquidityData> {
   });
 
   const derivedMetrics = calculateDerivedMetrics(indicators);
+  
+  const m2 = indicators.find(i => i.seriesId === 'M2SL');
+  const bitcoinOverlay = m2 ? await fetchBitcoinOverlay(m2.value) : null;
 
   let overallSignal: 'bullish' | 'bearish' | 'neutral' = 'neutral';
   const signalReasons: string[] = [];
   
-  const m2 = indicators.find(i => i.seriesId === 'M2SL');
   const fedBS = indicators.find(i => i.seriesId === 'WALCL');
   const rrp = indicators.find(i => i.seriesId === 'RRPONTSYD');
   const netLiq = derivedMetrics.find(d => d.id === 'net_liquidity');
@@ -459,6 +595,9 @@ export async function getLiquidityData(): Promise<LiquidityData> {
   if (netLiq && netLiq.value > 5000) {
     signalReasons.push(`Net Liquidity high at ${netLiq.displayValue}`);
   }
+  if (bitcoinOverlay?.isDebasementSignal) {
+    signalReasons.push(`M2/BTC ratio signals debasement asymmetry`);
+  }
   
   if (m2 && m2.yoyChangePercent < -2) {
     signalReasons.push(`M2 contracting ${m2.yoyChangePercent.toFixed(1)}% YoY`);
@@ -471,7 +610,7 @@ export async function getLiquidityData(): Promise<LiquidityData> {
   }
   
   const bullishCount = signalReasons.filter(r => 
-    r.includes('expanding') || r.includes('draining') || r.includes('high at')
+    r.includes('expanding') || r.includes('draining') || r.includes('high at') || r.includes('debasement')
   ).length;
   const bearishCount = signalReasons.filter(r => 
     r.includes('contracting') || r.includes('dangerously low')
@@ -483,22 +622,26 @@ export async function getLiquidityData(): Promise<LiquidityData> {
     overallSignal = 'bearish';
   }
 
+  const stackSatsAlert = netLiq ? netLiq.value < 3000 : false;
+
   const result: LiquidityData = {
     indicators,
     derivedMetrics,
+    bitcoinOverlay,
     anomalies,
     summary: {
       totalIndicators: indicators.length,
       anomalyCount: anomalies.length,
       overallSignal,
       signalReasons,
+      stackSatsAlert,
       lastUpdated: new Date().toISOString()
     }
   };
 
   liquidityCache = { data: result, timestamp: now };
   
-  console.log(`✓ Liquidity data fetched: ${indicators.length} indicators, ${derivedMetrics.length} derived, ${anomalies.length} anomalies`);
+  console.log(`✓ Liquidity data fetched: ${indicators.length} indicators, ${derivedMetrics.length} derived, ${anomalies.length} anomalies, BTC overlay: ${bitcoinOverlay ? 'yes' : 'no'}`);
   
   return result;
 }
