@@ -86,10 +86,10 @@ export async function getBitcoinPrice(): Promise<BitcoinPrice> {
       return cacheData.bitcoinPrice;
     }
     
-    // Last resort fallback
+    // Last resort fallback - updated to realistic current price
     return {
-      usd: 41285.34,
-      usd_24h_change: 2.14,
+      usd: 93000,
+      usd_24h_change: 1.5,
       last_updated_at: Date.now() / 1000
     };
   }

@@ -454,8 +454,8 @@ Return ONLY valid JSON with this exact structure (no markdown, no code blocks):
       riskRewardRatio: 2.3,
       keyEvents: [
         {
-          date: "2024-04",
-          event: "Bitcoin Halving (estimated)",
+          date: "2028-04",
+          event: "Next Bitcoin Halving (estimated)",
           impact: "high" as const
         },
         {

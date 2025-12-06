@@ -104,14 +104,14 @@ export async function getTreasuryFiscalData(): Promise<TreasuryFiscalData> {
     const US_POPULATION = 335000000; // ~335 million
     const US_TAXPAYERS = 160000000; // ~160 million taxpayers
 
-    const totalDebt = debtData?.totalDebt || 35000000000000; // $35T fallback
+    const totalDebt = debtData?.totalDebt || 38400000000000; // $38.4T fallback (Dec 2025)
     const dailyIncrease = totalDebt * 0.0001; // Estimate daily increase
     
     const treasuryFiscalData: TreasuryFiscalData = {
       debtToPenny: debtData || {
-        totalDebt: 35000000000000,
-        publicDebt: 26000000000000,
-        intergovernmentalHoldings: 9000000000000,
+        totalDebt: 38400000000000,
+        publicDebt: 28800000000000,
+        intergovernmentalHoldings: 9600000000000,
         dateOfData: new Date().toISOString().split('T')[0],
         lastUpdated: new Date().toISOString()
       },
@@ -125,7 +125,7 @@ export async function getTreasuryFiscalData(): Promise<TreasuryFiscalData> {
       debtStatistics: {
         debtPerCitizen: totalDebt / US_POPULATION,
         debtPerTaxpayer: totalDebt / US_TAXPAYERS,
-        debtToGDP: (totalDebt / 27000000000000) * 100, // ~$27T GDP estimate
+        debtToGDP: (totalDebt / 28500000000000) * 100, // ~$28.5T GDP estimate (2025)
         dailyIncrease: dailyIncrease
       }
     };
@@ -142,27 +142,27 @@ export async function getTreasuryFiscalData(): Promise<TreasuryFiscalData> {
   } catch (error) {
     console.error('Error fetching Treasury Fiscal data:', error);
 
-    // Return fallback data with realistic current estimates
+    // Return fallback data with realistic current estimates (Dec 2025)
     const fallbackData: TreasuryFiscalData = {
       debtToPenny: {
-        totalDebt: 35400000000000, // ~$35.4 trillion
-        publicDebt: 26800000000000, // ~$26.8 trillion
-        intergovernmentalHoldings: 8600000000000, // ~$8.6 trillion
+        totalDebt: 38400000000000, // ~$38.4 trillion (Dec 2025)
+        publicDebt: 28800000000000, // ~$28.8 trillion
+        intergovernmentalHoldings: 9600000000000, // ~$9.6 trillion
         dateOfData: new Date().toISOString().split('T')[0],
         lastUpdated: new Date().toISOString()
       },
       averageInterestRates: {
-        totalInterestBearingDebt: 34200000000000,
-        weightedAverageRate: 3.25,
-        monthlyChange: 0.08,
-        yearOverYearChange: 0.95,
+        totalInterestBearingDebt: 37200000000000,
+        weightedAverageRate: 3.35,
+        monthlyChange: 0.05,
+        yearOverYearChange: 0.85,
         lastUpdated: new Date().toISOString()
       },
       debtStatistics: {
-        debtPerCitizen: 105671, // $35.4T / 335M
-        debtPerTaxpayer: 221250, // $35.4T / 160M
-        debtToGDP: 131.1, // Debt-to-GDP ratio
-        dailyIncrease: 3540000000 // ~$3.54B daily increase
+        debtPerCitizen: 114627, // $38.4T / 335M
+        debtPerTaxpayer: 240000, // $38.4T / 160M
+        debtToGDP: 142.2, // Debt-to-GDP ratio (updated for ~$27T GDP)
+        dailyIncrease: 3800000000 // ~$3.8B daily increase
       }
     };
 

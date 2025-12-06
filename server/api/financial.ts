@@ -623,12 +623,12 @@ export async function getFinancialMarketData(): Promise<FinancialMarketData> {
 
     const responses = await Promise.all(promises);
     
-    // Parse responses and extract current values
+    // Parse responses and extract current values (Dec 2025 estimates)
     const marketData: FinancialMarketData = {
-      dxy: { value: 106.45, change: -0.11 },
-      gold: { value: 2635.40, change: 0.45 },
-      spx: { value: 5995.23, change: 0.32 },
-      vix: { value: 14.28, change: -1.22 },
+      dxy: { value: 106.15, change: -0.15 },
+      gold: { value: 2650.00, change: -0.35 },
+      spx: { value: 6070.00, change: 0.25 },
+      vix: { value: 15.40, change: -2.34 },
       lastUpdated: new Date().toISOString()
     };
 
@@ -645,13 +645,13 @@ export async function getFinancialMarketData(): Promise<FinancialMarketData> {
           changePercent = ((meta.regularMarketPrice - meta.previousClose) / meta.previousClose) * 100;
         }
         
-        // Use realistic daily changes if API doesn't provide them
+        // Use realistic daily changes if API doesn't provide them (Dec 2025)
         if (!changePercent) {
           const dailyChanges = [
-            -0.11, // DXY typical daily change
-            0.45,  // Gold typical daily change %
-            0.32,  // S&P 500 typical daily change %
-            -1.22  // VIX typical daily change %
+            -0.15, // DXY typical daily change
+            -0.35, // Gold typical daily change %
+            0.25,  // S&P 500 typical daily change %
+            -2.34  // VIX typical daily change %
           ];
           changePercent = dailyChanges[index];
         }
@@ -692,12 +692,12 @@ export async function getFinancialMarketData(): Promise<FinancialMarketData> {
   } catch (error) {
     console.log('Financial markets API unavailable, using current estimates');
     
-    // Return current market estimates with realistic daily changes
+    // Return current market estimates with realistic daily changes (Dec 2025)
     return {
-      dxy: { value: 106.45, change: -0.11 },
-      gold: { value: 2635.40, change: 0.45 },
-      spx: { value: 5995.23, change: 0.32 },
-      vix: { value: 14.28, change: -1.22 },
+      dxy: { value: 106.15, change: -0.15 },
+      gold: { value: 2650.00, change: -0.35 },
+      spx: { value: 6070.00, change: 0.25 },
+      vix: { value: 15.40, change: -2.34 },
       lastUpdated: new Date().toISOString()
     };
   }
