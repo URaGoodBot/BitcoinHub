@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { searchCryptoBills, isLegiScanConfigured, clearLegiScanCache } from "./legiscan";
 
 const grok = new OpenAI({ 
   baseURL: "https://api.x.ai/v1", 
@@ -309,7 +310,53 @@ export async function getLegislationData(): Promise<LegislationData> {
   }
 
   try {
-    const data = await generateLegislationAnalysis();
+    // Try LegiScan first if configured
+    let legiscanBills: LegislationBill[] = [];
+    if (isLegiScanConfigured()) {
+      console.log('Fetching live legislation data from LegiScan API...');
+      legiscanBills = await searchCryptoBills();
+      console.log(`Retrieved ${legiscanBills.length} bills from LegiScan`);
+    }
+
+    // Generate AI analysis for summary and additional context
+    const aiData = await generateLegislationAnalysis();
+    
+    // If LegiScan returned bills, merge them with curated fallback bills
+    // LegiScan bills take precedence for matching bill numbers
+    let mergedBills: LegislationBill[];
+    
+    if (legiscanBills.length > 0) {
+      // Create a set of LegiScan bill numbers for deduplication
+      const legiscanBillNumbers = new Set(legiscanBills.map(b => b.billNumber.toLowerCase()));
+      
+      // Filter out fallback bills that are covered by LegiScan
+      const uniqueFallbackBills = aiData.bills.filter(
+        b => !legiscanBillNumbers.has(b.billNumber.toLowerCase())
+      );
+      
+      // Merge: LegiScan (live) + unique fallback bills (curated)
+      mergedBills = [...legiscanBills, ...uniqueFallbackBills];
+      
+      // Sort by priority and passage chance
+      mergedBills.sort((a, b) => {
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+          return priorityOrder[a.priority] - priorityOrder[b.priority];
+        }
+        return b.passageChance - a.passageChance;
+      });
+    } else {
+      mergedBills = aiData.bills;
+    }
+
+    const data: LegislationData = {
+      bills: mergedBills,
+      lastUpdated: new Date().toISOString(),
+      summary: isLegiScanConfigured() && legiscanBills.length > 0
+        ? `Live data from LegiScan API. ${aiData.summary}`
+        : aiData.summary,
+      nextMajorEvent: aiData.nextMajorEvent
+    };
     
     // Cache the data
     legislationCache = {
@@ -326,8 +373,9 @@ export async function getLegislationData(): Promise<LegislationData> {
 }
 
 export async function refreshLegislationData(): Promise<LegislationData> {
-  // Clear cache to force fresh data
+  // Clear both caches to force fresh data
   clearLegislationCache();
+  clearLegiScanCache();
   return await getLegislationData();
 }
 
