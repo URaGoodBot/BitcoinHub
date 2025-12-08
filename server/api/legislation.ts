@@ -293,40 +293,24 @@ export async function getLegislationData(): Promise<LegislationData> {
     // Generate AI analysis for summary and additional context
     const aiData = await generateLegislationAnalysis();
     
-    // If LegiScan returned bills, merge them with curated fallback bills
-    // LegiScan bills take precedence for matching bill numbers
-    let mergedBills: LegislationBill[];
+    // Only use live LegiScan data - no curated fallbacks
+    let mergedBills: LegislationBill[] = legiscanBills;
     
-    if (legiscanBills.length > 0) {
-      // Create a set of LegiScan bill numbers for deduplication
-      const legiscanBillNumbers = new Set(legiscanBills.map(b => b.billNumber.toLowerCase()));
-      
-      // Filter out fallback bills that are covered by LegiScan
-      const uniqueFallbackBills = aiData.bills.filter(
-        b => !legiscanBillNumbers.has(b.billNumber.toLowerCase())
-      );
-      
-      // Merge: LegiScan (live) + unique fallback bills (curated)
-      mergedBills = [...legiscanBills, ...uniqueFallbackBills];
-      
-      // Sort by priority and passage chance
-      mergedBills.sort((a, b) => {
-        const priorityOrder = { high: 0, medium: 1, low: 2 };
-        if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-          return priorityOrder[a.priority] - priorityOrder[b.priority];
-        }
-        return b.passageChance - a.passageChance;
-      });
-    } else {
-      mergedBills = aiData.bills;
-    }
+    // Sort by priority and passage chance
+    mergedBills.sort((a, b) => {
+      const priorityOrder = { high: 0, medium: 1, low: 2 };
+      if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return b.passageChance - a.passageChance;
+    });
 
     const data: LegislationData = {
       bills: mergedBills,
       lastUpdated: new Date().toISOString(),
-      summary: isLegiScanConfigured() && legiscanBills.length > 0
-        ? `Live data from LegiScan API. ${aiData.summary}`
-        : aiData.summary,
+      summary: legiscanBills.length > 0
+        ? `Live data from LegiScan API - ${legiscanBills.length} active crypto bills in Congress.`
+        : 'No live legislation data available. LegiScan API may be unavailable.',
       nextMajorEvent: aiData.nextMajorEvent
     };
     
