@@ -282,22 +282,16 @@ export async function getLegislationData(): Promise<LegislationData> {
   }
 
   try {
-    // Try LegiScan first if configured
+    // Fetch live data from LegiScan API
     let legiscanBills: LegislationBill[] = [];
     if (isLegiScanConfigured()) {
       console.log('Fetching live legislation data from LegiScan API...');
       legiscanBills = await searchCryptoBills();
       console.log(`Retrieved ${legiscanBills.length} bills from LegiScan`);
     }
-
-    // Generate AI analysis for summary and additional context
-    const aiData = await generateLegislationAnalysis();
-    
-    // Only use live LegiScan data - no curated fallbacks
-    let mergedBills: LegislationBill[] = legiscanBills;
     
     // Sort by priority and passage chance
-    mergedBills.sort((a, b) => {
+    legiscanBills.sort((a, b) => {
       const priorityOrder = { high: 0, medium: 1, low: 2 };
       if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
         return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -306,12 +300,12 @@ export async function getLegislationData(): Promise<LegislationData> {
     });
 
     const data: LegislationData = {
-      bills: mergedBills,
+      bills: legiscanBills,
       lastUpdated: new Date().toISOString(),
       summary: legiscanBills.length > 0
         ? `Live data from LegiScan API - ${legiscanBills.length} active crypto bills in Congress.`
         : 'No live legislation data available. LegiScan API may be unavailable.',
-      nextMajorEvent: aiData.nextMajorEvent
+      nextMajorEvent: 'Updates automatically every 6 hours from LegiScan'
     };
     
     // Cache the data

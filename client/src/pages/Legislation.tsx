@@ -1,9 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Scale, Calendar, TrendingUp, AlertCircle } from "lucide-react";
-import { useState } from "react";
+import { Scale, Calendar, TrendingUp, AlertCircle } from "lucide-react";
 
 interface LegislationBill {
   id: string;
@@ -46,57 +44,14 @@ interface LegislationData {
 }
 
 const Legislation = () => {
-  const queryClient = useQueryClient();
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const { data: legislationData, isLoading, error } = useQuery<LegislationData>({
     queryKey: ['/api/legislation'],
-    refetchInterval: 24 * 60 * 60 * 1000, // Refetch every 24 hours
+    refetchInterval: 6 * 60 * 60 * 1000, // Refetch every 6 hours (matches LegiScan cache)
   });
 
   const { data: catalystsData } = useQuery<CatalystsData>({
     queryKey: ['/api/legislation/catalysts'],
     refetchInterval: 60 * 60 * 1000, // Refetch every hour
-  });
-
-  const refreshCatalystsMutation = useMutation({
-    mutationFn: async () => {
-      setIsRefreshing(true);
-      queryClient.removeQueries({ queryKey: ['/api/legislation/catalysts'] });
-      const response = await fetch('/api/legislation/catalysts?refresh=true');
-      if (!response.ok) {
-        throw new Error('Failed to refresh catalysts data');
-      }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['/api/legislation/catalysts'], data);
-      setIsRefreshing(false);
-    },
-    onError: (error) => {
-      console.error('Error refreshing catalysts:', error);
-      setIsRefreshing(false);
-    },
-  });
-
-  const refreshMutation = useMutation({
-    mutationFn: async () => {
-      setIsRefreshing(true);
-      const response = await fetch('/api/legislation/refresh', {
-        method: 'POST',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to refresh legislation data');
-      }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['/api/legislation'], data);
-      setIsRefreshing(false);
-    },
-    onError: () => {
-      setIsRefreshing(false);
-    }
   });
 
   const getCategoryColor = (category: string) => {
@@ -156,15 +111,7 @@ const Legislation = () => {
             <CardContent className="text-center p-6">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h2 className="text-xl font-semibold mb-2">Failed to Load Legislation Data</h2>
-              <p className="text-muted-foreground mb-4">Unable to fetch current crypto legislation status</p>
-              <Button 
-                onClick={() => refreshMutation.mutate()} 
-                disabled={isRefreshing}
-                variant="outline"
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Retry
-              </Button>
+              <p className="text-muted-foreground mb-4">Unable to fetch current crypto legislation from LegiScan</p>
             </CardContent>
           </Card>
         </div>
@@ -182,18 +129,9 @@ const Legislation = () => {
               <Scale className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-3xl font-bold text-foreground">US Crypto Legislation</h1>
-                <p className="text-muted-foreground">Track congressional bills affecting cryptocurrency with AI-powered updates</p>
+                <p className="text-muted-foreground">Live data from LegiScan - tracking congressional bills affecting cryptocurrency</p>
               </div>
             </div>
-            <Button 
-              onClick={() => refreshMutation.mutate()} 
-              disabled={isRefreshing}
-              size="sm"
-              variant="outline"
-            >
-              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              {isRefreshing ? 'Updating with AI...' : 'Refresh with AI'}
-            </Button>
           </div>
 
           {/* Summary Card */}
