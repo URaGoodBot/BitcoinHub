@@ -193,20 +193,6 @@ Ensure all information is current as of December 2025 and reflects actual congre
           priority: "high"
         },
         {
-          id: "solana_etf_december_2025",
-          billName: "Solana Spot ETF - APPROVED",
-          billNumber: "SEC Approval",
-          description: "First Solana spot ETFs approved, including 21Shares and VanEck products. Sets precedent for additional altcoin ETF approvals.",
-          currentStatus: "APPROVED Oct 17-28, 2025",
-          nextSteps: "Trading commenced; additional filings under review",
-          passageChance: 100,
-          whatsNext: "Multiple Solana ETFs now trading; XRP and other altcoin ETF filings expected to follow",
-          lastAction: "SEC approved multiple Solana spot ETF filings Oct 17-28, 2025",
-          sponsor: "21Shares, VanEck, Grayscale",
-          category: "innovation",
-          priority: "high"
-        },
-        {
           id: "sec_cftc_harmonization_december_2025",
           billName: "SEC-CFTC Harmonization Framework",
           billNumber: "Joint Rulemaking Initiative",
@@ -233,20 +219,6 @@ Ensure all information is current as of December 2025 and reflects actual congre
           sponsor: "White House Administration",
           category: "regulation",
           priority: "medium"
-        },
-        {
-          id: "cftc_spot_trading_december_2025",
-          billName: "CFTC Spot Bitcoin Trading Rules",
-          billNumber: "CFTC Rulemaking",
-          description: "CFTC approved rules enabling regulated spot Bitcoin trading on derivatives exchanges. Major step toward institutional adoption.",
-          currentStatus: "EFFECTIVE Dec 1, 2025",
-          nextSteps: "Exchanges implementing new trading capabilities",
-          passageChance: 100,
-          whatsNext: "Major derivatives exchanges can now offer spot BTC trading; increases market accessibility",
-          lastAction: "CFTC rules for spot Bitcoin trading took effect December 1, 2025",
-          sponsor: "CFTC",
-          category: "regulation",
-          priority: "high"
         },
         {
           id: "fit21_framework_december_2025",
@@ -292,7 +264,7 @@ Ensure all information is current as of December 2025 and reflects actual congre
         }
       ],
       lastUpdated: new Date().toISOString(),
-      summary: "December 2025 sees a complex crypto legislative landscape. While key bills like the CLARITY Act and BITCOIN Act remain stalled in the Senate, significant progress has been made on regulatory fronts: Solana ETFs were approved in October, CFTC spot trading rules took effect December 1, and SEC-CFTC harmonization efforts continue. The GENIUS Act stablecoin framework shows bipartisan momentum. State-level Bitcoin reserve initiatives are advancing faster than federal proposals, potentially serving as a catalyst for future federal action.",
+      summary: "December 2025 sees a complex crypto legislative landscape. Key bills like the CLARITY Act and BITCOIN Act remain stalled in the Senate while SEC-CFTC harmonization efforts continue. The GENIUS Act stablecoin framework shows bipartisan momentum with markup expected Q1 2026. State-level Bitcoin reserve initiatives are advancing faster than federal proposals, potentially serving as a catalyst for future federal action.",
       nextMajorEvent: "Q1 2026 Congressional Session: Key bills including CLARITY Act, BITCOIN Act, and GENIUS Act stablecoin framework expected to see renewed Senate activity. SEC-CFTC joint rulemaking draft proposal anticipated. Watch for state-level Bitcoin reserve votes in Texas and Florida."
     };
   }
