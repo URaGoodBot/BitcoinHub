@@ -180,12 +180,9 @@ export async function getFedWatchData(): Promise<FedWatchData> {
       
       console.log('✓ Using real FOMC projection data for probabilities');
     } else {
-      // Fallback to market-based estimates
+      // Fallback to market-based estimates with meeting-aware logic
       probabilities = generateMarketProbabilities(currentEffectiveRate || 437.5);
-      futureOutlook = {
-        oneWeek: { noChange: 85, cut: 12, hike: 3 },
-        oneMonth: { noChange: 72, cut: 23, hike: 5 }
-      };
+      futureOutlook = generateOutlookFromProjections(currentEffectiveRate || 437.5, []);
       console.log('⚠️ Using market-based estimates (FOMC projections unavailable)');
     }
 
@@ -235,15 +232,16 @@ async function getCurrentFedRate(): Promise<number | null> {
   try {
     console.log('Attempting to fetch current Fed rate from FRED API...');
     
+    // Use DFEDTARU (Federal Funds Target Rate - Upper Limit) for accurate target rate
     const response = await axios.get('https://api.stlouisfed.org/fred/series/observations', {
       params: {
-        series_id: 'DFF', // Daily Federal Funds Rate
+        series_id: 'DFEDTARU', // Federal Funds Target Rate - Upper Limit
         api_key: process.env.FRED_API_KEY,
         file_type: 'json',
         limit: 5,
         sort_order: 'desc'
       },
-      timeout: 5000 // Reduced timeout for faster fallback
+      timeout: 5000
     });
 
     console.log(`FRED API response status: ${response.status}`);
@@ -256,7 +254,7 @@ async function getCurrentFedRate(): Promise<number | null> {
       
       if (validObs) {
         const rate = parseFloat(validObs.value);
-        console.log(`✓ Current effective Fed rate from FRED: ${rate}% (Date: ${validObs.date})`);
+        console.log(`✓ Current Fed target rate (upper) from FRED: ${rate}% (Date: ${validObs.date})`);
         return rate * 100; // Convert to basis points
       } else {
         console.log('No valid Fed rate observations found in FRED response');
@@ -455,53 +453,81 @@ function generateOutlookFromProjections(
   oneWeek: { noChange: number; cut: number; hike: number };
   oneMonth: { noChange: number; cut: number; hike: number };
 } {
-  if (!projections || projections.length === 0) {
-    return {
-      oneWeek: { noChange: 85, cut: 12, hike: 3 },
-      oneMonth: { noChange: 72, cut: 23, hike: 5 }
-    };
-  }
-
-  // Find the projection for the current or next calendar year (not distant future)
-  const currentYear = new Date().getFullYear();
-  const nextYear = currentYear + 1;
+  // Check if there's an FOMC meeting within the next week or month
+  const today = new Date();
+  const oneWeekFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const oneMonthFromNow = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
   
-  // Look for current year projection first, then next year
-  let relevantProjection = projections.find(p => {
-    const projectionYear = new Date(p.date).getFullYear();
-    return projectionYear === currentYear;
+  // FOMC meetings for 2025-2026
+  const fomcMeetings = [
+    "2025-12-10", // December 9-10, 2025
+    "2026-01-29", "2026-03-18", "2026-04-29", "2026-06-17",
+    "2026-07-29", "2026-09-16", "2026-10-28", "2026-12-16"
+  ];
+  
+  const meetingWithinWeek = fomcMeetings.some(meeting => {
+    const meetingDate = new Date(meeting);
+    return meetingDate >= today && meetingDate <= oneWeekFromNow;
   });
   
-  // If no current year projection, use next year
-  if (!relevantProjection) {
-    relevantProjection = projections.find(p => {
-      const projectionYear = new Date(p.date).getFullYear();
-      return projectionYear === nextYear;
-    });
-  }
+  const meetingWithinMonth = fomcMeetings.some(meeting => {
+    const meetingDate = new Date(meeting);
+    return meetingDate >= today && meetingDate <= oneMonthFromNow;
+  });
   
-  if (!relevantProjection) {
-    relevantProjection = projections[projections.length - 1]; // Earliest date
-  }
+  // Current market expectations for December 2025 FOMC (based on CME FedWatch)
+  // As of Dec 9, 2025: ~87% probability of 25bps cut, ~13% no change
+  const decemberMeetingProbs = { noChange: 13, cut: 87, hike: 0 };
   
-  const latestProjection = relevantProjection.value * 100;
-  const expectedChange = latestProjection - currentRate;
-  
-  // One week outlook (very short term - mostly no change expected)
-  let oneWeek = { noChange: 95, cut: 3, hike: 2 };
-  
-  // One month outlook (adjust based on projection direction)
+  let oneWeek;
   let oneMonth;
   
-  if (Math.abs(expectedChange) < 12.5) {
-    // Stable rates expected
-    oneMonth = { noChange: 80, cut: 12, hike: 8 };
-  } else if (expectedChange < -12.5) {
-    // Rate cuts expected
-    oneMonth = { noChange: 40, cut: 55, hike: 5 };
+  if (meetingWithinWeek) {
+    // Meeting this week - use current market probabilities
+    oneWeek = decemberMeetingProbs;
+    console.log('FOMC meeting within 1 week - using market probabilities');
   } else {
-    // Rate hikes expected
-    oneMonth = { noChange: 40, cut: 5, hike: 55 };
+    // No meeting this week - high probability of no change
+    oneWeek = { noChange: 92, cut: 6, hike: 2 };
+  }
+  
+  if (meetingWithinMonth) {
+    // Meeting within the month - factor in expected decision
+    oneMonth = decemberMeetingProbs;
+    console.log('FOMC meeting within 1 month - using market probabilities');
+  } else if (!projections || projections.length === 0) {
+    oneMonth = { noChange: 72, cut: 23, hike: 5 };
+  } else {
+    // Use projections for longer-term outlook
+    const currentYear = new Date().getFullYear();
+    const nextYear = currentYear + 1;
+    
+    let relevantProjection = projections.find(p => {
+      const projectionYear = new Date(p.date).getFullYear();
+      return projectionYear === currentYear;
+    });
+    
+    if (!relevantProjection) {
+      relevantProjection = projections.find(p => {
+        const projectionYear = new Date(p.date).getFullYear();
+        return projectionYear === nextYear;
+      });
+    }
+    
+    if (!relevantProjection) {
+      relevantProjection = projections[projections.length - 1];
+    }
+    
+    const latestProjection = relevantProjection.value * 100;
+    const expectedChange = latestProjection - currentRate;
+    
+    if (Math.abs(expectedChange) < 12.5) {
+      oneMonth = { noChange: 80, cut: 12, hike: 8 };
+    } else if (expectedChange < -12.5) {
+      oneMonth = { noChange: 40, cut: 55, hike: 5 };
+    } else {
+      oneMonth = { noChange: 40, cut: 5, hike: 55 };
+    }
   }
   
   return { oneWeek, oneMonth };
@@ -569,7 +595,7 @@ function getNextFOMCMeetingDate(): string {
     "2025-07-30", // July 29-30
     "2025-09-17", // September 16-17
     "2025-10-29", // October 28-29 (note: was November 4-5, brought forward)
-    "2025-12-17"  // December 16-17
+    "2025-12-10"  // December 9-10, 2025 (corrected)
   ];
   
   // Projected 2026 FOMC meeting dates (8 meetings per year, typically)
