@@ -14,9 +14,7 @@ import { WorldBankEconomicWidget } from "@/components/WorldBankEconomicWidget";
 
 import BitcoinMetricsGrid from "@/components/BitcoinMetricsGrid";
 import GlobalMarketIndicators from "@/components/GlobalMarketIndicators";
-import MarketSummaryWidget from "@/components/MarketSummaryWidget";
 import AITrendPrediction from "@/components/AITrendPrediction";
-import WhaleAlerts from "@/components/WhaleAlerts";
 import OptionsFlow from "@/components/OptionsFlow";
 import LiquidityTracker from "@/components/LiquidityTracker";
 
@@ -143,15 +141,9 @@ const Dashboard = () => {
         <LiquidityTracker />
       </div>
       
-      {/* Market Summary and AI Prediction */}
+      {/* AI Prediction and Options Flow Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <MarketSummaryWidget />
         <AITrendPrediction />
-      </div>
-      
-      {/* Whale Alerts and Options Flow Analysis */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <WhaleAlerts />
         <OptionsFlow />
       </div>
       
