@@ -1,10 +1,5 @@
-"use strict";
-var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -12,25 +7,9 @@ var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except, desc2) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc2 = __getOwnPropDesc(from, key)) || desc2.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // server/api/newsapi.ts
+import axios from "axios";
 function isCacheValid2() {
   return !!(newsCache && Date.now() - newsCache.timestamp < CACHE_DURATION);
 }
@@ -55,7 +34,7 @@ async function getLatestNews(category) {
       return items2;
     }
     const url = "https://min-api.cryptocompare.com/data/v2/news/?categories=BTC,Bitcoin&excludeCategories=Sponsored";
-    const response = await import_axios.default.get(url);
+    const response = await axios.get(url);
     if (response.status !== 200) {
       throw new Error(`Failed to fetch news: ${response.statusText}`);
     }
@@ -94,11 +73,10 @@ async function getLatestNews(category) {
     return [];
   }
 }
-var import_axios, newsCache, CACHE_DURATION;
+var newsCache, CACHE_DURATION;
 var init_newsapi = __esm({
   "server/api/newsapi.ts"() {
     "use strict";
-    import_axios = __toESM(require("axios"), 1);
     newsCache = null;
     CACHE_DURATION = 10 * 60 * 1e3;
   }
@@ -109,11 +87,12 @@ var realTreasury_exports = {};
 __export(realTreasury_exports, {
   getRealTreasuryData: () => getRealTreasuryData
 });
+import axios2 from "axios";
 async function getRealTreasuryData() {
   console.log("Fetching Treasury data from FRED API (Federal Reserve)...");
   try {
     console.log("Using FRED_API_KEY for Treasury data...");
-    const fredResponse = await import_axios2.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const fredResponse = await axios2.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: "DGS10",
         // 10-Year Treasury Constant Maturity Rate
@@ -158,7 +137,7 @@ async function getRealTreasuryData() {
     console.log("Falling back to Yahoo Finance...");
   }
   try {
-    const yahooResponse = await import_axios2.default.get("https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX", {
+    const yahooResponse = await axios2.get("https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX", {
       timeout: 5e3
     });
     const result = yahooResponse.data?.chart?.result?.[0];
@@ -189,11 +168,10 @@ async function getRealTreasuryData() {
   }
   throw new Error("Unable to fetch live Treasury data from any source");
 }
-var import_axios2, treasuryCache, CACHE_DURATION2;
+var treasuryCache, CACHE_DURATION2;
 var init_realTreasury = __esm({
   "server/api/realTreasury.ts"() {
     "use strict";
-    import_axios2 = __toESM(require("axios"), 1);
     treasuryCache = null;
     CACHE_DURATION2 = 2 * 60 * 1e3;
   }
@@ -206,6 +184,7 @@ __export(financial_exports, {
   getFinancialMarketData: () => getFinancialMarketData,
   getTreasuryData: () => getTreasuryData
 });
+import axios3 from "axios";
 function isCacheValid3() {
   return financialCache !== null && Date.now() - financialCache.timestamp < CACHE_DURATION3;
 }
@@ -213,7 +192,7 @@ async function getTreasuryData() {
   console.log("Fetching Treasury data from FRED API (Federal Reserve)...");
   try {
     console.log("Testing FRED API with key:", process.env.FRED_API_KEY ? "KEY EXISTS" : "NO KEY FOUND");
-    const fredResponse = await import_axios3.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const fredResponse = await axios3.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: "DGS10",
         // 10-Year Treasury Constant Maturity Rate
@@ -251,7 +230,7 @@ async function getTreasuryData() {
         }
       }
     }
-    const yahooResponse = await import_axios3.default.get("https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX", {
+    const yahooResponse = await axios3.get("https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX", {
       timeout: 1e4
     });
     if (yahooResponse.data?.chart?.result?.[0]?.meta?.regularMarketPrice) {
@@ -353,7 +332,7 @@ async function getFedWatchData() {
 async function getCurrentFedRate() {
   try {
     console.log("Attempting to fetch current Fed rate from FRED API...");
-    const response = await import_axios3.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const response = await axios3.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: "DFEDTARU",
         // Federal Funds Target Rate - Upper Limit
@@ -394,7 +373,7 @@ async function getCurrentFedRate() {
 async function getFOMCProjections() {
   try {
     console.log("Fetching FOMC median projections from FRED (FEDTARMD)...");
-    const response = await import_axios3.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const response = await axios3.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: "FEDTARMD",
         // FOMC Median Projection for Fed Funds Rate
@@ -665,7 +644,7 @@ async function getFinancialMarketData() {
       // VIX
     ];
     const promises = endpoints.map(
-      (url) => import_axios3.default.get(url, { timeout: 5e3 }).catch(() => null)
+      (url) => axios3.get(url, { timeout: 5e3 }).catch(() => null)
     );
     const responses = await Promise.all(promises);
     const marketData = {
@@ -738,11 +717,10 @@ async function getFinancialMarketData() {
     };
   }
 }
-var import_axios3, financialCache, CACHE_DURATION3;
+var financialCache, CACHE_DURATION3;
 var init_financial = __esm({
   "server/api/financial.ts"() {
     "use strict";
-    import_axios3 = __toESM(require("axios"), 1);
     financialCache = null;
     CACHE_DURATION3 = 1 * 60 * 1e3;
   }
@@ -753,6 +731,7 @@ var sentiment_exports = {};
 __export(sentiment_exports, {
   getMarketSentiment: () => getMarketSentiment
 });
+import OpenAI from "openai";
 async function fetchBitcoinNews() {
   try {
     const apiKey = process.env.NEWS_API_KEY;
@@ -1167,15 +1146,14 @@ function getBullishKeywords() {
 function getBearishKeywords() {
   return ["bearish", "correction", "selloff", "decline", "regulatory", "resistance", "concerns", "liquidation"];
 }
-var import_openai, sentimentCache, lastSentimentUpdate, SENTIMENT_CACHE_DURATION, grok;
+var sentimentCache, lastSentimentUpdate, SENTIMENT_CACHE_DURATION, grok;
 var init_sentiment = __esm({
   "server/api/sentiment.ts"() {
     "use strict";
-    import_openai = __toESM(require("openai"), 1);
     sentimentCache = null;
     lastSentimentUpdate = 0;
     SENTIMENT_CACHE_DURATION = 10 * 60 * 1e3;
-    grok = new import_openai.default({
+    grok = new OpenAI({
       baseURL: "https://api.x.ai/v1",
       apiKey: process.env.XAI_API_KEY
     });
@@ -1183,6 +1161,7 @@ var init_sentiment = __esm({
 });
 
 // server/api/legiscan.ts
+import axios4 from "axios";
 function categorizeByKeywords(title, description) {
   const text2 = (title + " " + description).toLowerCase();
   if (text2.includes("stablecoin") || text2.includes("stable coin")) return "stablecoin";
@@ -1225,7 +1204,7 @@ function generateNextSteps(status, lastAction) {
 async function fetchBillDetails(billId) {
   if (!LEGISCAN_API_KEY) return null;
   try {
-    const response = await import_axios4.default.get(`${LEGISCAN_BASE_URL}/?key=${LEGISCAN_API_KEY}&op=getBill&id=${billId}`);
+    const response = await axios4.get(`${LEGISCAN_BASE_URL}/?key=${LEGISCAN_API_KEY}&op=getBill&id=${billId}`);
     if (response.data.status === "OK") {
       return response.data.bill;
     }
@@ -1256,7 +1235,7 @@ async function searchCryptoBills() {
     for (const term of searchTerms) {
       const url = `${LEGISCAN_BASE_URL}/?key=${LEGISCAN_API_KEY}&op=search&query=${encodeURIComponent(term)}&state=US&year=2`;
       console.log(`Searching LegiScan for: ${term}`);
-      const response = await import_axios4.default.get(url);
+      const response = await axios4.get(url);
       if (response.data.status === "OK" && response.data.searchresult) {
         const results = response.data.searchresult;
         Object.keys(results).forEach((key) => {
@@ -1309,11 +1288,10 @@ function clearLegiScanCache() {
 function isLegiScanConfigured() {
   return !!LEGISCAN_API_KEY;
 }
-var import_axios4, LEGISCAN_API_KEY, LEGISCAN_BASE_URL, legiscanCache, CACHE_DURATION4, STATUS_MAP;
+var LEGISCAN_API_KEY, LEGISCAN_BASE_URL, legiscanCache, CACHE_DURATION4, STATUS_MAP;
 var init_legiscan = __esm({
   "server/api/legiscan.ts"() {
     "use strict";
-    import_axios4 = __toESM(require("axios"), 1);
     LEGISCAN_API_KEY = process.env.LEGISCAN_API_KEY;
     LEGISCAN_BASE_URL = "https://api.legiscan.com";
     legiscanCache = null;
@@ -1338,6 +1316,7 @@ __export(legislation_exports, {
   refreshLegislationData: () => refreshLegislationData,
   setLegislationCache: () => setLegislationCache
 });
+import OpenAI2 from "openai";
 function setLegislationCache(data) {
   adminUploadedData = data;
   console.log("Admin data cached successfully");
@@ -1534,13 +1513,12 @@ function getCryptoCatalysts() {
     riskFactors: "Verify information against primary sources (Congress.gov, sec.gov, cftc.gov). Political transitions and regulatory uncertainty remain key risks. Monitor macro conditions including Fed policy and global liquidity for broader market context."
   };
 }
-var import_openai2, grok2, legislationCache, CACHE_DURATION5, adminUploadedData;
+var grok2, legislationCache, CACHE_DURATION5, adminUploadedData;
 var init_legislation = __esm({
   "server/api/legislation.ts"() {
     "use strict";
-    import_openai2 = __toESM(require("openai"), 1);
     init_legiscan();
-    grok2 = new import_openai2.default({
+    grok2 = new OpenAI2({
       baseURL: "https://api.x.ai/v1",
       apiKey: process.env.XAI_API_KEY
     });
@@ -1839,6 +1817,7 @@ __export(dominance_exports, {
   getBitcoinDominance: () => getBitcoinDominance,
   getGlobalCryptoMetrics: () => getGlobalCryptoMetrics
 });
+import axios7 from "axios";
 function isCacheValid6() {
   return dominanceCache !== null && Date.now() - dominanceCache.timestamp < CACHE_DURATION7;
 }
@@ -1852,7 +1831,7 @@ async function getBitcoinDominance() {
   }
   try {
     console.log("Fetching live Bitcoin dominance from CoinGecko API...");
-    const response = await import_axios7.default.get(
+    const response = await axios7.get(
       "https://api.coingecko.com/api/v3/global",
       {
         timeout: 1e4,
@@ -1897,7 +1876,7 @@ async function getBitcoinDominance() {
 async function getGlobalCryptoMetrics() {
   try {
     console.log("Fetching global crypto metrics from CoinGecko...");
-    const response = await import_axios7.default.get(
+    const response = await axios7.get(
       "https://api.coingecko.com/api/v3/global",
       {
         timeout: 1e4,
@@ -1932,11 +1911,10 @@ async function getGlobalCryptoMetrics() {
     };
   }
 }
-var import_axios7, dominanceCache, CACHE_DURATION7;
+var dominanceCache, CACHE_DURATION7;
 var init_dominance = __esm({
   "server/api/dominance.ts"() {
     "use strict";
-    import_axios7 = __toESM(require("axios"), 1);
     dominanceCache = null;
     CACHE_DURATION7 = 5 * 60 * 1e3;
   }
@@ -1949,6 +1927,7 @@ __export(volume_exports, {
   getBitcoinVolume: () => getBitcoinVolume,
   getCoinGeckoMarketData: () => getCoinGeckoMarketData
 });
+import axios8 from "axios";
 function isCacheValid7() {
   return volumeCache !== null && Date.now() - volumeCache.timestamp < CACHE_DURATION8;
 }
@@ -1962,7 +1941,7 @@ async function getBitcoinVolume() {
   }
   try {
     console.log("Fetching live Bitcoin volume from CoinGecko API...");
-    const coingeckoResponse = await import_axios8.default.get(
+    const coingeckoResponse = await axios8.get(
       "https://api.coingecko.com/api/v3/simple/price",
       {
         params: {
@@ -2000,7 +1979,7 @@ async function getBitcoinVolume() {
   } catch (coingeckoError) {
     console.log("CoinGecko API failed, trying Binance...");
     try {
-      const binanceResponse = await import_axios8.default.get(
+      const binanceResponse = await axios8.get(
         "https://api.binance.com/api/v3/ticker/24hr",
         {
           params: { symbol: "BTCUSDT" },
@@ -2051,7 +2030,7 @@ async function getBitcoinVolume() {
 async function getCoinGeckoMarketData() {
   try {
     console.log("Fetching detailed market data from CoinGecko...");
-    const response = await import_axios8.default.get(
+    const response = await axios8.get(
       "https://api.coingecko.com/api/v3/coins/markets",
       {
         params: {
@@ -2083,11 +2062,10 @@ async function getCoinGeckoMarketData() {
     throw error;
   }
 }
-var import_axios8, volumeCache, CACHE_DURATION8;
+var volumeCache, CACHE_DURATION8;
 var init_volume = __esm({
   "server/api/volume.ts"() {
     "use strict";
-    import_axios8 = __toESM(require("axios"), 1);
     volumeCache = null;
     CACHE_DURATION8 = 2 * 60 * 1e3;
   }
@@ -2202,6 +2180,7 @@ __export(inflation_exports, {
   clearInflationCache: () => clearInflationCache,
   getInflationData: () => getInflationData
 });
+import axios9 from "axios";
 function isCacheValid9() {
   return inflationCache !== null && Date.now() - inflationCache.timestamp < CACHE_DURATION10;
 }
@@ -2211,7 +2190,7 @@ function clearInflationCache() {
 }
 async function fetchSectorData(seriesId, apiKey) {
   try {
-    const response = await import_axios9.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const response = await axios9.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: seriesId,
         api_key: apiKey,
@@ -2282,7 +2261,7 @@ async function getInflationData() {
       throw new Error("FRED_API_KEY not available");
     }
     console.log("Using FRED_API_KEY for inflation data...");
-    const overallResponse = await import_axios9.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const overallResponse = await axios9.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: "CPIAUCSL",
         // Consumer Price Index for All Urban Consumers: All Items
@@ -2395,11 +2374,10 @@ async function getInflationData() {
     return fallbackData;
   }
 }
-var import_axios9, inflationCache, CACHE_DURATION10, INFLATION_SECTORS;
+var inflationCache, CACHE_DURATION10, INFLATION_SECTORS;
 var init_inflation = __esm({
   "server/api/inflation.ts"() {
     "use strict";
-    import_axios9 = __toESM(require("axios"), 1);
     inflationCache = null;
     CACHE_DURATION10 = 5 * 60 * 1e3;
     INFLATION_SECTORS = [
@@ -2418,6 +2396,7 @@ var treasury_fiscal_exports = {};
 __export(treasury_fiscal_exports, {
   getTreasuryFiscalData: () => getTreasuryFiscalData
 });
+import axios10 from "axios";
 function isCacheValid10() {
   return treasuryFiscalCache !== null && Date.now() - treasuryFiscalCache.timestamp < CACHE_DURATION11;
 }
@@ -2428,7 +2407,7 @@ async function getTreasuryFiscalData() {
   try {
     console.log("Fetching Treasury Fiscal Data from fiscaldata.treasury.gov...");
     const [debtResponse, interestResponse] = await Promise.all([
-      import_axios10.default.get("https://api.fiscaldata.treasury.gov/services/api/v2/accounting/od/debt_to_penny", {
+      axios10.get("https://api.fiscaldata.treasury.gov/services/api/v2/accounting/od/debt_to_penny", {
         params: {
           format: "json",
           sort: "-record_date",
@@ -2436,7 +2415,7 @@ async function getTreasuryFiscalData() {
         },
         timeout: 1e4
       }),
-      import_axios10.default.get("https://api.fiscaldata.treasury.gov/services/api/v2/accounting/od/avg_interest_rates", {
+      axios10.get("https://api.fiscaldata.treasury.gov/services/api/v2/accounting/od/avg_interest_rates", {
         params: {
           format: "json",
           sort: "-record_date",
@@ -2542,11 +2521,10 @@ async function getTreasuryFiscalData() {
     return fallbackData;
   }
 }
-var import_axios10, treasuryFiscalCache, CACHE_DURATION11;
+var treasuryFiscalCache, CACHE_DURATION11;
 var init_treasury_fiscal = __esm({
   "server/api/treasury-fiscal.ts"() {
     "use strict";
-    import_axios10 = __toESM(require("axios"), 1);
     treasuryFiscalCache = null;
     CACHE_DURATION11 = 5 * 60 * 1e3;
   }
@@ -2560,12 +2538,13 @@ __export(webResources_exports, {
   getM2ChartData: () => getM2ChartData,
   getPiCycleData: () => getPiCycleData
 });
+import axios11 from "axios";
 function isCacheValid11(cache, maxAgeMs) {
   return cache && Date.now() - cache.timestamp < maxAgeMs;
 }
 async function getM2ChartData() {
   try {
-    const btcResponse = await import_axios11.default.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    const btcResponse = await axios11.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
     const btcPrice = btcResponse.data.bitcoin.usd;
     return {
       btcPrice,
@@ -2589,7 +2568,7 @@ async function getLiquidationData() {
     return liquidationCache.data;
   }
   try {
-    const btcResponse = await import_axios11.default.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    const btcResponse = await axios11.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
     const currentPrice2 = btcResponse.data.bitcoin.usd;
     const highRiskMin = Math.round(currentPrice2 * 0.95);
     const highRiskMax = Math.round(currentPrice2 * 0.97);
@@ -2623,7 +2602,7 @@ async function getPiCycleData() {
     return piCycleCache.data;
   }
   try {
-    const daysData = await import_axios11.default.get("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart", {
+    const daysData = await axios11.get("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart", {
       params: {
         vs_currency: "usd",
         days: "365",
@@ -2681,7 +2660,7 @@ async function getFearGreedData() {
   }
   try {
     console.log("Fetching authentic Fear and Greed Index from verified sources...");
-    const altResponse = await import_axios11.default.get("https://api.alternative.me/fng/?limit=2", {
+    const altResponse = await axios11.get("https://api.alternative.me/fng/?limit=2", {
       timeout: 5e3,
       headers: {
         "User-Agent": "BitcoinHub-FearGreedIndex/1.0"
@@ -2740,11 +2719,10 @@ async function getFearGreedData() {
     return fearGreedData;
   }
 }
-var import_axios11, fearGreedCache, piCycleCache, liquidationCache;
+var fearGreedCache, piCycleCache, liquidationCache;
 var init_webResources = __esm({
   "server/api/webResources.ts"() {
     "use strict";
-    import_axios11 = __toESM(require("axios"), 1);
     fearGreedCache = null;
     piCycleCache = null;
     liquidationCache = null;
@@ -2763,6 +2741,7 @@ __export(notifications_exports, {
   getFilteredNotifications: () => getFilteredNotifications,
   removeNotification: () => removeNotification
 });
+import OpenAI3 from "openai";
 function isCacheValid12() {
   return !!(notificationCache && Date.now() - notificationCache.timestamp < CACHE_DURATION12);
 }
@@ -2893,13 +2872,12 @@ async function getFilteredNotifications() {
     return [];
   }
 }
-var import_openai3, openai, notificationCache, removedNotifications, CACHE_DURATION12;
+var openai, notificationCache, removedNotifications, CACHE_DURATION12;
 var init_notifications = __esm({
   "server/api/notifications.ts"() {
     "use strict";
-    import_openai3 = __toESM(require("openai"), 1);
     init_newsapi();
-    openai = new import_openai3.default({ apiKey: process.env.OPENAI_API_KEY });
+    openai = new OpenAI3({ apiKey: process.env.OPENAI_API_KEY });
     notificationCache = null;
     removedNotifications = /* @__PURE__ */ new Set();
     CACHE_DURATION12 = 5 * 60 * 1e3;
@@ -3103,6 +3081,7 @@ __export(indicators_analysis_exports, {
   generateLiveIndicatorsAnalysis: () => generateLiveIndicatorsAnalysis,
   getLiveIndicatorsAnalysis: () => getLiveIndicatorsAnalysis
 });
+import OpenAI4 from "openai";
 async function getBitcoinMarketData3() {
   try {
     const priceResponse = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true");
@@ -3398,12 +3377,11 @@ async function getLiveIndicatorsAnalysis() {
 function clearAnalysisCache() {
   analysisCache = null;
 }
-var import_openai4, grok3, analysisCache, ANALYSIS_CACHE_DURATION;
+var grok3, analysisCache, ANALYSIS_CACHE_DURATION;
 var init_indicators_analysis = __esm({
   "server/api/indicators-analysis.ts"() {
     "use strict";
-    import_openai4 = __toESM(require("openai"), 1);
-    grok3 = new import_openai4.default({
+    grok3 = new OpenAI4({
       baseURL: "https://api.x.ai/v1",
       apiKey: process.env.XAI_API_KEY
     });
@@ -3418,6 +3396,7 @@ __export(twitter_exports, {
   clearTwitterCache: () => clearTwitterCache,
   getHodlMyBeerTweets: () => getHodlMyBeerTweets
 });
+import memoize from "memoizee";
 async function fetchUserTweets(username, maxResults = 10) {
   if (!BEARER_TOKEN) {
     console.warn("Twitter Bearer Token not found");
@@ -3491,14 +3470,13 @@ async function getHodlMyBeerTweets() {
 function clearTwitterCache() {
   cachedFetchUserTweets.clear();
 }
-var import_memoizee, BEARER_TOKEN, TARGET_USERNAME, cachedFetchUserTweets;
+var BEARER_TOKEN, TARGET_USERNAME, cachedFetchUserTweets;
 var init_twitter = __esm({
   "server/api/twitter.ts"() {
     "use strict";
-    import_memoizee = __toESM(require("memoizee"), 1);
     BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN;
     TARGET_USERNAME = "HodlMyBeer21";
-    cachedFetchUserTweets = (0, import_memoizee.default)(fetchUserTweets, {
+    cachedFetchUserTweets = memoize(fetchUserTweets, {
       maxAge: 5 * 60 * 1e3,
       // 5 minutes
       promise: true
@@ -3512,6 +3490,7 @@ __export(ai_predictions_exports, {
   generateMultiTimeframePredictions: () => generateMultiTimeframePredictions,
   getCachedMultiTimeframePredictions: () => getCachedMultiTimeframePredictions
 });
+import OpenAI5 from "openai";
 async function getBitcoinData() {
   try {
     const [priceResponse, marketResponse, onChainResponse] = await Promise.all([
@@ -3952,12 +3931,11 @@ async function getCachedMultiTimeframePredictions() {
   cacheTimestamp = now;
   return cachedPredictions;
 }
-var import_openai5, grok4, cachedPredictions, cacheTimestamp, CACHE_DURATION14;
+var grok4, cachedPredictions, cacheTimestamp, CACHE_DURATION14;
 var init_ai_predictions = __esm({
   "server/api/ai-predictions.ts"() {
     "use strict";
-    import_openai5 = __toESM(require("openai"), 1);
-    grok4 = new import_openai5.default({
+    grok4 = new OpenAI5({
       baseURL: "https://api.x.ai/v1",
       apiKey: process.env.XAI_API_KEY
     });
@@ -3967,16 +3945,11 @@ var init_ai_predictions = __esm({
   }
 });
 
-// api/index.ts
-var index_exports = {};
-__export(index_exports, {
-  default: () => handler
-});
-module.exports = __toCommonJS(index_exports);
-var import_express2 = __toESM(require("express"), 1);
+// api/entry.ts
+import express2 from "express";
 
 // server/routes.ts
-var import_http = require("http");
+import { createServer } from "http";
 
 // shared/schema.ts
 var schema_exports = {};
@@ -3998,72 +3971,72 @@ __export(schema_exports, {
   registerSchema: () => registerSchema,
   users: () => users
 });
-var import_pg_core = require("drizzle-orm/pg-core");
-var import_drizzle_zod = require("drizzle-zod");
-var import_zod = require("zod");
-var users = (0, import_pg_core.pgTable)("users", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  username: (0, import_pg_core.text)("username").notNull().unique(),
-  email: (0, import_pg_core.text)("email").notNull().unique(),
-  password: (0, import_pg_core.text)("password").notNull(),
-  isEmailVerified: (0, import_pg_core.boolean)("is_email_verified").default(false).notNull(),
-  emailVerificationToken: (0, import_pg_core.text)("email_verification_token"),
-  emailVerificationExpiry: (0, import_pg_core.timestamp)("email_verification_expiry"),
-  passwordResetToken: (0, import_pg_core.text)("password_reset_token"),
-  passwordResetExpiry: (0, import_pg_core.timestamp)("password_reset_expiry"),
-  lastLoginAt: (0, import_pg_core.timestamp)("last_login_at"),
-  streakDays: (0, import_pg_core.integer)("streak_days").default(0).notNull(),
-  createdAt: (0, import_pg_core.timestamp)("created_at").defaultNow().notNull(),
-  updatedAt: (0, import_pg_core.timestamp)("updated_at").defaultNow().notNull()
+import { pgTable, text, serial, integer, boolean, timestamp, doublePrecision } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+var users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(),
+  isEmailVerified: boolean("is_email_verified").default(false).notNull(),
+  emailVerificationToken: text("email_verification_token"),
+  emailVerificationExpiry: timestamp("email_verification_expiry"),
+  passwordResetToken: text("password_reset_token"),
+  passwordResetExpiry: timestamp("password_reset_expiry"),
+  lastLoginAt: timestamp("last_login_at"),
+  streakDays: integer("streak_days").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
-var insertUserSchema = (0, import_drizzle_zod.createInsertSchema)(users).pick({
+var insertUserSchema = createInsertSchema(users).pick({
   username: true,
   email: true,
   password: true
 });
-var loginSchema = import_zod.z.object({
-  usernameOrEmail: import_zod.z.string().min(1, "Username or email is required"),
-  password: import_zod.z.string().min(6, "Password must be at least 6 characters")
+var loginSchema = z.object({
+  usernameOrEmail: z.string().min(1, "Username or email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters")
 });
-var registerSchema = import_zod.z.object({
-  username: import_zod.z.string().min(3, "Username must be at least 3 characters").max(20, "Username must be less than 20 characters").regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
-  email: import_zod.z.string().email("Please enter a valid email address"),
-  password: import_zod.z.string().min(8, "Password must be at least 8 characters").regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one lowercase letter, one uppercase letter, and one number"),
-  confirmPassword: import_zod.z.string()
+var registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters").max(20, "Username must be less than 20 characters").regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters").regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one lowercase letter, one uppercase letter, and one number"),
+  confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"]
 });
-var forumPosts = (0, import_pg_core.pgTable)("forum_posts", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  userId: (0, import_pg_core.integer)("user_id").references(() => users.id, { onDelete: "cascade" }),
-  title: (0, import_pg_core.text)("title"),
+var forumPosts = pgTable("forum_posts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  title: text("title"),
   // Optional for tweet-style posts
-  content: (0, import_pg_core.text)("content").notNull(),
-  imageUrl: (0, import_pg_core.text)("image_url"),
+  content: text("content").notNull(),
+  imageUrl: text("image_url"),
   // For meme images
-  fileName: (0, import_pg_core.text)("file_name"),
+  fileName: text("file_name"),
   // Original filename
-  fileType: (0, import_pg_core.text)("file_type"),
+  fileType: text("file_type"),
   // MIME type (image/jpeg, video/mp4, etc.)
-  fileSize: (0, import_pg_core.integer)("file_size"),
+  fileSize: integer("file_size"),
   // File size in bytes
-  memeCaption: (0, import_pg_core.text)("meme_caption"),
+  memeCaption: text("meme_caption"),
   // Caption for memes
-  memeTemplate: (0, import_pg_core.text)("meme_template"),
+  memeTemplate: text("meme_template"),
   // Template name (e.g., "Drake pointing", "Distracted boyfriend")
-  categories: (0, import_pg_core.text)("categories").array().default([]),
-  upvotes: (0, import_pg_core.integer)("upvotes").default(0).notNull(),
-  downvotes: (0, import_pg_core.integer)("downvotes").default(0).notNull(),
-  commentCount: (0, import_pg_core.integer)("comment_count").default(0).notNull(),
-  isReply: (0, import_pg_core.boolean)("is_reply").default(false).notNull(),
-  parentPostId: (0, import_pg_core.integer)("parent_post_id").references(() => forumPosts.id),
-  mentions: (0, import_pg_core.text)("mentions").array().default([]),
-  hashtags: (0, import_pg_core.text)("hashtags").array().default([]),
-  createdAt: (0, import_pg_core.timestamp)("created_at").defaultNow().notNull(),
-  updatedAt: (0, import_pg_core.timestamp)("updated_at").defaultNow().notNull()
+  categories: text("categories").array().default([]),
+  upvotes: integer("upvotes").default(0).notNull(),
+  downvotes: integer("downvotes").default(0).notNull(),
+  commentCount: integer("comment_count").default(0).notNull(),
+  isReply: boolean("is_reply").default(false).notNull(),
+  parentPostId: integer("parent_post_id").references(() => forumPosts.id),
+  mentions: text("mentions").array().default([]),
+  hashtags: text("hashtags").array().default([]),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
-var insertForumPostSchema = (0, import_drizzle_zod.createInsertSchema)(forumPosts).pick({
+var insertForumPostSchema = createInsertSchema(forumPosts).pick({
   userId: true,
   title: true,
   content: true,
@@ -4079,65 +4052,65 @@ var insertForumPostSchema = (0, import_drizzle_zod.createInsertSchema)(forumPost
   mentions: true,
   hashtags: true
 });
-var postReactions = (0, import_pg_core.pgTable)("post_reactions", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  postId: (0, import_pg_core.integer)("post_id").references(() => forumPosts.id, { onDelete: "cascade" }),
-  userId: (0, import_pg_core.integer)("user_id").references(() => users.id, { onDelete: "cascade" }),
-  type: (0, import_pg_core.text)("type").notNull(),
+var postReactions = pgTable("post_reactions", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").references(() => forumPosts.id, { onDelete: "cascade" }),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(),
   // 'like', 'love', 'rocket', 'fire'
-  createdAt: (0, import_pg_core.timestamp)("created_at").defaultNow().notNull()
+  createdAt: timestamp("created_at").defaultNow().notNull()
 });
-var insertPostReactionSchema = (0, import_drizzle_zod.createInsertSchema)(postReactions).pick({
+var insertPostReactionSchema = createInsertSchema(postReactions).pick({
   postId: true,
   userId: true,
   type: true
 });
-var forumComments = (0, import_pg_core.pgTable)("forum_comments", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  postId: (0, import_pg_core.integer)("post_id").references(() => forumPosts.id, { onDelete: "cascade" }),
-  userId: (0, import_pg_core.integer)("user_id").references(() => users.id, { onDelete: "cascade" }),
-  content: (0, import_pg_core.text)("content").notNull(),
-  upvotes: (0, import_pg_core.integer)("upvotes").default(0).notNull(),
-  createdAt: (0, import_pg_core.timestamp)("created_at").defaultNow().notNull()
+var forumComments = pgTable("forum_comments", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").references(() => forumPosts.id, { onDelete: "cascade" }),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  upvotes: integer("upvotes").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
 });
-var insertForumCommentSchema = (0, import_drizzle_zod.createInsertSchema)(forumComments).pick({
+var insertForumCommentSchema = createInsertSchema(forumComments).pick({
   postId: true,
   userId: true,
   content: true
 });
-var portfolioEntries = (0, import_pg_core.pgTable)("portfolio_entries", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  userId: (0, import_pg_core.integer)("user_id").references(() => users.id, { onDelete: "cascade" }),
-  asset: (0, import_pg_core.text)("asset").notNull(),
+var portfolioEntries = pgTable("portfolio_entries", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  asset: text("asset").notNull(),
   // 'bitcoin'
-  amount: (0, import_pg_core.doublePrecision)("amount").notNull(),
-  updatedAt: (0, import_pg_core.timestamp)("updated_at").defaultNow().notNull()
+  amount: doublePrecision("amount").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
-var insertPortfolioEntrySchema = (0, import_drizzle_zod.createInsertSchema)(portfolioEntries).pick({
+var insertPortfolioEntrySchema = createInsertSchema(portfolioEntries).pick({
   userId: true,
   asset: true,
   amount: true
 });
-var dailyTips = (0, import_pg_core.pgTable)("daily_tips", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  title: (0, import_pg_core.text)("title").notNull(),
-  content: (0, import_pg_core.text)("content").notNull(),
-  category: (0, import_pg_core.text)("category").notNull(),
-  createdAt: (0, import_pg_core.timestamp)("created_at").defaultNow().notNull()
+var dailyTips = pgTable("daily_tips", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  category: text("category").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
 });
-var insertDailyTipSchema = (0, import_drizzle_zod.createInsertSchema)(dailyTips).pick({
+var insertDailyTipSchema = createInsertSchema(dailyTips).pick({
   title: true,
   content: true,
   category: true
 });
-var learningProgress = (0, import_pg_core.pgTable)("learning_progress", {
-  id: (0, import_pg_core.serial)("id").primaryKey(),
-  userId: (0, import_pg_core.integer)("user_id").references(() => users.id, { onDelete: "cascade" }),
-  courseId: (0, import_pg_core.text)("course_id").notNull(),
-  completedLessons: (0, import_pg_core.integer)("completed_lessons").default(0).notNull(),
-  updatedAt: (0, import_pg_core.timestamp)("updated_at").defaultNow().notNull()
+var learningProgress = pgTable("learning_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
+  courseId: text("course_id").notNull(),
+  completedLessons: integer("completed_lessons").default(0).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
-var insertLearningProgressSchema = (0, import_drizzle_zod.createInsertSchema)(learningProgress).pick({
+var insertLearningProgressSchema = createInsertSchema(learningProgress).pick({
   userId: true,
   courseId: true,
   completedLessons: true
@@ -4389,28 +4362,28 @@ async function getBitcoinChart(timeframe) {
 }
 
 // server/db.ts
-var import_serverless = require("@neondatabase/serverless");
-var import_neon_serverless = require("drizzle-orm/neon-serverless");
-var import_ws = __toESM(require("ws"), 1);
-import_serverless.neonConfig.webSocketConstructor = import_ws.default;
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import ws from "ws";
+neonConfig.webSocketConstructor = ws;
 var connectionString = process.env.DATABASE_URL || "postgres://invalid:invalid@127.0.0.1:5432/invalid";
 if (!process.env.DATABASE_URL) {
   console.warn("[db] DATABASE_URL is not set. Auth/forum/portfolio features will be unavailable until configured.");
 }
-var pool = new import_serverless.Pool({ connectionString });
-var db = (0, import_neon_serverless.drizzle)(pool, { schema: schema_exports });
+var pool = new Pool({ connectionString });
+var db = drizzle(pool, { schema: schema_exports });
 
 // server/storage.ts
-var import_drizzle_orm = require("drizzle-orm");
+import { eq, and, desc, sql, or, gt } from "drizzle-orm";
 var DatabaseStorage = class {
   constructor() {
   }
   async getUser(id) {
-    const [user] = await db.select().from(users).where((0, import_drizzle_orm.eq)(users.id, id));
+    const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
   async getUserByUsername(username) {
-    const [user] = await db.select().from(users).where((0, import_drizzle_orm.eq)(users.username, username));
+    const [user] = await db.select().from(users).where(eq(users.username, username));
     return user;
   }
   async createUser(insertUser) {
@@ -4418,23 +4391,23 @@ var DatabaseStorage = class {
     return user;
   }
   async getUserByEmail(email) {
-    const [user] = await db.select().from(users).where((0, import_drizzle_orm.eq)(users.email, email));
+    const [user] = await db.select().from(users).where(eq(users.email, email));
     return user || void 0;
   }
   async getUserByUsernameOrEmail(usernameOrEmail) {
-    const [user] = await db.select().from(users).where((0, import_drizzle_orm.or)((0, import_drizzle_orm.eq)(users.username, usernameOrEmail), (0, import_drizzle_orm.eq)(users.email, usernameOrEmail)));
+    const [user] = await db.select().from(users).where(or(eq(users.username, usernameOrEmail), eq(users.email, usernameOrEmail)));
     return user || void 0;
   }
   async updateUser(id, updates) {
-    const [user] = await db.update(users).set({ ...updates, updatedAt: /* @__PURE__ */ new Date() }).where((0, import_drizzle_orm.eq)(users.id, id)).returning();
+    const [user] = await db.update(users).set({ ...updates, updatedAt: /* @__PURE__ */ new Date() }).where(eq(users.id, id)).returning();
     return user || void 0;
   }
   async verifyEmail(token) {
     try {
       const [user] = await db.select().from(users).where(
-        (0, import_drizzle_orm.and)(
-          (0, import_drizzle_orm.eq)(users.emailVerificationToken, token),
-          (0, import_drizzle_orm.gt)(users.emailVerificationExpiry, /* @__PURE__ */ new Date())
+        and(
+          eq(users.emailVerificationToken, token),
+          gt(users.emailVerificationExpiry, /* @__PURE__ */ new Date())
         )
       );
       if (!user) return false;
@@ -4443,7 +4416,7 @@ var DatabaseStorage = class {
         emailVerificationToken: null,
         emailVerificationExpiry: null,
         updatedAt: /* @__PURE__ */ new Date()
-      }).where((0, import_drizzle_orm.eq)(users.id, user.id));
+      }).where(eq(users.id, user.id));
       return true;
     } catch (error) {
       console.error("Error verifying email:", error);
@@ -4456,7 +4429,7 @@ var DatabaseStorage = class {
         passwordResetToken: token,
         passwordResetExpiry: expiry,
         updatedAt: /* @__PURE__ */ new Date()
-      }).where((0, import_drizzle_orm.eq)(users.email, email));
+      }).where(eq(users.email, email));
       return true;
     } catch (error) {
       console.error("Error setting password reset token:", error);
@@ -4466,9 +4439,9 @@ var DatabaseStorage = class {
   async resetPassword(token, newPassword) {
     try {
       const [user] = await db.select().from(users).where(
-        (0, import_drizzle_orm.and)(
-          (0, import_drizzle_orm.eq)(users.passwordResetToken, token),
-          (0, import_drizzle_orm.gt)(users.passwordResetExpiry, /* @__PURE__ */ new Date())
+        and(
+          eq(users.passwordResetToken, token),
+          gt(users.passwordResetExpiry, /* @__PURE__ */ new Date())
         )
       );
       if (!user) return false;
@@ -4477,7 +4450,7 @@ var DatabaseStorage = class {
         passwordResetToken: null,
         passwordResetExpiry: null,
         updatedAt: /* @__PURE__ */ new Date()
-      }).where((0, import_drizzle_orm.eq)(users.id, user.id));
+      }).where(eq(users.id, user.id));
       return true;
     } catch (error) {
       console.error("Error resetting password:", error);
@@ -4507,7 +4480,7 @@ var DatabaseStorage = class {
       updatedAt: forumPosts.updatedAt,
       userId: forumPosts.userId,
       username: users.username
-    }).from(forumPosts).leftJoin(users, (0, import_drizzle_orm.eq)(forumPosts.userId, users.id)).where((0, import_drizzle_orm.eq)(forumPosts.isReply, false)).orderBy((0, import_drizzle_orm.desc)(forumPosts.createdAt));
+    }).from(forumPosts).leftJoin(users, eq(forumPosts.userId, users.id)).where(eq(forumPosts.isReply, false)).orderBy(desc(forumPosts.createdAt));
     return posts.map((post) => ({
       ...post,
       id: post.id.toString(),
@@ -4540,7 +4513,7 @@ var DatabaseStorage = class {
       updatedAt: forumPosts.updatedAt,
       userId: forumPosts.userId,
       username: users.username
-    }).from(forumPosts).leftJoin(users, (0, import_drizzle_orm.eq)(forumPosts.userId, users.id)).where((0, import_drizzle_orm.eq)(forumPosts.isReply, false)).orderBy((0, import_drizzle_orm.desc)(forumPosts.createdAt)).limit(limit);
+    }).from(forumPosts).leftJoin(users, eq(forumPosts.userId, users.id)).where(eq(forumPosts.isReply, false)).orderBy(desc(forumPosts.createdAt)).limit(limit);
     return posts.map((post) => ({
       ...post,
       id: post.id.toString(),
@@ -4573,7 +4546,7 @@ var DatabaseStorage = class {
       updatedAt: forumPosts.updatedAt,
       userId: forumPosts.userId,
       username: users.username
-    }).from(forumPosts).leftJoin(users, (0, import_drizzle_orm.eq)(forumPosts.userId, users.id)).where((0, import_drizzle_orm.eq)(forumPosts.id, id));
+    }).from(forumPosts).leftJoin(users, eq(forumPosts.userId, users.id)).where(eq(forumPosts.id, id));
     if (!post) return void 0;
     return {
       ...post,
@@ -4586,7 +4559,7 @@ var DatabaseStorage = class {
   }
   async createForumPost(insertPost) {
     const [post] = await db.insert(forumPosts).values(insertPost).returning();
-    const [userResult] = await db.select({ username: users.username }).from(users).where((0, import_drizzle_orm.eq)(users.id, post.userId));
+    const [userResult] = await db.select({ username: users.username }).from(users).where(eq(users.id, post.userId));
     return {
       ...post,
       id: post.id.toString(),
@@ -4620,7 +4593,7 @@ var DatabaseStorage = class {
       updatedAt: forumPosts.updatedAt,
       userId: forumPosts.userId,
       username: users.username
-    }).from(forumPosts).leftJoin(users, (0, import_drizzle_orm.eq)(forumPosts.userId, users.id)).where((0, import_drizzle_orm.and)((0, import_drizzle_orm.eq)(forumPosts.parentPostId, postId), (0, import_drizzle_orm.eq)(forumPosts.isReply, true))).orderBy(forumPosts.createdAt);
+    }).from(forumPosts).leftJoin(users, eq(forumPosts.userId, users.id)).where(and(eq(forumPosts.parentPostId, postId), eq(forumPosts.isReply, true))).orderBy(forumPosts.createdAt);
     return replies.map((reply) => ({
       ...reply,
       id: reply.id.toString(),
@@ -4631,13 +4604,13 @@ var DatabaseStorage = class {
     }));
   }
   async toggleReaction(postId, userId, reactionType) {
-    const [existingReaction] = await db.select().from(postReactions).where((0, import_drizzle_orm.and)(
-      (0, import_drizzle_orm.eq)(postReactions.postId, postId),
-      (0, import_drizzle_orm.eq)(postReactions.userId, userId),
-      (0, import_drizzle_orm.eq)(postReactions.reactionType, reactionType)
+    const [existingReaction] = await db.select().from(postReactions).where(and(
+      eq(postReactions.postId, postId),
+      eq(postReactions.userId, userId),
+      eq(postReactions.reactionType, reactionType)
     ));
     if (existingReaction) {
-      await db.delete(postReactions).where((0, import_drizzle_orm.eq)(postReactions.id, existingReaction.id));
+      await db.delete(postReactions).where(eq(postReactions.id, existingReaction.id));
     } else {
       await db.insert(postReactions).values({
         postId,
@@ -4648,13 +4621,13 @@ var DatabaseStorage = class {
     const reactions = await this.getPostReactions(postId);
     const upvotes = reactions.upvote || 0;
     const downvotes = reactions.downvote || 0;
-    await db.update(forumPosts).set({ upvotes, downvotes, updatedAt: /* @__PURE__ */ new Date() }).where((0, import_drizzle_orm.eq)(forumPosts.id, postId));
+    await db.update(forumPosts).set({ upvotes, downvotes, updatedAt: /* @__PURE__ */ new Date() }).where(eq(forumPosts.id, postId));
   }
   async getPostReactions(postId) {
     const reactions = await db.select({
       reactionType: postReactions.reactionType,
-      count: import_drizzle_orm.sql`count(*)`.as("count")
-    }).from(postReactions).where((0, import_drizzle_orm.eq)(postReactions.postId, postId)).groupBy(postReactions.reactionType);
+      count: sql`count(*)`.as("count")
+    }).from(postReactions).where(eq(postReactions.postId, postId)).groupBy(postReactions.reactionType);
     const reactionCounts = {};
     reactions.forEach((reaction) => {
       reactionCounts[reaction.reactionType] = Number(reaction.count);
@@ -4666,8 +4639,8 @@ var DatabaseStorage = class {
       return false;
     }
     try {
-      await db.delete(postReactions).where((0, import_drizzle_orm.eq)(postReactions.postId, postId));
-      const result = await db.delete(forumPosts).where((0, import_drizzle_orm.eq)(forumPosts.id, postId));
+      await db.delete(postReactions).where(eq(postReactions.postId, postId));
+      const result = await db.delete(forumPosts).where(eq(forumPosts.id, postId));
       return true;
     } catch (error) {
       console.error("Error deleting forum post:", error);
@@ -4675,7 +4648,7 @@ var DatabaseStorage = class {
     }
   }
   async getPortfolio(userId) {
-    const entries = await db.select().from(portfolioEntries).where((0, import_drizzle_orm.eq)(portfolioEntries.userId, userId));
+    const entries = await db.select().from(portfolioEntries).where(eq(portfolioEntries.userId, userId));
     let totalValue = 0;
     const bitcoinPrice = await getBitcoinPrice();
     const portfolioData = {
@@ -4700,9 +4673,9 @@ var DatabaseStorage = class {
     return portfolioData;
   }
   async updatePortfolio(userId, asset, amount) {
-    const [existingEntry] = await db.select().from(portfolioEntries).where((0, import_drizzle_orm.and)((0, import_drizzle_orm.eq)(portfolioEntries.userId, userId), (0, import_drizzle_orm.eq)(portfolioEntries.asset, asset)));
+    const [existingEntry] = await db.select().from(portfolioEntries).where(and(eq(portfolioEntries.userId, userId), eq(portfolioEntries.asset, asset)));
     if (existingEntry) {
-      await db.update(portfolioEntries).set({ amount, updatedAt: /* @__PURE__ */ new Date() }).where((0, import_drizzle_orm.eq)(portfolioEntries.id, existingEntry.id));
+      await db.update(portfolioEntries).set({ amount, updatedAt: /* @__PURE__ */ new Date() }).where(eq(portfolioEntries.id, existingEntry.id));
     } else {
       await db.insert(portfolioEntries).values({
         userId,
@@ -4713,7 +4686,7 @@ var DatabaseStorage = class {
     return this.getPortfolio(userId);
   }
   async getDailyTip() {
-    const tips = await db.select().from(dailyTips).orderBy(import_drizzle_orm.sql`RANDOM()`).limit(1);
+    const tips = await db.select().from(dailyTips).orderBy(sql`RANDOM()`).limit(1);
     if (tips.length === 0) {
       return {
         id: "1",
@@ -4733,7 +4706,7 @@ var DatabaseStorage = class {
     };
   }
   async getLearningProgress(userId) {
-    const [progress] = await db.select().from(learningProgress).where((0, import_drizzle_orm.eq)(learningProgress.userId, userId));
+    const [progress] = await db.select().from(learningProgress).where(eq(learningProgress.userId, userId));
     if (!progress) {
       return {
         id: "0",
@@ -4768,7 +4741,7 @@ init_sentiment();
 init_legislation();
 
 // server/api/coinglass-indicators.ts
-var import_axios5 = __toESM(require("axios"), 1);
+import axios5 from "axios";
 var MOCK_INDICATORS_DATA = [
   { id: 1, name: "Bitcoin Ahr999 Index", current: "1.03", reference: ">= 4", hitOrNot: false, distanceToHit: "2.97", progress: "25.75%" },
   { id: 2, name: "Pi Cycle Top Indicator", current: "112526.0", reference: ">= 188227", hitOrNot: false, distanceToHit: "75701.0", progress: "59.79%" },
@@ -4804,8 +4777,8 @@ var MOCK_INDICATORS_DATA = [
 async function fetchRealMarketData() {
   try {
     const [globalResponse, altseasonResponse] = await Promise.all([
-      import_axios5.default.get("https://api.coinmarketcap.com/v1/global/", { timeout: 5e3 }),
-      import_axios5.default.get("https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest", {
+      axios5.get("https://api.coinmarketcap.com/v1/global/", { timeout: 5e3 }),
+      axios5.get("https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest", {
         timeout: 5e3,
         headers: {
           "X-CMC_PRO_API_KEY": process.env.COINMARKETCAP_API_KEY || ""
@@ -5560,8 +5533,8 @@ async function getCachedOptionsFlow(req, res) {
 }
 
 // server/api/liquidity.ts
-var import_axios6 = __toESM(require("axios"), 1);
 init_coingecko();
+import axios6 from "axios";
 var HISTORICAL_PEAKS = {
   "M2SL": { value: 21722, date: "2022-04-01", rawUnit: "billions" },
   "M1SL": { value: 20629, date: "2022-03-01", rawUnit: "billions" },
@@ -5754,7 +5727,7 @@ function formatDisplayValue(valueInBillions, rawUnit) {
 async function fetchFREDSeries(seriesId, frequency) {
   try {
     const limit = getObservationLimit(frequency);
-    const response = await import_axios6.default.get("https://api.stlouisfed.org/fred/series/observations", {
+    const response = await axios6.get("https://api.stlouisfed.org/fred/series/observations", {
       params: {
         series_id: seriesId,
         api_key: process.env.FRED_API_KEY,
@@ -6058,25 +6031,25 @@ async function getLiquidityData() {
 }
 
 // server/routes.ts
-var import_zod2 = require("zod");
+import { z as z2 } from "zod";
 
 // server/auth.ts
-var import_bcryptjs = __toESM(require("bcryptjs"), 1);
-var import_crypto = __toESM(require("crypto"), 1);
-var import_mail = require("@sendgrid/mail");
-var mailService = new import_mail.MailService();
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { MailService } from "@sendgrid/mail";
+var mailService = new MailService();
 if (process.env.SENDGRID_API_KEY) {
   mailService.setApiKey(process.env.SENDGRID_API_KEY);
 }
 async function hashPassword(password) {
   const saltRounds = 12;
-  return import_bcryptjs.default.hash(password, saltRounds);
+  return bcrypt.hash(password, saltRounds);
 }
 async function verifyPassword(password, hashedPassword) {
-  return import_bcryptjs.default.compare(password, hashedPassword);
+  return bcrypt.compare(password, hashedPassword);
 }
 function generateToken() {
-  return import_crypto.default.randomBytes(32).toString("hex");
+  return crypto.randomBytes(32).toString("hex");
 }
 function getTokenExpiry(hoursFromNow = 24) {
   return new Date(Date.now() + hoursFromNow * 60 * 60 * 1e3);
@@ -6203,21 +6176,21 @@ async function sendPasswordResetEmail(email, username, token) {
 }
 
 // server/routes.ts
-var import_express_session = __toESM(require("express-session"), 1);
+import session from "express-session";
 
 // server/upload.ts
-var import_multer = __toESM(require("multer"), 1);
-var import_path = __toESM(require("path"), 1);
-var import_fs = require("fs");
-var uploadDir = import_path.default.join(process.cwd(), "static", "uploads");
-import_fs.promises.mkdir(uploadDir, { recursive: true }).catch(console.error);
-var storage2 = import_multer.default.diskStorage({
+import multer from "multer";
+import path from "path";
+import { promises as fs } from "fs";
+var uploadDir = path.join(process.cwd(), "static", "uploads");
+fs.mkdir(uploadDir, { recursive: true }).catch(console.error);
+var storage2 = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = import_path.default.extname(file.originalname);
+    const ext = path.extname(file.originalname);
     cb(null, `meme-${uniqueSuffix}${ext}`);
   }
 });
@@ -6257,7 +6230,7 @@ var fileFilter = (req, file, cb) => {
     cb(new Error(`File type ${file.mimetype} not allowed. Supported types: ${allowedTypes.join(", ")}`));
   }
 };
-var upload = (0, import_multer.default)({
+var upload = multer({
   storage: storage2,
   fileFilter,
   limits: {
@@ -6292,10 +6265,10 @@ var handleFileUpload = async (req, res) => {
 };
 
 // server/routes.ts
-var import_path2 = __toESM(require("path"), 1);
-var import_express = __toESM(require("express"), 1);
+import path2 from "path";
+import express from "express";
 async function registerRoutes(app2) {
-  app2.use((0, import_express_session.default)({
+  app2.use(session({
     secret: process.env.SESSION_SECRET || "bitcoin-hub-secret-key-development",
     resave: false,
     saveUninitialized: false,
@@ -7068,7 +7041,7 @@ All this data is updated live in the dashboard above. Try asking about specific 
     }
   });
   app2.post(`${apiPrefix}/upload`, upload.single("file"), handleFileUpload);
-  app2.use("/static", import_express.default.static(import_path2.default.join(process.cwd(), "static")));
+  app2.use("/static", express.static(path2.join(process.cwd(), "static")));
   app2.get(`${apiPrefix}/portfolio`, requireAuth, async (req, res) => {
     try {
       const userId = req.session.userId;
@@ -7081,8 +7054,8 @@ All this data is updated live in the dashboard above. Try asking about specific 
   });
   app2.post(`${apiPrefix}/portfolio/bitcoin`, requireAuth, async (req, res) => {
     try {
-      const schema = import_zod2.z.object({
-        amount: import_zod2.z.number().positive()
+      const schema = z2.object({
+        amount: z2.number().positive()
       });
       const { amount } = schema.parse(req.body);
       const userId = req.session.userId;
@@ -9284,14 +9257,14 @@ All this data is updated live in the dashboard above. Try asking about specific 
   app2.get(`${apiPrefix}/last-updated`, (req, res) => {
     res.json((/* @__PURE__ */ new Date()).toISOString());
   });
-  const httpServer = (0, import_http.createServer)(app2);
+  const httpServer = createServer(app2);
   return httpServer;
 }
 
-// api/index.ts
-var app = (0, import_express2.default)();
-app.use(import_express2.default.json());
-app.use(import_express2.default.urlencoded({ extended: false }));
+// api/entry.ts
+var app = express2();
+app.use(express2.json());
+app.use(express2.urlencoded({ extended: false }));
 var initialized = false;
 async function init() {
   if (!initialized) {
@@ -9308,3 +9281,6 @@ async function handler(req, res) {
   await init();
   return app(req, res);
 }
+export {
+  handler as default
+};
