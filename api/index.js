@@ -6177,6 +6177,7 @@ async function sendPasswordResetEmail(email, username, token) {
 
 // server/routes.ts
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 
 // server/upload.ts
 import multer from "multer";
@@ -6268,18 +6269,29 @@ var handleFileUpload = async (req, res) => {
 import path2 from "path";
 import express from "express";
 async function registerRoutes(app2) {
-  app2.use(session({
-    secret: process.env.SESSION_SECRET || "bitcoin-hub-secret-key-development",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      // Set to true in production with HTTPS
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1e3
-      // 24 hours
-    }
-  }));
+  const isProduction = process.env.NODE_ENV === "production";
+  const PgSessionStore = connectPgSimple(session);
+  app2.set("trust proxy", 1);
+  app2.use(
+    session({
+      secret: process.env.SESSION_SECRET || "bitcoin-hub-secret-key-development",
+      resave: false,
+      saveUninitialized: false,
+      rolling: true,
+      store: process.env.DATABASE_URL ? new PgSessionStore({
+        pool,
+        tableName: "user_sessions",
+        createTableIfMissing: true
+      }) : void 0,
+      cookie: {
+        secure: isProduction,
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1e3
+        // 24 hours
+      }
+    })
+  );
   const apiPrefix = "/api";
   const requireAuth = (req, res, next) => {
     if (!req.session.userId) {
