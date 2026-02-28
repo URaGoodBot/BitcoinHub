@@ -19,6 +19,8 @@ import { z } from "zod";
 import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "../shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db";
 import bcrypt from "bcryptjs";
 import { upload, handleFileUpload } from "./upload";
 import path from "path";
@@ -32,17 +34,35 @@ declare module 'express-session' {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  const isProduction = process.env.NODE_ENV === "production";
+  const PgSessionStore = connectPgSimple(session);
+
+  // Behind Vercel proxy so secure cookies work correctly in production
+  app.set("trust proxy", 1);
+
   // Configure session middleware
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'bitcoin-hub-secret-key-development',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false, // Set to true in production with HTTPS
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
-  }));
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || "bitcoin-hub-secret-key-development",
+      resave: false,
+      saveUninitialized: false,
+      rolling: true,
+      store: process.env.DATABASE_URL
+        ? new PgSessionStore({
+            pool,
+            tableName: "user_sessions",
+            createTableIfMissing: true,
+          })
+        : undefined,
+      cookie: {
+        secure: isProduction,
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      },
+    })
+  );
+
   // API prefix
   const apiPrefix = "/api";
 
