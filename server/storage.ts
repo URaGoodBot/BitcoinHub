@@ -6,9 +6,9 @@ import {
   portfolioEntries, type PortfolioEntry, type InsertPortfolioEntry,
   dailyTips, type DailyTip, type InsertDailyTip,
   learningProgress, type LearningProgress, type InsertLearningProgress
-} from "@shared/schema";
+} from "../shared/schema";
 import { getBitcoinPrice } from "./api/cryptocompare";
-import { ForumPost as ForumPostType, DailyTip as DailyTipType, LearningProgress as LearningProgressType, Portfolio } from "@/lib/types";
+import { ForumPost as ForumPostType, DailyTip as DailyTipType, LearningProgress as LearningProgressType, Portfolio } from "../client/src/lib/types";
 import { db } from "./db";
 import { eq, and, desc, sql, or, gt } from "drizzle-orm";
 

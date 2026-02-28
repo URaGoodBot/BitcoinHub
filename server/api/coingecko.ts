@@ -1,4 +1,4 @@
-import { BitcoinPrice, BitcoinMarketData, ChartData, ProcessedChartData } from "@/lib/types";
+import { BitcoinPrice, BitcoinMarketData, ChartData, ProcessedChartData } from "../../client/src/lib/types";
 
 // CoinGecko API base URL
 const API_BASE_URL = "https://api.coingecko.com/api/v3";

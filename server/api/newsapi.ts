@@ -1,4 +1,4 @@
-import { NewsItem } from "@/lib/types";
+import { NewsItem } from "../../client/src/lib/types";
 import axios from "axios";
 
 // Default categories for Bitcoin news

@@ -16,7 +16,7 @@ import { getCachedWhaleAlerts } from "./api/whale-alerts";
 import { getCachedOptionsFlow } from "./api/options-flow";
 import { getLiquidityData } from "./api/liquidity";
 import { z } from "zod";
-import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "@shared/schema";
+import { insertForumPostSchema, insertPortfolioEntrySchema, insertUserSchema, loginSchema, registerSchema } from "../shared/schema";
 import { hashPassword, verifyPassword, generateToken, getTokenExpiry, sendVerificationEmail, sendPasswordResetEmail } from "./auth";
 import session from "express-session";
 import bcrypt from "bcryptjs";

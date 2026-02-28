@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { users, forumPosts, dailyTips } from "@shared/schema";
+import { users, forumPosts, dailyTips } from "../shared/schema";
 import bcrypt from "bcryptjs";
 
 async function seed() {

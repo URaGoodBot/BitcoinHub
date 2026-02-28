@@ -1,4 +1,4 @@
-import { BitcoinPrice, BitcoinMarketData, ProcessedChartData } from "@/lib/types";
+import { BitcoinPrice, BitcoinMarketData, ProcessedChartData } from "../../client/src/lib/types";
 
 // CoinCap API base URL
 const API_BASE_URL = "https://api.coincap.io/v2";
